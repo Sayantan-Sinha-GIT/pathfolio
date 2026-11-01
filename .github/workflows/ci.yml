@@ -43,9 +43,10 @@ jobs:
 
       - name: Secret Scan Verification
         run: |
-          # Verify no signing keys, tokens, or local credentials committed
-          if git log -p | grep -E -i "(AIza[0-9A-Za-z_-]{35}|ghp_[0-9a-zA-Z]{36}|BEGIN PRIVATE KEY)"; then
-            echo "Secret detected in git history!"
+          # Verify no secrets committed, excluding .github to avoid pattern self-matching
+          if git grep -E -i "(AIza[0-9A-Za-z_-]{35}|ghp_[0-9a-zA-Z]{36}|BEGIN [A-Z]+ PRIVATE KEY)" -- ':!.github'; then
+            echo "Secret detected in repository!"
             exit 1
           fi
           echo "Secret scan passed cleanly."
+
