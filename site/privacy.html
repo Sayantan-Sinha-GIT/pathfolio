@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy & Storage Architecture — Pathfolio</title>
+  <meta name="description" content="Pathfolio's local-first privacy policy and technical storage guarantees. No cloud databases, no analytics, no third-party tracking.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <a href="/" class="brand-link">
+        <div class="brand-icon">P</div>
+        <span>Pathfolio</span>
+      </a>
+
+      <nav class="main-nav">
+        <a href="/">Home</a>
+        <a href="privacy.html" class="active">Privacy</a>
+        <a href="guide.html">User Guide</a>
+        <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+
+      <div class="header-actions">
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <a href="/app/" class="btn btn-primary">Launch App →</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container" style="max-width: 820px; padding: 4rem 1.5rem;">
+      <h1 style="font-size: 2.6rem; letter-spacing: -0.03em; margin-bottom: 1rem;">Privacy & Local Storage Architecture</h1>
+      <p style="font-size: 1.1rem; color: var(--ink-secondary); margin-bottom: 2.5rem;">
+        Pathfolio is built on a simple premise: your job search, compensation targets, and interview notes should never live on someone else's server.
+      </p>
+
+      <section style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 0.75rem;">1. Zero Remote Storage & Zero Telemetry</h2>
+        <p style="margin-bottom: 1rem; color: var(--ink-secondary); line-height: 1.65;">
+          Pathfolio does not operate a user database, auth server, or analytics backend. When you use the web application or install the Android APK, all data is written directly to your client sandbox:
+        </p>
+        <ul style="margin-left: 1.5rem; color: var(--ink-secondary); line-height: 1.7; margin-bottom: 1rem;">
+          <li><strong>Web:</strong> Records are saved in browser <code>localStorage</code> / IndexedDB scoped solely to your current browser profile.</li>
+          <li><strong>Android:</strong> Records are saved in the app's sandboxed private storage directory.</li>
+          <li><strong>Network Calls:</strong> The only outbound network requests made are when you explicitly click an external link to visit a company's job posting or GitHub repository.</li>
+        </ul>
+      </section>
+
+      <section style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 0.75rem;">2. Browser Storage Limitations & Best Practices</h2>
+        <p style="margin-bottom: 1rem; color: var(--ink-secondary); line-height: 1.65;">
+          Because your browser manages the local storage sandbox, certain user actions or browser maintenance tasks can impact your data:
+        </p>
+        <ul style="margin-left: 1.5rem; color: var(--ink-secondary); line-height: 1.7; margin-bottom: 1rem;">
+          <li>Clearing your browser's "Site Data and Cookies" will remove locally stored opportunities and tasks.</li>
+          <li>Incognito or Private Browsing mode will discard records once the private window is closed.</li>
+          <li>Browsers on different devices or across different user profiles cannot automatically synchronize data without a server.</li>
+        </ul>
+        <p style="color: var(--ink-secondary); line-height: 1.65;">
+          <strong>Recommendation:</strong> Use the built-in <em>Export JSON Backup</em> feature in Settings regularly. Saving this file to your personal computer or cloud drive ensures your records can be restored instantly anywhere.
+        </p>
+      </section>
+
+      <section style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 0.75rem;">3. Data Export, Import & Erase Guarantees</h2>
+        <p style="margin-bottom: 1rem; color: var(--ink-secondary); line-height: 1.65;">
+          You retain full sovereignty over your information:
+        </p>
+        <ul style="margin-left: 1.5rem; color: var(--ink-secondary); line-height: 1.7; margin-bottom: 1rem;">
+          <li><strong>Export:</strong> Produces a plain, human-readable, schema-versioned JSON file containing all opportunities, timeline events, follow-ups, and evidence items.</li>
+          <li><strong>Import:</strong> Validates payload size, JSON syntax, required fields, and schema version before modifying any local records. If validation fails, your existing data remains untouched.</li>
+          <li><strong>Erase All Data:</strong> A confirmed two-step action that wipes all keys, real records, and demo workspace records from device storage.</li>
+        </ul>
+      </section>
+
+      <div style="background: var(--bg-subdued); border: 1px solid var(--surface-border); border-radius: 8px; padding: 1.5rem; margin-top: 2rem;">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Ready to take control of your job applications?</h3>
+        <p style="color: var(--ink-secondary); font-size: 0.95rem; margin-bottom: 1rem;">Launch Pathfolio now without creating an account or providing an email address.</p>
+        <a href="/app/" class="btn btn-primary">Open Pathfolio Web App →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="brand-link">
+        <div class="brand-icon">P</div>
+        <span>Pathfolio</span>
+      </div>
+      <div class="footer-links">
+        <a href="/">Home</a>
+        <a href="/app/">Launch App</a>
+        <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk">Download APK</a>
+        <a href="guide.html">Usage Guide</a>
+        <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <div class="footer-copy">MIT Licensed • 100% Client-Side</div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

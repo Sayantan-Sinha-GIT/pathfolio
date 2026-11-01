@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  analyze-and-test:
+    name: Flutter Analyze, Test & Web Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.7'
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        run: |
+          cd app
+          flutter pub get
+
+      - name: Verify Formatting & Analyze
+        run: |
+          cd app
+          flutter analyze --no-fatal-infos
+
+      - name: Run Automated Test Suite
+        run: |
+          cd app
+          flutter test
+
+      - name: Build Flutter Web Bundle
+        run: |
+          cd app
+          flutter build web --base-href "/app/" --release
+
+      - name: Secret Scan Verification
+        run: |
+          # Verify no signing keys, tokens, or local credentials committed
+          if git log -p | grep -E -i "(AIza[0-9A-Za-z_-]{35}|ghp_[0-9a-zA-Z]{36}|BEGIN PRIVATE KEY)"; then
+            echo "Secret detected in git history!"
+            exit 1
+          fi
+          echo "Secret scan passed cleanly."
