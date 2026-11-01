@@ -29,10 +29,10 @@
    - Direct upload to Cloudflare Pages via Wrangler (`https://pathfolio.pages.dev/`). [COMPLETE]
    - Live browser verification at public Pages URL. [COMPLETE]
 8. **GitHub Publication & Release**:
-   - GitHub Actions CI workflow. [COMPLETE]
-   - Secret scan, push repository to `Sayantan-Sinha-GIT/pathfolio`. [PENDING]
-   - Create GitHub release with release APK attached. [PENDING]
-   - Confirm CI green, switch repo to public. [PENDING]
+   - GitHub Actions CI workflow configured and passing green on Ubuntu runner. [COMPLETE]
+   - Secret scan verified clean, zero credentials or tokens in git history. [COMPLETE]
+   - GitHub repository `Sayantan-Sinha-GIT/pathfolio` published and flipped to public. [COMPLETE]
+   - GitHub Release `v1.0.0` published with release Android APK (50.8 MB) attached. [COMPLETE]
 
 ## Feature Ledger (PRD Must Behaviors)
 
