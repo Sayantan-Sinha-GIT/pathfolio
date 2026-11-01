@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pathfolio/models/opportunity.dart';
 import 'package:pathfolio/models/stage.dart';
 import 'package:pathfolio/services/storage_service.dart';
 import 'package:pathfolio/state/app_state.dart';
@@ -155,6 +154,7 @@ void main() {
       final now = DateTime.now();
       final o1 = await appState.createOpportunity(company: 'Zebra', role: 'R1', nextActionDate: now.add(const Duration(days: 5)));
       final o2 = await appState.createOpportunity(company: 'Alpha', role: 'R2', nextActionDate: now.add(const Duration(days: 1)));
+      expect(o1.company, 'Zebra');
 
       // Sort by Company A-Z
       appState.setSortBy('company');
@@ -183,3 +183,4 @@ void main() {
     });
   });
 }
+
