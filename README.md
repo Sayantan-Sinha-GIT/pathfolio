@@ -78,7 +78,7 @@ pathfolio/
 ## Verification & Quality Gates
 
 Pathfolio adheres to the Antigravity-Kit testing protocol:
-- **Automated Tests**: 37 unit and widget tests covering models, validation, timeline tracking, and repository operations.
+- **Automated Tests**: 39 unit and widget tests covering models, validation, timeline tracking, repository operations, single-snapshot restore persistence, and failed-write rollback.
 - **Quality Gate**: Passed `CHECK_QUALITY_CASES.ps1` with 44 distinct executed test cases across 3 iterations:
   - Iteration 1 (Baseline): 15 distinct cases + frozen 11-case CORE suite.
   - Iteration 2 (Adversarial): 14 distinct cases + CORE rerun.
@@ -119,6 +119,10 @@ flutter build web --base-href "/app/" --release
 flutter build apk --release
 ```
 
+The Android release build requires `app/android/key.properties` and the matching private keystore in `app/android/app/`. They are ignored by git. A private backup was saved at `%USERPROFILE%\.codex\secrets\pathfolio`; copy both files to a separate safe place before changing computers. The public `v1.0.1` APK uses this dedicated release key. The earlier `v1.0.0` APK used Flutter's default debug key and cannot be updated in place with the new release key; uninstall it before installing `v1.0.1` if you installed that early version.
+
+The web app registers `app/web/pathfolio-sw.js` to cache the app shell on first load. Once that installation completes, the web app can reopen offline. Local browser records are independent of the cache and remain on that browser profile.
+
 ---
 
 ## Honest Limitations
@@ -126,6 +130,7 @@ flutter build apk --release
 1. **Storage Scoping**: Browser storage is isolated per browser profile and domain. Data created in Chrome on one computer will not automatically sync to Edge or an Android phone without exporting and importing a JSON backup.
 2. **Browser Cache Clearing**: Clearing "Cookies and Site Data" in browser settings will delete local records. Users are advised to export regular JSON backups.
 3. **External Links**: Job application URLs are opened via system browser. Pathfolio does not auto-scrape private job board portals.
+4. **Offline Setup**: The web app needs one complete online load to cache its app shell. The Android APK works offline after installation.
 
 ---
 

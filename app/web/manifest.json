@@ -1,12 +1,11 @@
 {
-    "name": "pathfolio",
-    "short_name": "pathfolio",
+    "name": "Pathfolio — Job Search Command Center",
+    "short_name": "Pathfolio",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#121316",
+    "theme_color": "#C85A32",
+    "description": "A private, local-first workspace for your job search.",
     "prefer_related_applications": false,
     "icons": [
         {

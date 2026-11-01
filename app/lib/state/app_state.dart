@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/opportunity.dart';
 import '../models/stage.dart';
 import '../models/task_item.dart';
@@ -59,7 +60,8 @@ class AppState extends ChangeNotifier {
     _preferences = await storage.getPreferences();
 
     _isDemoWorkspace = _preferences['is_demo_workspace'] as bool? ?? false;
-    _hasCompletedOnboarding = _preferences['has_completed_onboarding'] as bool? ?? false;
+    _hasCompletedOnboarding =
+        _preferences['has_completed_onboarding'] as bool? ?? false;
     _reduceMotion = _preferences['reduce_motion'] as bool? ?? false;
 
     final themeStr = _preferences['theme_mode'] as String?;
@@ -110,7 +112,10 @@ class AppState extends ChangeNotifier {
   }
 
   bool get hasActiveFilters =>
-      _searchQuery.isNotEmpty || _stageFilter != null || _showArchived || _sortBy != 'recent';
+      _searchQuery.isNotEmpty ||
+      _stageFilter != null ||
+      _showArchived ||
+      _sortBy != 'recent';
 
   // Read accessors
   List<Opportunity> get allOpportunities => List.unmodifiable(_opportunities);
@@ -136,7 +141,9 @@ class AppState extends ChangeNotifier {
   }
 
   List<Opportunity> get filteredOpportunities {
-    var list = _opportunities.where((o) => o.isArchived == _showArchived).toList();
+    var list = _opportunities
+        .where((o) => o.isArchived == _showArchived)
+        .toList();
 
     if (_stageFilter != null) {
       list = list.where((o) => o.stage == _stageFilter).toList();
@@ -156,7 +163,9 @@ class AppState extends ChangeNotifier {
     // Sort
     switch (_sortBy) {
       case 'company':
-        list.sort((a, b) => a.company.toLowerCase().compareTo(b.company.toLowerCase()));
+        list.sort(
+          (a, b) => a.company.toLowerCase().compareTo(b.company.toLowerCase()),
+        );
         break;
       case 'nextAction':
         list.sort((a, b) {
@@ -186,7 +195,9 @@ class AppState extends ChangeNotifier {
   List<TaskItem> get overdueTasks {
     final now = DateTime.now();
     return _tasks
-        .where((t) => t.isOverdue(now) && !_isOpportunityArchived(t.opportunityId))
+        .where(
+          (t) => t.isOverdue(now) && !_isOpportunityArchived(t.opportunityId),
+        )
         .toList()
       ..sort((a, b) => a.dueDate!.compareTo(b.dueDate!));
   }
@@ -194,7 +205,11 @@ class AppState extends ChangeNotifier {
   List<TaskItem> get upcomingTasks {
     final now = DateTime.now();
     return _tasks
-        .where((t) => (t.isDueToday(now) || t.isDueUpcoming(now)) && !_isOpportunityArchived(t.opportunityId))
+        .where(
+          (t) =>
+              (t.isDueToday(now) || t.isDueUpcoming(now)) &&
+              !_isOpportunityArchived(t.opportunityId),
+        )
         .toList()
       ..sort((a, b) => a.dueDate!.compareTo(b.dueDate!));
   }
@@ -213,16 +228,15 @@ class AppState extends ChangeNotifier {
   }
 
   List<TaskItem> tasksForOpportunity(String oppId) {
-    return _tasks.where((t) => t.opportunityId == oppId).toList()
-      ..sort((a, b) {
-        if (a.isCompleted != b.isCompleted) {
-          return a.isCompleted ? 1 : -1;
-        }
-        if (a.dueDate != null && b.dueDate != null) {
-          return a.dueDate!.compareTo(b.dueDate!);
-        }
-        return b.createdAt.compareTo(a.createdAt);
-      });
+    return _tasks.where((t) => t.opportunityId == oppId).toList()..sort((a, b) {
+      if (a.isCompleted != b.isCompleted) {
+        return a.isCompleted ? 1 : -1;
+      }
+      if (a.dueDate != null && b.dueDate != null) {
+        return a.dueDate!.compareTo(b.dueDate!);
+      }
+      return b.createdAt.compareTo(a.createdAt);
+    });
   }
 
   List<TimelineEntry> timelineForOpportunity(String oppId) {
@@ -239,7 +253,9 @@ class AppState extends ChangeNotifier {
   List<EvidenceItem> evidenceForOpportunity(String oppId) {
     final opp = getOpportunityById(oppId);
     if (opp == null) return [];
-    return _evidence.where((e) => opp.attachedEvidenceIds.contains(e.id)).toList();
+    return _evidence
+        .where((e) => opp.attachedEvidenceIds.contains(e.id))
+        .toList();
   }
 
   // Opportunity Actions
@@ -256,16 +272,20 @@ class AppState extends ChangeNotifier {
     List<String> attachedEvidenceIds = const [],
   }) async {
     final now = DateTime.now();
-    final newId = 'opp-${now.millisecondsSinceEpoch}-${_opportunities.length + 1}';
+    final newId =
+        'opp-${now.millisecondsSinceEpoch}-${_opportunities.length + 1}';
     final opp = Opportunity(
       id: newId,
       company: company.trim(),
       role: role.trim(),
       stage: stage,
-      sourceUrl: sourceUrl?.trim().isNotEmpty == true ? sourceUrl!.trim() : null,
+      sourceUrl: sourceUrl?.trim().isNotEmpty == true
+          ? sourceUrl!.trim()
+          : null,
       location: location.trim(),
       salaryNote: salaryNote.trim(),
-      applicationDate: applicationDate ?? (stage != JobStage.saved ? now : null),
+      applicationDate:
+          applicationDate ?? (stage != JobStage.saved ? now : null),
       nextActionDate: nextActionDate,
       privateNotes: privateNotes.trim(),
       isArchived: false,
@@ -279,7 +299,8 @@ class AppState extends ChangeNotifier {
       opportunityId: newId,
       timestamp: now,
       actionType: 'created',
-      description: 'Created opportunity at ${opp.company} (${opp.role}) in stage ${stage.displayName}.',
+      description:
+          'Created opportunity at ${opp.company} (${opp.role}) in stage ${stage.displayName}.',
       toStage: stage.name,
     );
 
@@ -307,7 +328,8 @@ class AppState extends ChangeNotifier {
         opportunityId: updated.id,
         timestamp: now,
         actionType: 'stage_change',
-        description: 'Moved from ${existing.stage.displayName} to ${updated.stage.displayName}.',
+        description:
+            'Moved from ${existing.stage.displayName} to ${updated.stage.displayName}.',
         fromStage: existing.stage.name,
         toStage: updated.stage.name,
       );
@@ -488,9 +510,14 @@ class AppState extends ChangeNotifier {
     final item = EvidenceItem(
       id: 'ev-${now.millisecondsSinceEpoch}-${_evidence.length + 1}',
       title: title.trim(),
-      skillTags: skillTags.map((e) => e.trim()).where((e) => e.isNotEmpty).toList(),
+      skillTags: skillTags
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList(),
       conciseResult: conciseResult.trim(),
-      sourceUrl: sourceUrl?.trim().isNotEmpty == true ? sourceUrl!.trim() : null,
+      sourceUrl: sourceUrl?.trim().isNotEmpty == true
+          ? sourceUrl!.trim()
+          : null,
       createdAt: now,
     );
 
@@ -515,8 +542,12 @@ class AppState extends ChangeNotifier {
     bool anyChanged = false;
     for (int i = 0; i < _opportunities.length; i++) {
       if (_opportunities[i].attachedEvidenceIds.contains(id)) {
-        final updatedIds = List<String>.from(_opportunities[i].attachedEvidenceIds)..remove(id);
-        _opportunities[i] = _opportunities[i].copyWith(attachedEvidenceIds: updatedIds);
+        final updatedIds = List<String>.from(
+          _opportunities[i].attachedEvidenceIds,
+        )..remove(id);
+        _opportunities[i] = _opportunities[i].copyWith(
+          attachedEvidenceIds: updatedIds,
+        );
         anyChanged = true;
       }
     }
@@ -567,8 +598,8 @@ class AppState extends ChangeNotifier {
         'theme_mode': _themeMode == ThemeMode.dark
             ? 'dark'
             : _themeMode == ThemeMode.light
-                ? 'light'
-                : 'system',
+            ? 'light'
+            : 'system',
         'reduce_motion': _reduceMotion,
       },
     );
@@ -585,13 +616,27 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> restoreBackup(BackupData backup) async {
-    _opportunities = List.from(backup.opportunities);
-    _tasks = List.from(backup.tasks);
-    _timeline = List.from(backup.timeline);
-    _evidence = List.from(backup.evidence);
+    final restoredOpportunities = List<Opportunity>.from(backup.opportunities);
+    final restoredTasks = List<TaskItem>.from(backup.tasks);
+    final restoredTimeline = List<TimelineEntry>.from(backup.timeline);
+    final restoredEvidence = List<EvidenceItem>.from(backup.evidence);
+    final restoredPreferences = Map<String, dynamic>.from(backup.preferences);
+    restoredPreferences['is_demo_workspace'] = false;
+
+    // Commit the complete validated snapshot before replacing the active view.
+    await storage.commitAll(
+      opportunities: restoredOpportunities,
+      tasks: restoredTasks,
+      timeline: restoredTimeline,
+      evidence: restoredEvidence,
+      preferences: restoredPreferences,
+    );
+    _opportunities = restoredOpportunities;
+    _tasks = restoredTasks;
+    _timeline = restoredTimeline;
+    _evidence = restoredEvidence;
     _isDemoWorkspace = false;
-    _preferences = Map.from(backup.preferences);
-    _preferences['is_demo_workspace'] = false;
+    _preferences = restoredPreferences;
 
     // Apply restored preferences
     if (backup.preferences.containsKey('reduce_motion')) {
@@ -608,13 +653,6 @@ class AppState extends ChangeNotifier {
       }
     }
 
-    await storage.commitAll(
-      opportunities: _opportunities,
-      tasks: _tasks,
-      timeline: _timeline,
-      evidence: _evidence,
-      preferences: _preferences,
-    );
     notifyListeners();
   }
 
@@ -640,8 +678,8 @@ class AppState extends ChangeNotifier {
     _preferences['theme_mode'] = mode == ThemeMode.dark
         ? 'dark'
         : mode == ThemeMode.light
-            ? 'light'
-            : 'system';
+        ? 'light'
+        : 'system';
     await storage.savePreferences(_preferences);
     notifyListeners();
   }
@@ -660,4 +698,3 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 }
-

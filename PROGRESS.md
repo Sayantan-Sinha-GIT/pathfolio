@@ -18,7 +18,7 @@
    - Iteration 3: Craft (editorial styling, typography, copy refinement, micro-interactions). [COMPLETE]
    - Iteration 4: Release & Breakpoints (full anchor journey, zoom/scale, real data, deployment parity). [COMPLETE]
 6. **Section 5 — Bounded Test Loop (3 Iterations + Regression)**:
-   - Automated unit/widget/integration test suite (37 automated tests passing). [COMPLETE]
+   - Automated unit/widget test suite (39 automated tests passing). [COMPLETE]
    - Iteration 1: 15 distinct cases + frozen CORE suite (11 cases). [COMPLETE]
    - Iteration 2: 14 distinct cases + CORE rerun. [COMPLETE]
    - Iteration 3: 15 distinct cases + CORE rerun. [COMPLETE]
@@ -32,14 +32,14 @@
    - GitHub Actions CI workflow configured and passing green on Ubuntu runner. [COMPLETE]
    - Secret scan verified clean, zero credentials or tokens in git history. [COMPLETE]
    - GitHub repository `Sayantan-Sinha-GIT/pathfolio` published and flipped to public. [COMPLETE]
-   - GitHub Release `v1.0.0` published with release Android APK (50.8 MB) attached. [COMPLETE]
+   - GitHub Release `v1.0.1` published with dedicated-key Android APK (50.8 MB) attached. [COMPLETE]
 
 ## Feature Ledger (PRD Must Behaviors)
 
 | ID | Behavior | Risk | Status | Evidence |
 | --- | --- | --- | --- | --- |
 | M01 | Opportunity record (create, edit, archive, restore, delete, validation) | must | verified | `test/pipeline_and_tasks_test.dart#L17`, `test/models_and_validation_test.dart#L71` |
-| M02 | Pipeline (6 stages, move from list/detail, dated timeline, active counts) | high | verified | `test/pipeline_and_tasks_test.dart#L58`, `screenshots/pipeline-desktop-1440.png` |
+| M02 | Pipeline (6 stages, move from list/detail, dated timeline, active counts) | high | verified | `test/pipeline_and_tasks_test.dart#L58` |
 | M03 | Follow-ups (tasks add/edit/complete/reopen/delete, overdue/upcoming counts) | must | verified | `test/pipeline_and_tasks_test.dart#L98`, `test/models_and_validation_test.dart#L52` |
 | M04 | Find and prioritize (search, filter stage/archived, sort, clear, empty states) | must | verified | `test/pipeline_and_tasks_test.dart#L130`, `test/pipeline_and_tasks_test.dart#L148` |
 | M05 | Dashboard (real stage counts, due/overdue alerts, recent activity, click-through) | must | verified | `test/models_and_validation_test.dart#L175`, `screenshots/dashboard-desktop-1440.png` |

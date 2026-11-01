@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/opportunity.dart';
 import '../models/task_item.dart';
 import '../models/timeline_entry.dart';
@@ -28,6 +30,7 @@ abstract class IStorageService {
 }
 
 class SharedPrefsStorageService implements IStorageService {
+  static const String keySnapshot = 'pathfolio_workspace_v1';
   static const String keyOpportunities = 'pathfolio_opportunities_v1';
   static const String keyTasks = 'pathfolio_tasks_v1';
   static const String keyTimeline = 'pathfolio_timeline_v1';
@@ -43,18 +46,43 @@ class SharedPrefsStorageService implements IStorageService {
 
   SharedPreferences get _store {
     if (_prefs == null) {
-      throw StateError('StorageService has not been initialized. Call init() first.');
+      throw StateError(
+        'StorageService has not been initialized. Call init() first.',
+      );
     }
     return _prefs!;
   }
 
+  Map<String, dynamic>? get _snapshot {
+    final raw = _store.getString(keySnapshot);
+    if (raw == null) return null;
+    return jsonDecode(raw) as Map<String, dynamic>;
+  }
+
+  Future<void> _saveSnapshotPart(String name, Object value) async {
+    final snapshot = _snapshot;
+    if (snapshot == null) return;
+    snapshot[name] = value;
+    if (!await _store.setString(keySnapshot, jsonEncode(snapshot))) {
+      throw StateError('Could not save the local workspace.');
+    }
+  }
+
   @override
   Future<List<Opportunity>> getOpportunities() async {
+    final snapshot = _snapshot;
+    if (snapshot != null) {
+      return (snapshot['opportunities'] as List)
+          .map((e) => Opportunity.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
     final raw = _store.getString(keyOpportunities);
     if (raw == null || raw.trim().isEmpty) return [];
     try {
       final list = jsonDecode(raw) as List;
-      return list.map((e) => Opportunity.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => Opportunity.fromJson(e as Map<String, dynamic>))
+          .toList();
     } catch (_) {
       return [];
     }
@@ -62,17 +90,32 @@ class SharedPrefsStorageService implements IStorageService {
 
   @override
   Future<void> saveOpportunities(List<Opportunity> items) async {
+    if (_snapshot != null) {
+      await _saveSnapshotPart(
+        'opportunities',
+        items.map((e) => e.toJson()).toList(),
+      );
+      return;
+    }
     final encoded = jsonEncode(items.map((e) => e.toJson()).toList());
     await _store.setString(keyOpportunities, encoded);
   }
 
   @override
   Future<List<TaskItem>> getTasks() async {
+    final snapshot = _snapshot;
+    if (snapshot != null) {
+      return (snapshot['tasks'] as List)
+          .map((e) => TaskItem.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
     final raw = _store.getString(keyTasks);
     if (raw == null || raw.trim().isEmpty) return [];
     try {
       final list = jsonDecode(raw) as List;
-      return list.map((e) => TaskItem.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => TaskItem.fromJson(e as Map<String, dynamic>))
+          .toList();
     } catch (_) {
       return [];
     }
@@ -80,17 +123,29 @@ class SharedPrefsStorageService implements IStorageService {
 
   @override
   Future<void> saveTasks(List<TaskItem> items) async {
+    if (_snapshot != null) {
+      await _saveSnapshotPart('tasks', items.map((e) => e.toJson()).toList());
+      return;
+    }
     final encoded = jsonEncode(items.map((e) => e.toJson()).toList());
     await _store.setString(keyTasks, encoded);
   }
 
   @override
   Future<List<TimelineEntry>> getTimeline() async {
+    final snapshot = _snapshot;
+    if (snapshot != null) {
+      return (snapshot['timeline'] as List)
+          .map((e) => TimelineEntry.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
     final raw = _store.getString(keyTimeline);
     if (raw == null || raw.trim().isEmpty) return [];
     try {
       final list = jsonDecode(raw) as List;
-      return list.map((e) => TimelineEntry.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => TimelineEntry.fromJson(e as Map<String, dynamic>))
+          .toList();
     } catch (_) {
       return [];
     }
@@ -98,17 +153,32 @@ class SharedPrefsStorageService implements IStorageService {
 
   @override
   Future<void> saveTimeline(List<TimelineEntry> items) async {
+    if (_snapshot != null) {
+      await _saveSnapshotPart(
+        'timeline',
+        items.map((e) => e.toJson()).toList(),
+      );
+      return;
+    }
     final encoded = jsonEncode(items.map((e) => e.toJson()).toList());
     await _store.setString(keyTimeline, encoded);
   }
 
   @override
   Future<List<EvidenceItem>> getEvidence() async {
+    final snapshot = _snapshot;
+    if (snapshot != null) {
+      return (snapshot['evidence'] as List)
+          .map((e) => EvidenceItem.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
     final raw = _store.getString(keyEvidence);
     if (raw == null || raw.trim().isEmpty) return [];
     try {
       final list = jsonDecode(raw) as List;
-      return list.map((e) => EvidenceItem.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => EvidenceItem.fromJson(e as Map<String, dynamic>))
+          .toList();
     } catch (_) {
       return [];
     }
@@ -116,12 +186,22 @@ class SharedPrefsStorageService implements IStorageService {
 
   @override
   Future<void> saveEvidence(List<EvidenceItem> items) async {
+    if (_snapshot != null) {
+      await _saveSnapshotPart(
+        'evidence',
+        items.map((e) => e.toJson()).toList(),
+      );
+      return;
+    }
     final encoded = jsonEncode(items.map((e) => e.toJson()).toList());
     await _store.setString(keyEvidence, encoded);
   }
 
   @override
   Future<Map<String, dynamic>> getPreferences() async {
+    final snapshot = _snapshot;
+    if (snapshot != null)
+      return Map<String, dynamic>.from(snapshot['preferences'] as Map);
     final raw = _store.getString(keyPreferences);
     if (raw == null || raw.trim().isEmpty) return {};
     try {
@@ -133,6 +213,10 @@ class SharedPrefsStorageService implements IStorageService {
 
   @override
   Future<void> savePreferences(Map<String, dynamic> prefs) async {
+    if (_snapshot != null) {
+      await _saveSnapshotPart('preferences', prefs);
+      return;
+    }
     final encoded = jsonEncode(prefs);
     await _store.setString(keyPreferences, encoded);
   }
@@ -145,16 +229,23 @@ class SharedPrefsStorageService implements IStorageService {
     required List<EvidenceItem> evidence,
     required Map<String, dynamic> preferences,
   }) async {
-    // Write all data sets cleanly
-    await saveOpportunities(opportunities);
-    await saveTasks(tasks);
-    await saveTimeline(timeline);
-    await saveEvidence(evidence);
-    await savePreferences(preferences);
+    final encoded = jsonEncode({
+      'opportunities': opportunities.map((e) => e.toJson()).toList(),
+      'tasks': tasks.map((e) => e.toJson()).toList(),
+      'timeline': timeline.map((e) => e.toJson()).toList(),
+      'evidence': evidence.map((e) => e.toJson()).toList(),
+      'preferences': preferences,
+    });
+    if (!await _store.setString(keySnapshot, encoded)) {
+      throw StateError(
+        'Could not restore the local workspace. No records were replaced.',
+      );
+    }
   }
 
   @override
   Future<void> clearAll() async {
+    await _store.remove(keySnapshot);
     await _store.remove(keyOpportunities);
     await _store.remove(keyTasks);
     await _store.remove(keyTimeline);
@@ -174,7 +265,8 @@ class InMemoryStorageService implements IStorageService {
   Future<void> init() async {}
 
   @override
-  Future<List<Opportunity>> getOpportunities() async => List.from(_opportunities);
+  Future<List<Opportunity>> getOpportunities() async =>
+      List.from(_opportunities);
 
   @override
   Future<void> saveOpportunities(List<Opportunity> items) async {
@@ -237,4 +329,3 @@ class InMemoryStorageService implements IStorageService {
     _preferences.clear();
   }
 }
-
