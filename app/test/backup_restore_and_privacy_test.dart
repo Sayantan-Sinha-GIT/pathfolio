@@ -54,7 +54,7 @@ void main() {
       final decoded = jsonDecode(jsonString) as Map<String, dynamic>;
 
       expect(decoded['schemaVersion'], 1);
-      expect(decoded['appVersion'], '1.0.0');
+      expect(decoded['appVersion'], '1.0.1');
       expect(decoded.containsKey('exportedAt'), isTrue);
       expect(decoded['opportunities'], isNotEmpty);
       expect(decoded['tasks'], isList);

@@ -588,7 +588,7 @@ class AppState extends ChangeNotifier {
   BackupData createBackup() {
     return BackupData(
       schemaVersion: BackupData.currentSchemaVersion,
-      appVersion: '1.0.0',
+      appVersion: '1.0.1',
       exportedAt: DateTime.now(),
       opportunities: _opportunities,
       tasks: _tasks,

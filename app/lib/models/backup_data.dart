@@ -46,7 +46,7 @@ class BackupData {
 
   const BackupData({
     this.schemaVersion = currentSchemaVersion,
-    this.appVersion = '1.0.0',
+    this.appVersion = '1.0.1',
     required this.exportedAt,
     required this.opportunities,
     required this.tasks,
