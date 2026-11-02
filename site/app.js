@@ -11,7 +11,7 @@
  * 8. System theme coordination & prefers-reduced-motion compliance
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   initTheme();
   initMobileNav();
   initLivingCanvas();
@@ -26,31 +26,40 @@ document.addEventListener('DOMContentLoaded', () => {
    0. Theme Management & Mobile Nav
    ========================================================================== */
 function initTheme() {
-  const themeBtn = document.getElementById('theme-toggle');
-  const storedTheme = localStorage.getItem('pathfolio-site-theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const initialTheme = storedTheme || (prefersDark ? 'dark' : 'light');
+  const themeBtn = document.getElementById("theme-toggle");
+  const storedTheme = localStorage.getItem("pathfolio-site-theme");
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const initialTheme = storedTheme || (prefersDark ? "dark" : "light");
 
-  document.documentElement.setAttribute('data-theme', initialTheme);
+  document.documentElement.setAttribute("data-theme", initialTheme);
   updateThemeIcon(initialTheme);
 
   if (themeBtn) {
-    themeBtn.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme') || 'dark';
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('pathfolio-site-theme', next);
+    themeBtn.addEventListener("click", () => {
+      const current =
+        document.documentElement.getAttribute("data-theme") || "dark";
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("pathfolio-site-theme", next);
       updateThemeIcon(next);
-      window.dispatchEvent(new CustomEvent('themechanged', { detail: { theme: next } }));
+      window.dispatchEvent(
+        new CustomEvent("themechanged", { detail: { theme: next } }),
+      );
     });
   }
 
   function updateThemeIcon(theme) {
     if (!themeBtn) return;
-    const isDark = theme === 'dark';
-    themeBtn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
-    themeBtn.setAttribute('title', isDark ? 'Switch to light theme' : 'Switch to dark theme');
-    themeBtn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+    const isDark = theme === "dark";
+    themeBtn.setAttribute(
+      "aria-label",
+      isDark ? "Switch to light theme" : "Switch to dark theme",
+    );
+    themeBtn.setAttribute(
+      "title",
+      isDark ? "Switch to light theme" : "Switch to dark theme",
+    );
+    themeBtn.setAttribute("aria-pressed", isDark ? "true" : "false");
     themeBtn.innerHTML = isDark
       ? '<svg class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
       : '<svg class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
@@ -58,32 +67,32 @@ function initTheme() {
 }
 
 function initMobileNav() {
-  const menuToggle = document.getElementById('mobile-menu-toggle');
-  const mobileNav = document.getElementById('mobile-nav');
+  const menuToggle = document.getElementById("mobile-menu-toggle");
+  const mobileNav = document.getElementById("mobile-nav");
   if (!menuToggle || !mobileNav) return;
 
-  const iconBars = menuToggle.querySelector('.menu-icon-bars');
-  const iconClose = menuToggle.querySelector('.menu-icon-close');
+  const iconBars = menuToggle.querySelector(".menu-icon-bars");
+  const iconClose = menuToggle.querySelector(".menu-icon-close");
 
   function openMenu() {
-    mobileNav.removeAttribute('hidden');
-    menuToggle.setAttribute('aria-expanded', 'true');
-    menuToggle.setAttribute('aria-label', 'Close navigation menu');
-    if (iconBars) iconBars.style.display = 'none';
-    if (iconClose) iconClose.style.display = 'block';
+    mobileNav.removeAttribute("hidden");
+    menuToggle.setAttribute("aria-expanded", "true");
+    menuToggle.setAttribute("aria-label", "Close navigation menu");
+    if (iconBars) iconBars.style.display = "none";
+    if (iconClose) iconClose.style.display = "block";
   }
 
   function closeMenu() {
-    mobileNav.setAttribute('hidden', '');
-    menuToggle.setAttribute('aria-expanded', 'false');
-    menuToggle.setAttribute('aria-label', 'Open navigation menu');
-    if (iconBars) iconBars.style.display = 'block';
-    if (iconClose) iconClose.style.display = 'none';
+    mobileNav.setAttribute("hidden", "");
+    menuToggle.setAttribute("aria-expanded", "false");
+    menuToggle.setAttribute("aria-label", "Open navigation menu");
+    if (iconBars) iconBars.style.display = "block";
+    if (iconClose) iconClose.style.display = "none";
   }
 
-  menuToggle.addEventListener('click', (e) => {
+  menuToggle.addEventListener("click", (e) => {
     e.stopPropagation();
-    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
     if (isExpanded) {
       closeMenu();
     } else {
@@ -92,25 +101,30 @@ function initMobileNav() {
   });
 
   // Close when clicking any link
-  mobileNav.querySelectorAll('.mobile-nav-link').forEach(link => {
-    link.addEventListener('click', () => {
+  mobileNav.querySelectorAll(".mobile-nav-link").forEach((link) => {
+    link.addEventListener("click", () => {
       closeMenu();
     });
   });
 
   // Close on Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menuToggle.getAttribute('aria-expanded') === 'true') {
+  document.addEventListener("keydown", (e) => {
+    if (
+      e.key === "Escape" &&
+      menuToggle.getAttribute("aria-expanded") === "true"
+    ) {
       closeMenu();
       menuToggle.focus();
     }
   });
 
   // Close on click outside
-  document.addEventListener('click', (e) => {
-    if (menuToggle.getAttribute('aria-expanded') === 'true' &&
-        !mobileNav.contains(e.target) &&
-        !menuToggle.contains(e.target)) {
+  document.addEventListener("click", (e) => {
+    if (
+      menuToggle.getAttribute("aria-expanded") === "true" &&
+      !mobileNav.contains(e.target) &&
+      !menuToggle.contains(e.target)
+    ) {
       closeMenu();
     }
   });
@@ -120,23 +134,35 @@ function initMobileNav() {
    1. Living Constellation Background Canvas
    ========================================================================== */
 function initLivingCanvas() {
-  const canvas = document.getElementById('career-canvas');
+  const canvas = document.getElementById("career-canvas");
   if (!canvas) return;
 
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   let animationFrameId = null;
   let isRunning = false;
   let isHeroVisible = true;
 
   // Technical engineering proof metrics floating in space
   const evidenceLabels = [
-    'p99 -42%', 'v1 schema', 'zero-downtime', '4.2M events',
-    'local-vault', '15k req/s', 'distributed-lock', 'atomic-import',
-    'indexedDB', 'Accessible-UI', 'offline-first', 'local-first',
-    'Wasm-core', 'p50 -65%', 'async-buffer', 'event-stream'
+    "p99 -42%",
+    "v1 schema",
+    "zero-downtime",
+    "4.2M events",
+    "local-vault",
+    "15k req/s",
+    "distributed-lock",
+    "atomic-import",
+    "indexedDB",
+    "Accessible-UI",
+    "offline-first",
+    "local-first",
+    "Wasm-core",
+    "p50 -65%",
+    "async-buffer",
+    "event-stream",
   ];
 
   let width = 0;
@@ -149,7 +175,7 @@ function initLivingCanvas() {
     x: -1000,
     y: -1000,
     radius: 160,
-    active: false
+    active: false,
   };
 
   function resize() {
@@ -159,8 +185,8 @@ function initLivingCanvas() {
 
     canvas.width = Math.floor(width * dpr);
     canvas.height = Math.floor(height * dpr);
-    canvas.style.width = width + 'px';
-    canvas.style.height = height + 'px';
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
 
     ctx.scale(dpr, dpr);
     initParticles();
@@ -188,7 +214,7 @@ function initLivingCanvas() {
         radius: hasLabel ? 2.5 : 1.8,
         label: hasLabel ? evidenceLabels[i] : null,
         baseAlpha: hasLabel ? 0.8 : 0.4,
-        pulseOffset: Math.random() * Math.PI * 2
+        pulseOffset: Math.random() * Math.PI * 2,
       });
     }
   }
@@ -202,7 +228,7 @@ function initLivingCanvas() {
       x2: p2.x,
       y2: p2.y,
       progress: 0,
-      speed: 0.015 + Math.random() * 0.02
+      speed: 0.015 + Math.random() * 0.02,
     });
   }
 
@@ -210,10 +236,11 @@ function initLivingCanvas() {
     if (!ctx) return;
     ctx.clearRect(0, 0, width, height);
 
-    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-    const primaryColor = isDark ? '243, 244, 246' : '22, 23, 26';
-    const accentColor = isDark ? '224, 109, 68' : '200, 90, 50';
-    const cyanColor = isDark ? '56, 189, 248' : '2, 132, 199';
+    const isDark =
+      document.documentElement.getAttribute("data-theme") !== "light";
+    const primaryColor = isDark ? "243, 244, 246" : "22, 23, 26";
+    const accentColor = isDark ? "224, 109, 68" : "200, 90, 50";
+    const cyanColor = isDark ? "56, 189, 248" : "2, 132, 199";
 
     const maxDist = width < 768 ? 95 : 135;
     const time = Date.now() * 0.0015;
@@ -227,10 +254,20 @@ function initLivingCanvas() {
       p.y += p.vy;
 
       // Bounce boundaries
-      if (p.x < 0) { p.x = 0; p.vx *= -1; }
-      else if (p.x > width) { p.x = width; p.vx *= -1; }
-      if (p.y < 0) { p.y = 0; p.vy *= -1; }
-      else if (p.y > height) { p.y = height; p.vy *= -1; }
+      if (p.x < 0) {
+        p.x = 0;
+        p.vx *= -1;
+      } else if (p.x > width) {
+        p.x = width;
+        p.vx *= -1;
+      }
+      if (p.y < 0) {
+        p.y = 0;
+        p.vy *= -1;
+      } else if (p.y > height) {
+        p.y = height;
+        p.vy *= -1;
+      }
 
       // Gravitational pull toward cursor
       if (pointer.active) {
@@ -253,9 +290,9 @@ function initLivingCanvas() {
         : `rgba(${primaryColor}, ${p.baseAlpha * 0.6 * pulse})`;
       ctx.fill();
 
-      // Draw metric label if present
-      if (p.label) {
-        ctx.font = '10px ui-monospace, Menlo, Consolas, monospace';
+      // Draw metric label if present (hidden on phones < 768px to keep mobile typography clean)
+      if (p.label && width >= 768) {
+        ctx.font = "10px ui-monospace, Menlo, Consolas, monospace";
         ctx.fillStyle = `rgba(${primaryColor}, ${0.55 * pulse})`;
         ctx.fillText(p.label, p.x + 8, p.y + 3);
       }
@@ -272,9 +309,10 @@ function initLivingCanvas() {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(p2.x, p2.y);
-          ctx.strokeStyle = (p.label || p2.label)
-            ? `rgba(${accentColor}, ${alpha * 1.3})`
-            : `rgba(${primaryColor}, ${alpha})`;
+          ctx.strokeStyle =
+            p.label || p2.label
+              ? `rgba(${accentColor}, ${alpha * 1.3})`
+              : `rgba(${primaryColor}, ${alpha})`;
           ctx.lineWidth = 1;
           ctx.stroke();
 
@@ -329,7 +367,7 @@ function initLivingCanvas() {
       renderStaticFrame();
       return;
     }
-    if (!isRunning && isHeroVisible && document.visibilityState === 'visible') {
+    if (!isRunning && isHeroVisible && document.visibilityState === "visible") {
       isRunning = true;
       animationFrameId = requestAnimationFrame(loop);
     }
@@ -344,47 +382,54 @@ function initLivingCanvas() {
   }
 
   // Pointer event listeners
-  window.addEventListener('mousemove', (e) => {
+  window.addEventListener("mousemove", (e) => {
     pointer.x = e.clientX;
     pointer.y = e.clientY;
     pointer.active = true;
   });
 
-  window.addEventListener('mouseleave', () => {
+  window.addEventListener("mouseleave", () => {
     pointer.active = false;
   });
 
-  window.addEventListener('touchstart', (e) => {
-    if (e.touches.length > 0) {
-      pointer.x = e.touches[0].clientX;
-      pointer.y = e.touches[0].clientY;
-      pointer.active = true;
-    }
-  }, { passive: true });
+  window.addEventListener(
+    "touchstart",
+    (e) => {
+      if (e.touches.length > 0) {
+        pointer.x = e.touches[0].clientX;
+        pointer.y = e.touches[0].clientY;
+        pointer.active = true;
+      }
+    },
+    { passive: true },
+  );
 
-  window.addEventListener('touchend', () => {
+  window.addEventListener("touchend", () => {
     pointer.active = false;
   });
 
   // Pause when hero is scrolled out of view
-  const heroSection = document.getElementById('hero');
-  if (heroSection && 'IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        isHeroVisible = entry.isIntersecting;
-        if (isHeroVisible) {
-          startLoop();
-        } else {
-          stopLoop();
-        }
-      });
-    }, { threshold: 0.05 });
+  const heroSection = document.getElementById("hero");
+  if (heroSection && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          isHeroVisible = entry.isIntersecting;
+          if (isHeroVisible) {
+            startLoop();
+          } else {
+            stopLoop();
+          }
+        });
+      },
+      { threshold: 0.05 },
+    );
     observer.observe(heroSection);
   }
 
   // Pause when tab hidden
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
       startLoop();
     } else {
       stopLoop();
@@ -392,14 +437,14 @@ function initLivingCanvas() {
   });
 
   // Handle theme changes
-  window.addEventListener('themechanged', () => {
+  window.addEventListener("themechanged", () => {
     if (prefersReduced.matches) {
       renderStaticFrame();
     }
   });
 
   // Handle reduced motion changes
-  prefersReduced.addEventListener('change', (e) => {
+  prefersReduced.addEventListener("change", (e) => {
     if (e.matches) {
       stopLoop();
       renderStaticFrame();
@@ -409,7 +454,7 @@ function initLivingCanvas() {
   });
 
   // Resize listener
-  window.addEventListener('resize', debounce(resize, 150));
+  window.addEventListener("resize", debounce(resize, 150));
 
   resize();
   startLoop();
@@ -419,54 +464,54 @@ function initLivingCanvas() {
    2. Hero Tactical Command Deck
    ========================================================================== */
 function initHeroTacticalDeck() {
-  const deck = document.getElementById('hero-deck');
+  const deck = document.getElementById("hero-deck");
   if (!deck) return;
 
-  const stageBadge = document.getElementById('hero-stage-badge');
-  const stepperProgress = document.getElementById('hero-stepper-progress');
-  const termLog = document.getElementById('hero-term-log');
-  const prevBtn = document.getElementById('hero-prev-stage');
-  const nextBtn = document.getElementById('hero-next-stage');
-  const cycleToggleBtn = document.getElementById('hero-cycle-toggle');
-  const stepNodes = deck.querySelectorAll('.step-node');
+  const stageBadge = document.getElementById("hero-stage-badge");
+  const stepperProgress = document.getElementById("hero-stepper-progress");
+  const termLog = document.getElementById("hero-term-log");
+  const prevBtn = document.getElementById("hero-prev-stage");
+  const nextBtn = document.getElementById("hero-next-stage");
+  const cycleToggleBtn = document.getElementById("hero-cycle-toggle");
+  const stepNodes = deck.querySelectorAll(".step-node");
 
   const stages = [
     {
-      name: 'Saved',
-      progress: '16.6%',
-      badge: 'Saved',
-      log: 'Opportunity saved to local vault. Parsing role requirements & salary band.'
+      name: "Saved",
+      progress: "16.6%",
+      badge: "Saved",
+      log: "Opportunity saved to local vault. Parsing role requirements & salary band.",
     },
     {
-      name: 'Applied',
-      progress: '33.3%',
-      badge: 'Applied',
-      log: 'Application submitted directly. Verification checksum logged to history.'
+      name: "Applied",
+      progress: "33.3%",
+      badge: "Applied",
+      log: "Application submitted directly. Verification checksum logged to history.",
     },
     {
-      name: 'Screening',
-      progress: '50%',
-      badge: 'Screening',
-      log: 'Advancing stage: Applied → Technical Screening [Logged to Timeline]'
+      name: "Screening",
+      progress: "50%",
+      badge: "Screening",
+      log: "Advancing stage: Applied → Technical Screening [Logged to Timeline]",
     },
     {
-      name: 'Technical',
-      progress: '66.6%',
-      badge: 'Technical',
-      log: 'System architecture assessment scheduled. STAR citations attached.'
+      name: "Technical",
+      progress: "66.6%",
+      badge: "Technical",
+      log: "System architecture assessment scheduled. STAR citations attached.",
     },
     {
-      name: 'Final',
-      progress: '83.3%',
-      badge: 'Final Round',
-      log: 'Executive debrief underway. Compensation parameters locked locally.'
+      name: "Final",
+      progress: "83.3%",
+      badge: "Final Round",
+      log: "Executive debrief underway. Compensation parameters locked locally.",
     },
     {
-      name: 'Offer',
-      progress: '100%',
-      badge: 'Offer Extended',
-      log: 'Formal offer received: $165,000 + Equity. 100% Client-side local storage maintained.'
-    }
+      name: "Offer",
+      progress: "100%",
+      badge: "Offer Extended",
+      log: "Formal offer received: $165,000 + Equity. 100% Client-side local storage maintained.",
+    },
   ];
 
   let currentStageIndex = 2; // Default: Screening
@@ -480,19 +525,19 @@ function initHeroTacticalDeck() {
     if (stageBadge) stageBadge.textContent = stage.badge;
     if (stepperProgress) stepperProgress.style.width = stage.progress;
     if (termLog) {
-      termLog.style.opacity = '0';
+      termLog.style.opacity = "0";
       setTimeout(() => {
         termLog.textContent = stage.log;
-        termLog.style.opacity = '1';
+        termLog.style.opacity = "1";
       }, 120);
     }
 
     stepNodes.forEach((node, idx) => {
-      node.classList.remove('active', 'completed');
+      node.classList.remove("active", "completed");
       if (idx < currentStageIndex) {
-        node.classList.add('completed');
+        node.classList.add("completed");
       } else if (idx === currentStageIndex) {
-        node.classList.add('active');
+        node.classList.add("active");
       }
     });
   }
@@ -500,7 +545,7 @@ function initHeroTacticalDeck() {
   function startAutoCycle() {
     stopAutoCycle();
     isAutoCycling = true;
-    if (cycleToggleBtn) cycleToggleBtn.textContent = '⏸ Pause Auto-Play';
+    if (cycleToggleBtn) cycleToggleBtn.textContent = "⏸ Pause Auto-Play";
     autoCycleInterval = setInterval(() => {
       renderStage(currentStageIndex + 1);
     }, 4500);
@@ -512,25 +557,25 @@ function initHeroTacticalDeck() {
       clearInterval(autoCycleInterval);
       autoCycleInterval = null;
     }
-    if (cycleToggleBtn) cycleToggleBtn.textContent = '▶ Resume Auto-Play';
+    if (cycleToggleBtn) cycleToggleBtn.textContent = "▶ Resume Auto-Play";
   }
 
   if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
+    prevBtn.addEventListener("click", () => {
       stopAutoCycle();
       renderStage(currentStageIndex - 1);
     });
   }
 
   if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
+    nextBtn.addEventListener("click", () => {
       stopAutoCycle();
       renderStage(currentStageIndex + 1);
     });
   }
 
   if (cycleToggleBtn) {
-    cycleToggleBtn.addEventListener('click', () => {
+    cycleToggleBtn.addEventListener("click", () => {
       if (isAutoCycling) {
         stopAutoCycle();
       } else {
@@ -540,8 +585,8 @@ function initHeroTacticalDeck() {
   }
 
   stepNodes.forEach((node, idx) => {
-    node.style.cursor = 'pointer';
-    node.addEventListener('click', () => {
+    node.style.cursor = "pointer";
+    node.addEventListener("click", () => {
       stopAutoCycle();
       renderStage(idx);
     });
@@ -555,97 +600,130 @@ function initHeroTacticalDeck() {
    3. Chapter 01: Six-Stage Flight Path Runway
    ========================================================================== */
 function initFlightPathRunway() {
-  const runway = document.getElementById('flight-path');
+  const runway = document.getElementById("flight-path");
   if (!runway) return;
 
-  const tabs = runway.querySelectorAll('.stage-nav-item');
-  const stageBadge = document.getElementById('panel-stage-badge');
-  const velocityChip = document.getElementById('panel-velocity');
-  const companyTitle = document.getElementById('panel-company-title');
-  const stageDesc = document.getElementById('panel-stage-desc');
-  const protocol = document.getElementById('panel-protocol');
-  const checklist = document.getElementById('panel-checklist');
-  const detailPanel = document.getElementById('stage-detail-panel');
+  const tabs = runway.querySelectorAll(".stage-nav-item");
+  const stageBadge = document.getElementById("panel-stage-badge");
+  const velocityChip = document.getElementById("panel-velocity");
+  const companyTitle = document.getElementById("panel-company-title");
+  const stageDesc = document.getElementById("panel-stage-desc");
+  const protocol = document.getElementById("panel-protocol");
+  const checklist = document.getElementById("panel-checklist");
+  const detailPanel = document.getElementById("stage-detail-panel");
 
   const stageData = [
     {
-      num: '01',
-      badge: 'STAGE 01 :: SAVED OPPORTUNITY',
-      velocity: 'VELOCITY: 2-4 DAYS EXPECTED',
-      company: 'Figma — Associate Systems Engineer',
-      desc: 'Opportunity bookmarked for tactical evaluation. Analyze role requirements against your personal evidence bank, review recent engineering blog posts, and set a firm deadline.',
-      protocol: "Review engineering posts on Figma's WebAssembly canvas rendering; map 2 STAR evidence stories to distributed caching and memory optimization.",
+      num: "01",
+      badge: "STAGE 01 :: SAVED OPPORTUNITY",
+      velocity: "VELOCITY: 2-4 DAYS EXPECTED",
+      company: "Figma — Associate Systems Engineer",
+      desc: "Opportunity bookmarked for tactical evaluation. Analyze role requirements against your personal evidence bank, review recent engineering blog posts, and set a firm deadline.",
+      protocol:
+        "Review engineering posts on Figma's WebAssembly canvas rendering; map 2 STAR evidence stories to distributed caching and memory optimization.",
       checklist: [
-        { done: true, text: 'Salary band verified against local peer compensation data' },
-        { done: true, text: '3 STAR Evidence Bank items mapped to job requirements' },
-        { done: false, text: 'Deadline reminder scheduled in local follow-up task engine' }
-      ]
+        {
+          done: true,
+          text: "Salary band verified against local peer compensation data",
+        },
+        {
+          done: true,
+          text: "3 STAR Evidence Bank items mapped to job requirements",
+        },
+        {
+          done: false,
+          text: "Deadline reminder scheduled in local follow-up task engine",
+        },
+      ],
     },
     {
-      num: '02',
-      badge: 'STAGE 02 :: APPLICATION SUBMITTED',
-      velocity: 'VELOCITY: 5-7 DAYS EXPECTED',
-      company: 'Stripe — Infrastructure & Observability Engineer',
-      desc: 'Direct application dispatched with tailored technical evidence. Record specific referral details, resume revision checksum, and schedule a proactive follow-up task.',
-      protocol: 'Log referrer contact details and note internal hiring manager team. Schedule check-in reminder for exactly 7 days after submission.',
+      num: "02",
+      badge: "STAGE 02 :: APPLICATION SUBMITTED",
+      velocity: "VELOCITY: 5-7 DAYS EXPECTED",
+      company: "Stripe — Infrastructure & Observability Engineer",
+      desc: "Direct application dispatched with tailored technical evidence. Record specific referral details, resume revision checksum, and schedule a proactive follow-up task.",
+      protocol:
+        "Log referrer contact details and note internal hiring manager team. Schedule check-in reminder for exactly 7 days after submission.",
       checklist: [
-        { done: true, text: 'Clean resume version exported and submitted' },
-        { done: true, text: 'Direct referral contact logged in private opportunity notes' },
-        { done: false, text: 'Follow-up debrief task scheduled for Day 7' }
-      ]
+        { done: true, text: "Clean resume version exported and submitted" },
+        {
+          done: true,
+          text: "Direct referral contact logged in private opportunity notes",
+        },
+        { done: false, text: "Follow-up debrief task scheduled for Day 7" },
+      ],
     },
     {
-      num: '03',
-      badge: 'STAGE 03 :: RECRUITER SCREENING',
-      velocity: 'VELOCITY: 3-5 DAYS EXPECTED',
-      company: 'Linear — Founding Systems Engineer',
-      desc: 'Initial conversation with the recruiting lead. Confirm team roadmap, tech stack expectations, compensation range, and demonstrate structured communication.',
-      protocol: 'Emphasize experience in low-latency synchronous APIs and zero-downtime database migrations. Validate salary targets before technical scheduling.',
+      num: "03",
+      badge: "STAGE 03 :: RECRUITER SCREENING",
+      velocity: "VELOCITY: 3-5 DAYS EXPECTED",
+      company: "Linear — Founding Systems Engineer",
+      desc: "Initial conversation with the recruiting lead. Confirm team roadmap, tech stack expectations, compensation range, and demonstrate structured communication.",
+      protocol:
+        "Emphasize experience in low-latency synchronous APIs and zero-downtime database migrations. Validate salary targets before technical scheduling.",
       checklist: [
-        { done: true, text: '60-second technical career narrative rehearsed' },
-        { done: true, text: 'Compensation expectations aligned with local notes' },
-        { done: false, text: 'System design questions prepared for engineering manager' }
-      ]
+        { done: true, text: "60-second technical career narrative rehearsed" },
+        {
+          done: true,
+          text: "Compensation expectations aligned with local notes",
+        },
+        {
+          done: false,
+          text: "System design questions prepared for engineering manager",
+        },
+      ],
     },
     {
-      num: '04',
-      badge: 'STAGE 04 :: TECHNICAL ASSESSMENT',
-      velocity: 'VELOCITY: 7-10 DAYS EXPECTED',
-      company: 'Cloudflare — Distributed Runtime Engineer',
-      desc: 'Deep-dive architectural interview and live paired implementation. Cite concrete STAR evidence with verifiable latency and scalability metrics.',
-      protocol: 'Review isolate sandbox mechanics, asynchronous message queuing, and state replication. Reference STAR evidence: 42% p99 Latency Reduction.',
+      num: "04",
+      badge: "STAGE 04 :: TECHNICAL ASSESSMENT",
+      velocity: "VELOCITY: 7-10 DAYS EXPECTED",
+      company: "Cloudflare — Distributed Runtime Engineer",
+      desc: "Deep-dive architectural interview and live paired implementation. Cite concrete STAR evidence with verifiable latency and scalability metrics.",
+      protocol:
+        "Review isolate sandbox mechanics, asynchronous message queuing, and state replication. Reference STAR evidence: 42% p99 Latency Reduction.",
       checklist: [
-        { done: true, text: 'STAR story on Redis event streams rehearsed' },
-        { done: true, text: 'Interactive code architecture sandbox tested' },
-        { done: false, text: 'Questions for lead systems architect prepared' }
-      ]
+        { done: true, text: "STAR story on Redis event streams rehearsed" },
+        { done: true, text: "Interactive code architecture sandbox tested" },
+        { done: false, text: "Questions for lead systems architect prepared" },
+      ],
     },
     {
-      num: '05',
-      badge: 'STAGE 05 :: FINAL EXECUTIVE ROUND',
-      velocity: 'VELOCITY: 5-8 DAYS EXPECTED',
-      company: 'Datadog — Core Pipeline Engineer',
-      desc: 'Engineering VP and leadership evaluation. Articulate engineering tradeoffs, incident postmortem philosophies, and cross-functional team collaboration.',
-      protocol: 'Discuss incident triage protocols, SLA management, and technical mentorship. Prepare strategic questions regarding team growth.',
+      num: "05",
+      badge: "STAGE 05 :: FINAL EXECUTIVE ROUND",
+      velocity: "VELOCITY: 5-8 DAYS EXPECTED",
+      company: "Datadog — Core Pipeline Engineer",
+      desc: "Engineering VP and leadership evaluation. Articulate engineering tradeoffs, incident postmortem philosophies, and cross-functional team collaboration.",
+      protocol:
+        "Discuss incident triage protocols, SLA management, and technical mentorship. Prepare strategic questions regarding team growth.",
       checklist: [
-        { done: true, text: 'STAR incident triage breakdown reviewed' },
-        { done: true, text: 'Cross-functional leadership questions finalized' },
-        { done: false, text: 'Target offer structure & counter-offer boundary drafted' }
-      ]
+        { done: true, text: "STAR incident triage breakdown reviewed" },
+        { done: true, text: "Cross-functional leadership questions finalized" },
+        {
+          done: false,
+          text: "Target offer structure & counter-offer boundary drafted",
+        },
+      ],
     },
     {
-      num: '06',
-      badge: 'STAGE 06 :: OFFER EXTENDED & NEGOTIATION',
-      velocity: 'VELOCITY: 3-5 DAYS EXPECTED',
-      company: 'Vercel — Senior Platform Engineer',
-      desc: 'Official offer extended. Evaluate equity grant schedule, base compensation, health benefits, and equipment allowances against your private benchmark.',
-      protocol: 'Cross-reference total compensation against market benchmarks; prepare counter-proposal citing verified engineering interview ratings.',
+      num: "06",
+      badge: "STAGE 06 :: OFFER EXTENDED & NEGOTIATION",
+      velocity: "VELOCITY: 3-5 DAYS EXPECTED",
+      company: "Vercel — Senior Platform Engineer",
+      desc: "Official offer extended. Evaluate equity grant schedule, base compensation, health benefits, and equipment allowances against your private benchmark.",
+      protocol:
+        "Cross-reference total compensation against market benchmarks; prepare counter-proposal citing verified engineering interview ratings.",
       checklist: [
-        { done: true, text: 'Formal written offer document inspected' },
-        { done: true, text: 'Equity vesting schedule & tax implications verified' },
-        { done: false, text: 'Export full Pathfolio JSON backup prior to signing' }
-      ]
-    }
+        { done: true, text: "Formal written offer document inspected" },
+        {
+          done: true,
+          text: "Equity vesting schedule & tax implications verified",
+        },
+        {
+          done: false,
+          text: "Export full Pathfolio JSON backup prior to signing",
+        },
+      ],
+    },
   ];
 
   function renderFlightStage(index) {
@@ -654,13 +732,13 @@ function initFlightPathRunway() {
 
     tabs.forEach((tab, idx) => {
       const isActive = idx === index;
-      tab.classList.toggle('active', isActive);
-      tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      tab.classList.toggle("active", isActive);
+      tab.setAttribute("aria-selected", isActive ? "true" : "false");
     });
 
     if (detailPanel) {
-      detailPanel.style.opacity = '0.4';
-      detailPanel.style.transform = 'translateY(4px)';
+      detailPanel.style.opacity = "0.4";
+      detailPanel.style.transform = "translateY(4px)";
     }
 
     setTimeout(() => {
@@ -671,24 +749,29 @@ function initFlightPathRunway() {
       if (protocol) protocol.textContent = data.protocol;
 
       if (checklist) {
-        checklist.innerHTML = data.checklist.map(item => `
+        checklist.innerHTML = data.checklist
+          .map(
+            (item) => `
           <li>
-            <span class="check-icon">${item.done ? '✓' : '●'}</span>
+            <span class="check-icon">${item.done ? "✓" : "●"}</span>
             <span>${item.text}</span>
           </li>
-        `).join('');
+        `,
+          )
+          .join("");
       }
 
       if (detailPanel) {
-        detailPanel.style.opacity = '1';
-        detailPanel.style.transform = 'translateY(0)';
-        detailPanel.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+        detailPanel.style.opacity = "1";
+        detailPanel.style.transform = "translateY(0)";
+        detailPanel.style.transition =
+          "opacity 0.25s ease, transform 0.25s ease";
       }
     }, 120);
   }
 
   tabs.forEach((tab, idx) => {
-    tab.addEventListener('click', () => {
+    tab.addEventListener("click", () => {
       renderFlightStage(idx);
     });
   });
@@ -698,70 +781,82 @@ function initFlightPathRunway() {
    4. Chapter 02: STAR Evidence Matrix
    ========================================================================== */
 function initStarMatrix() {
-  const matrix = document.getElementById('star-matrix');
+  const matrix = document.getElementById("star-matrix");
   if (!matrix) return;
 
-  const tabs = matrix.querySelectorAll('.star-tab');
-  const tagEl = document.getElementById('star-tag');
-  const titleEl = document.getElementById('star-title');
-  const sitEl = document.getElementById('star-situation');
-  const taskEl = document.getElementById('star-task');
-  const actEl = document.getElementById('star-action');
-  const resEl = document.getElementById('star-result');
-  const simulateBtn = document.getElementById('star-simulate-cite');
-  const feedbackBar = document.getElementById('citation-feedback');
-  const cardDisplay = document.getElementById('star-card-display');
+  const tabs = matrix.querySelectorAll(".star-tab");
+  const tagEl = document.getElementById("star-tag");
+  const titleEl = document.getElementById("star-title");
+  const sitEl = document.getElementById("star-situation");
+  const taskEl = document.getElementById("star-task");
+  const actEl = document.getElementById("star-action");
+  const resEl = document.getElementById("star-result");
+  const simulateBtn = document.getElementById("star-simulate-cite");
+  const feedbackBar = document.getElementById("citation-feedback");
+  const cardDisplay = document.getElementById("star-card-display");
 
   const starStories = {
     latency: {
-      tag: 'PERFORMANCE & SCALE',
-      title: 'Reduced p99 Webhook Ingestion Latency by 42%',
-      situation: 'Third-party payment webhooks experienced severe processing bottlenecks during high-volume flash sales, creating queue backpressure and API timeouts.',
-      task: 'Architect an asynchronous, non-blocking ingestion buffer capable of absorbing 15,000 requests/sec with zero payload drops.',
-      action: 'Replaced synchronous database writes with Redis streams, implemented exponential backoff retries, and partitioned background workers by consumer groups.',
-      result: 'Processed 4.2M events with 0 lost packets. Slashed p99 response time from 840ms to 48ms, unblocking multi-region checkout scalability.'
+      tag: "PERFORMANCE & SCALE",
+      title: "Reduced p99 Webhook Ingestion Latency by 42%",
+      situation:
+        "Third-party payment webhooks experienced severe processing bottlenecks during high-volume flash sales, creating queue backpressure and API timeouts.",
+      task: "Architect an asynchronous, non-blocking ingestion buffer capable of absorbing 15,000 requests/sec with zero payload drops.",
+      action:
+        "Replaced synchronous database writes with Redis streams, implemented exponential backoff retries, and partitioned background workers by consumer groups.",
+      result:
+        "Processed 4.2M events with 0 lost packets. Slashed p99 response time from 840ms to 48ms, unblocking multi-region checkout scalability.",
     },
     migration: {
-      tag: 'RELIABILITY & DATA INTEGRITY',
-      title: 'Executed Zero-Downtime Migration of 12M Relational Records',
-      situation: 'Legacy monolith database schema reached connection saturation and lacked foreign key indexing on user audit trails, causing table locks.',
-      task: 'Migrate 12M active user records to a partitioned schema without taking the production API offline or dropping concurrent transactions.',
-      action: 'Engineered dual-write shadow pipelines with write-ahead replication, background batch backfilling, and checksum validation.',
-      result: '100% data integrity verified across all 12M rows. Zero minutes of downtime or client connection timeouts during cutover.'
+      tag: "RELIABILITY & DATA INTEGRITY",
+      title: "Executed Zero-Downtime Migration of 12M Relational Records",
+      situation:
+        "Legacy monolith database schema reached connection saturation and lacked foreign key indexing on user audit trails, causing table locks.",
+      task: "Migrate 12M active user records to a partitioned schema without taking the production API offline or dropping concurrent transactions.",
+      action:
+        "Engineered dual-write shadow pipelines with write-ahead replication, background batch backfilling, and checksum validation.",
+      result:
+        "100% data integrity verified across all 12M rows. Zero minutes of downtime or client connection timeouts during cutover.",
     },
     caching: {
-      tag: 'SYSTEM ARCHITECTURE',
-      title: 'Engineered Multi-Tier Distributed Cache & Local State Sync',
-      situation: 'Mobile and web clients hammered the catalog endpoint on app startup, causing redundant database load and device battery drain.',
-      task: 'Design an offline-tolerant local cache invalidation strategy with optimistic client reads and minimal egress bandwidth consumption.',
-      action: 'Combined client-side IndexedDB / SharedPreferences with an ETag-based delta synchronization protocol and cache-aside Redis layer.',
-      result: 'Reduced backend egress bandwidth by 68% and accelerated cold-start time from 1,450ms down to 120ms.'
+      tag: "SYSTEM ARCHITECTURE",
+      title: "Engineered Multi-Tier Distributed Cache & Local State Sync",
+      situation:
+        "Mobile and web clients hammered the catalog endpoint on app startup, causing redundant database load and device battery drain.",
+      task: "Design an offline-tolerant local cache invalidation strategy with optimistic client reads and minimal egress bandwidth consumption.",
+      action:
+        "Combined client-side IndexedDB / SharedPreferences with an ETag-based delta synchronization protocol and cache-aside Redis layer.",
+      result:
+        "Reduced backend egress bandwidth by 68% and accelerated cold-start time from 1,450ms down to 120ms.",
     },
     incident: {
-      tag: 'INCIDENT TRIAGE & POSTMORTEM',
-      title: 'Spearheaded P0 Outage Triage and Distributed Lock Recovery',
-      situation: 'A distributed lock deadlock during high-concurrency background job processing halted order fulfillment for 18 minutes.',
-      task: 'Safely release orphaned locks without creating race conditions, recover pending jobs, and eliminate the deadlock vector.',
-      action: 'Engineered automatic lease TTL fencing tokens, added dead-letter queue routing, and automated real-time telemetry alerts.',
-      result: 'Restored full order processing within 4 minutes; eliminated recurring deadlocks with 100% test coverage in CI.'
-    }
+      tag: "INCIDENT TRIAGE & POSTMORTEM",
+      title: "Spearheaded P0 Outage Triage and Distributed Lock Recovery",
+      situation:
+        "A distributed lock deadlock during high-concurrency background job processing halted order fulfillment for 18 minutes.",
+      task: "Safely release orphaned locks without creating race conditions, recover pending jobs, and eliminate the deadlock vector.",
+      action:
+        "Engineered automatic lease TTL fencing tokens, added dead-letter queue routing, and automated real-time telemetry alerts.",
+      result:
+        "Restored full order processing within 4 minutes; eliminated recurring deadlocks with 100% test coverage in CI.",
+    },
   };
 
-  let activeCategory = 'latency';
+  let activeCategory = "latency";
 
   function renderCategory(cat) {
     const data = starStories[cat];
     if (!data) return;
     activeCategory = cat;
 
-    tabs.forEach(tab => {
-      const isActive = tab.getAttribute('data-category') === cat;
-      tab.classList.toggle('active', isActive);
-      tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    tabs.forEach((tab) => {
+      const isActive = tab.getAttribute("data-category") === cat;
+      tab.classList.toggle("active", isActive);
+      tab.setAttribute("aria-selected", isActive ? "true" : "false");
     });
 
     if (cardDisplay) {
-      cardDisplay.style.opacity = '0.5';
+      cardDisplay.style.opacity = "0.5";
     }
 
     setTimeout(() => {
@@ -772,40 +867,40 @@ function initStarMatrix() {
       if (actEl) actEl.textContent = data.action;
       if (resEl) resEl.textContent = data.result;
 
-      if (feedbackBar) feedbackBar.style.display = 'none';
+      if (feedbackBar) feedbackBar.style.display = "none";
 
       if (cardDisplay) {
-        cardDisplay.style.opacity = '1';
-        cardDisplay.style.transition = 'opacity 0.2s ease';
+        cardDisplay.style.opacity = "1";
+        cardDisplay.style.transition = "opacity 0.2s ease";
       }
     }, 100);
   }
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const cat = tab.getAttribute('data-category');
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const cat = tab.getAttribute("data-category");
       if (cat) renderCategory(cat);
     });
   });
 
   if (simulateBtn && feedbackBar) {
-    simulateBtn.addEventListener('click', () => {
+    simulateBtn.addEventListener("click", () => {
       const story = starStories[activeCategory];
       feedbackBar.innerHTML = `
         <span class="cite-pulse">●</span>
         <span>Simulated Citation Attached: <strong>"${story.title}"</strong> linked to active interview dossier.</span>
       `;
-      feedbackBar.style.display = 'flex';
-      feedbackBar.style.animation = 'pulse-beacon 1.5s infinite';
+      feedbackBar.style.display = "flex";
+      feedbackBar.style.animation = "pulse-beacon 1.5s infinite";
 
-      simulateBtn.innerHTML = '<span>✓ Citation Linked to Dossier</span>';
-      simulateBtn.style.borderColor = 'var(--emerald)';
-      simulateBtn.style.color = 'var(--emerald)';
+      simulateBtn.innerHTML = "<span>✓ Citation Linked to Dossier</span>";
+      simulateBtn.style.borderColor = "var(--emerald)";
+      simulateBtn.style.color = "var(--emerald)";
 
       setTimeout(() => {
-        simulateBtn.innerHTML = '<span>⚡ Simulate Citing in Interview</span>';
-        simulateBtn.style.borderColor = '';
-        simulateBtn.style.color = '';
+        simulateBtn.innerHTML = "<span>⚡ Simulate Citing in Interview</span>";
+        simulateBtn.style.borderColor = "";
+        simulateBtn.style.color = "";
       }, 3500);
     });
   }
@@ -815,25 +910,25 @@ function initStarMatrix() {
    5. Chapter 03: Zero-Knowledge Privacy Vault Toggle
    ========================================================================== */
 function initPrivacyVaultToggle() {
-  const btnPathfolio = document.getElementById('btn-mode-pathfolio');
-  const btnCloud = document.getElementById('btn-mode-cloud');
-  const sidePathfolio = document.getElementById('side-pathfolio');
-  const sideCloud = document.getElementById('side-cloud');
+  const btnPathfolio = document.getElementById("btn-mode-pathfolio");
+  const btnCloud = document.getElementById("btn-mode-cloud");
+  const sidePathfolio = document.getElementById("side-pathfolio");
+  const sideCloud = document.getElementById("side-cloud");
 
   if (!btnPathfolio || !btnCloud || !sidePathfolio || !sideCloud) return;
 
-  btnPathfolio.addEventListener('click', () => {
-    btnPathfolio.classList.add('active');
-    btnCloud.classList.remove('active');
-    sidePathfolio.style.display = 'block';
-    sideCloud.style.display = 'none';
+  btnPathfolio.addEventListener("click", () => {
+    btnPathfolio.classList.add("active");
+    btnCloud.classList.remove("active");
+    sidePathfolio.style.display = "block";
+    sideCloud.style.display = "none";
   });
 
-  btnCloud.addEventListener('click', () => {
-    btnCloud.classList.add('active');
-    btnPathfolio.classList.remove('active');
-    sideCloud.style.display = 'block';
-    sidePathfolio.style.display = 'none';
+  btnCloud.addEventListener("click", () => {
+    btnCloud.classList.add("active");
+    btnPathfolio.classList.remove("active");
+    sideCloud.style.display = "block";
+    sidePathfolio.style.display = "none";
   });
 }
 
@@ -841,87 +936,132 @@ function initPrivacyVaultToggle() {
    6. Interactive Demonstration Console (Playable In-Browser Mini-Engine)
    ========================================================================== */
 function initInteractiveDemoEngine() {
-  const demoSection = document.getElementById('interactive-demo');
+  const demoSection = document.getElementById("interactive-demo");
   if (!demoSection) return;
 
   // Workspace State
   const initialWorkspace = {
     linear: {
-      id: 'opp-linear',
-      company: 'Linear',
-      role: 'Founding Systems Engineer',
-      stage: 'Screening',
-      url: 'https://linear.app/careers',
-      salary: '$145k – $170k + Equity',
+      id: "opp-linear",
+      company: "Linear",
+      role: "Founding Systems Engineer",
+      stage: "Screening",
+      url: "https://linear.app/careers",
+      salary: "$145k – $170k + Equity",
       timeline: [
-        { time: '2026-11-02 18:30', text: 'Stage updated to Screening' },
-        { time: '2026-11-01 10:15', text: 'Application submitted via direct referral' },
-        { time: '2026-10-30 16:45', text: 'Opportunity bookmarked from tech careers board' }
+        { time: "2026-11-02 18:30", text: "Stage updated to Screening" },
+        {
+          time: "2026-11-01 10:15",
+          text: "Application submitted via direct referral",
+        },
+        {
+          time: "2026-10-30 16:45",
+          text: "Opportunity bookmarked from tech careers board",
+        },
       ],
       tasks: [
-        { id: 101, text: 'Submit technical assessment repo', done: true, dueLabel: 'Completed', overdue: false },
-        { id: 102, text: 'Send interview debrief thank-you note', done: false, dueLabel: 'Due Tomorrow', overdue: false },
-        { id: 103, text: 'Review distributed lock architecture', done: false, dueLabel: 'Overdue', overdue: true }
+        {
+          id: 101,
+          text: "Submit technical assessment repo",
+          done: true,
+          dueLabel: "Completed",
+          overdue: false,
+        },
+        {
+          id: 102,
+          text: "Send interview debrief thank-you note",
+          done: false,
+          dueLabel: "Due Tomorrow",
+          overdue: false,
+        },
+        {
+          id: 103,
+          text: "Review distributed lock architecture",
+          done: false,
+          dueLabel: "Overdue",
+          overdue: true,
+        },
       ],
-      evidence: ['latency', 'migration']
+      evidence: ["latency", "migration"],
     },
     stripe: {
-      id: 'opp-stripe',
-      company: 'Stripe',
-      role: 'Infrastructure & Observability Engineer',
-      stage: 'Technical',
-      url: 'https://stripe.com/jobs',
-      salary: '$160k – $190k + Equity',
+      id: "opp-stripe",
+      company: "Stripe",
+      role: "Infrastructure & Observability Engineer",
+      stage: "Technical",
+      url: "https://stripe.com/jobs",
+      salary: "$160k – $190k + Equity",
       timeline: [
-        { time: '2026-11-02 14:00', text: 'Stage advanced to Technical Architecture Round' },
-        { time: '2026-10-28 09:00', text: 'Recruiter phone screen passed' },
-        { time: '2026-10-24 11:20', text: 'Opportunity saved' }
+        {
+          time: "2026-11-02 14:00",
+          text: "Stage advanced to Technical Architecture Round",
+        },
+        { time: "2026-10-28 09:00", text: "Recruiter phone screen passed" },
+        { time: "2026-10-24 11:20", text: "Opportunity saved" },
       ],
       tasks: [
-        { id: 201, text: 'Complete take-home distributed cache exercise', done: true, dueLabel: 'Completed', overdue: false },
-        { id: 202, text: 'Prepare questions for principal infrastructure engineer', done: false, dueLabel: 'Due in 2 days', overdue: false }
+        {
+          id: 201,
+          text: "Complete take-home distributed cache exercise",
+          done: true,
+          dueLabel: "Completed",
+          overdue: false,
+        },
+        {
+          id: 202,
+          text: "Prepare questions for principal infrastructure engineer",
+          done: false,
+          dueLabel: "Due in 2 days",
+          overdue: false,
+        },
       ],
-      evidence: ['streams', 'latency']
+      evidence: ["streams", "latency"],
     },
     figma: {
-      id: 'opp-figma',
-      company: 'Figma',
-      role: 'WebAssembly Canvas Engine Developer',
-      stage: 'Saved',
-      url: 'https://figma.com/careers',
-      salary: '$150k – $180k',
+      id: "opp-figma",
+      company: "Figma",
+      role: "WebAssembly Canvas Engine Developer",
+      stage: "Saved",
+      url: "https://figma.com/careers",
+      salary: "$150k – $180k",
       timeline: [
-        { time: '2026-11-02 09:30', text: 'Opportunity saved to local vault' }
+        { time: "2026-11-02 09:30", text: "Opportunity saved to local vault" },
       ],
       tasks: [
-        { id: 301, text: 'Read Figma WebAssembly engine architecture post', done: false, dueLabel: 'Due Today', overdue: false }
+        {
+          id: 301,
+          text: "Read Figma WebAssembly engine architecture post",
+          done: false,
+          dueLabel: "Due Today",
+          overdue: false,
+        },
       ],
-      evidence: ['migration']
-    }
+      evidence: ["migration"],
+    },
   };
 
   // Deep clone initial state
   let workspace = JSON.parse(JSON.stringify(initialWorkspace));
-  let activeOppKey = 'linear';
+  let activeOppKey = "linear";
 
   // DOM Elements
-  const oppPills = demoSection.querySelectorAll('.opp-pill-btn');
-  const cardCompany = document.getElementById('demo-card-company');
-  const cardRole = document.getElementById('demo-card-role');
-  const cardStage = document.getElementById('demo-card-stage');
-  const stageStepBtns = demoSection.querySelectorAll('.stage-step-btn');
-  const timelineList = document.getElementById('demo-timeline-list');
-  const taskList = document.getElementById('demo-task-list');
-  const overdueCountEl = document.getElementById('demo-overdue-count');
-  const upcomingCountEl = document.getElementById('demo-upcoming-count');
-  const evidenceBtns = demoSection.querySelectorAll('.evidence-tag-btn');
-  const resetBtn = document.getElementById('demo-reset-btn');
-  const exportJsonBtn = document.getElementById('demo-export-json-btn');
+  const oppPills = demoSection.querySelectorAll(".opp-pill-btn");
+  const cardCompany = document.getElementById("demo-card-company");
+  const cardRole = document.getElementById("demo-card-role");
+  const cardStage = document.getElementById("demo-card-stage");
+  const stageStepBtns = demoSection.querySelectorAll(".stage-step-btn");
+  const timelineList = document.getElementById("demo-timeline-list");
+  const taskList = document.getElementById("demo-task-list");
+  const overdueCountEl = document.getElementById("demo-overdue-count");
+  const upcomingCountEl = document.getElementById("demo-upcoming-count");
+  const evidenceBtns = demoSection.querySelectorAll(".evidence-tag-btn");
+  const resetBtn = document.getElementById("demo-reset-btn");
+  const exportJsonBtn = document.getElementById("demo-export-json-btn");
 
   function updateActiveOpp(key) {
     activeOppKey = key;
-    oppPills.forEach(pill => {
-      pill.classList.toggle('active', pill.getAttribute('data-opp') === key);
+    oppPills.forEach((pill) => {
+      pill.classList.toggle("active", pill.getAttribute("data-opp") === key);
     });
     renderWorkspace();
   }
@@ -938,16 +1078,20 @@ function initInteractiveDemoEngine() {
     }
 
     // Stage buttons
-    stageStepBtns.forEach(btn => {
-      const stageName = btn.getAttribute('data-stage');
-      btn.classList.toggle('active', stageName === opp.stage);
+    stageStepBtns.forEach((btn) => {
+      const stageName = btn.getAttribute("data-stage");
+      btn.classList.toggle("active", stageName === opp.stage);
     });
 
     // Timeline
     if (timelineList) {
-      timelineList.innerHTML = opp.timeline.map(t => `
+      timelineList.innerHTML = opp.timeline
+        .map(
+          (t) => `
         <li><span class="time-stamp">${escapeHtml(t.time)}</span> ${escapeHtml(t.text)}</li>
-      `).join('');
+      `,
+        )
+        .join("");
     }
 
     // Tasks & Summary Counts
@@ -955,71 +1099,78 @@ function initInteractiveDemoEngine() {
     let upcomingCount = 0;
 
     if (taskList) {
-      taskList.innerHTML = opp.tasks.map((task, index) => {
-        if (!task.done) {
-          if (task.overdue) overdueCount++;
-          else upcomingCount++;
-        }
+      taskList.innerHTML = opp.tasks
+        .map((task, index) => {
+          if (!task.done) {
+            if (task.overdue) overdueCount++;
+            else upcomingCount++;
+          }
 
-        const badgeClass = task.done
-          ? 'badge-done'
-          : task.overdue
-            ? 'badge-urgent'
-            : 'badge-due';
+          const badgeClass = task.done
+            ? "badge-done"
+            : task.overdue
+              ? "badge-urgent"
+              : "badge-due";
 
-        return `
+          return `
           <li class="demo-task-item" data-task-index="${index}">
             <label class="task-label">
-              <input type="checkbox" class="task-chk" ${task.done ? 'checked' : ''}>
+              <input type="checkbox" class="task-chk" ${task.done ? "checked" : ""}>
               <span>${escapeHtml(task.text)}</span>
             </label>
             <span class="task-badge ${badgeClass}">${escapeHtml(task.dueLabel)}</span>
           </li>
         `;
-      }).join('');
+        })
+        .join("");
 
       // Attach checkbox listeners
-      taskList.querySelectorAll('.task-chk').forEach((chk, idx) => {
-        chk.addEventListener('change', (e) => {
+      taskList.querySelectorAll(".task-chk").forEach((chk, idx) => {
+        chk.addEventListener("change", (e) => {
           const task = opp.tasks[idx];
           if (!task) return;
           task.done = e.target.checked;
-          task.dueLabel = task.done ? 'Completed' : (task.overdue ? 'Overdue' : 'Due Soon');
+          task.dueLabel = task.done
+            ? "Completed"
+            : task.overdue
+              ? "Overdue"
+              : "Due Soon";
           renderWorkspace();
         });
       });
     }
 
     if (overdueCountEl) overdueCountEl.textContent = `${overdueCount} Overdue`;
-    if (upcomingCountEl) upcomingCountEl.textContent = `${upcomingCount} Upcoming`;
+    if (upcomingCountEl)
+      upcomingCountEl.textContent = `${upcomingCount} Upcoming`;
 
     // Evidence Tags
-    evidenceBtns.forEach(btn => {
-      const evKey = btn.getAttribute('data-ev');
-      btn.classList.toggle('active', opp.evidence.includes(evKey));
+    evidenceBtns.forEach((btn) => {
+      const evKey = btn.getAttribute("data-ev");
+      btn.classList.toggle("active", opp.evidence.includes(evKey));
     });
   }
 
   // Handle Opportunity Selection
-  oppPills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      const key = pill.getAttribute('data-opp');
+  oppPills.forEach((pill) => {
+    pill.addEventListener("click", () => {
+      const key = pill.getAttribute("data-opp");
       if (key) updateActiveOpp(key);
     });
   });
 
   // Handle Stage Transitions
-  stageStepBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const newStage = btn.getAttribute('data-stage');
+  stageStepBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const newStage = btn.getAttribute("data-stage");
       const opp = workspace[activeOppKey];
       if (!opp || !newStage || opp.stage === newStage) return;
 
       const now = new Date();
-      const dateStr = now.toISOString().replace('T', ' ').substring(0, 16);
+      const dateStr = now.toISOString().replace("T", " ").substring(0, 16);
       opp.timeline.unshift({
         time: dateStr,
-        text: `Stage transitioned from ${opp.stage} → ${newStage}`
+        text: `Stage transitioned from ${opp.stage} → ${newStage}`,
       });
       opp.stage = newStage;
       renderWorkspace();
@@ -1027,9 +1178,9 @@ function initInteractiveDemoEngine() {
   });
 
   // Handle Evidence Tagging
-  evidenceBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const evKey = btn.getAttribute('data-ev');
+  evidenceBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const evKey = btn.getAttribute("data-ev");
       const opp = workspace[activeOppKey];
       if (!opp || !evKey) return;
 
@@ -1045,24 +1196,26 @@ function initInteractiveDemoEngine() {
 
   // Handle Reset
   if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
+    resetBtn.addEventListener("click", () => {
       workspace = JSON.parse(JSON.stringify(initialWorkspace));
       renderWorkspace();
-      resetBtn.textContent = '✓ Workspace Reset';
+      resetBtn.textContent = "✓ Workspace Reset";
       setTimeout(() => {
-        resetBtn.textContent = 'Reset Workspace';
+        resetBtn.textContent = "Reset Workspace";
       }, 1500);
     });
   }
 
   // Handle Export Real Schema v1 JSON
   if (exportJsonBtn) {
-    exportJsonBtn.addEventListener('click', () => {
+    exportJsonBtn.addEventListener("click", () => {
       const backupPayload = generateValidSchemaV1(workspace);
-      const jsonBlob = new Blob([JSON.stringify(backupPayload, null, 2)], { type: 'application/json' });
+      const jsonBlob = new Blob([JSON.stringify(backupPayload, null, 2)], {
+        type: "application/json",
+      });
       const downloadUrl = URL.createObjectURL(jsonBlob);
-      const tempLink = document.createElement('a');
-      const dateStamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+      const tempLink = document.createElement("a");
+      const dateStamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 
       tempLink.href = downloadUrl;
       tempLink.download = `pathfolio_backup_${dateStamp}.json`;
@@ -1077,10 +1230,10 @@ function initInteractiveDemoEngine() {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
         <span>Backup Exported (Schema v1.0 Valid)</span>
       `;
-      exportJsonBtn.style.background = 'var(--emerald)';
+      exportJsonBtn.style.background = "var(--emerald)";
       setTimeout(() => {
         exportJsonBtn.innerHTML = origHtml;
-        exportJsonBtn.style.background = '';
+        exportJsonBtn.style.background = "";
       }, 3000);
     });
   }
@@ -1097,62 +1250,68 @@ function generateValidSchemaV1(ws) {
   const tasks = [];
   const evidenceBank = [
     {
-      id: 'ev-latency',
-      title: 'Reduced p99 Webhook Ingestion Latency by 42%',
-      category: 'performance',
-      skillTags: ['Redis Streams', 'Asynchronous Architecture', 'High-Throughput'],
-      impactMetric: 'p99 840ms → 48ms across 4.2M events',
-      referenceUrl: 'https://github.com/Sayantan-Sinha-GIT/pathfolio',
-      createdAt: '2026-11-01T10:00:00.000Z'
+      id: "ev-latency",
+      title: "Reduced p99 Webhook Ingestion Latency by 42%",
+      category: "performance",
+      skillTags: [
+        "Redis Streams",
+        "Asynchronous Architecture",
+        "High-Throughput",
+      ],
+      impactMetric: "p99 840ms → 48ms across 4.2M events",
+      referenceUrl: "https://github.com/Sayantan-Sinha-GIT/pathfolio",
+      createdAt: "2026-11-01T10:00:00.000Z",
     },
     {
-      id: 'ev-migration',
-      title: 'Executed Zero-Downtime Migration of 12M Relational Records',
-      category: 'reliability',
-      skillTags: ['Zero-Downtime', 'PostgreSQL', 'Data Integrity'],
-      impactMetric: '12M rows migrated with 0 downtime',
-      referenceUrl: 'https://github.com/Sayantan-Sinha-GIT/pathfolio',
-      createdAt: '2026-11-01T11:00:00.000Z'
+      id: "ev-migration",
+      title: "Executed Zero-Downtime Migration of 12M Relational Records",
+      category: "reliability",
+      skillTags: ["Zero-Downtime", "PostgreSQL", "Data Integrity"],
+      impactMetric: "12M rows migrated with 0 downtime",
+      referenceUrl: "https://github.com/Sayantan-Sinha-GIT/pathfolio",
+      createdAt: "2026-11-01T11:00:00.000Z",
     },
     {
-      id: 'ev-streams',
-      title: 'Engineered Multi-Tier Distributed Cache & Local State Sync',
-      category: 'architecture',
-      skillTags: ['Distributed Caching', 'Offline-First', 'IndexedDB'],
-      impactMetric: '68% egress reduction, 120ms cold-start',
-      referenceUrl: 'https://github.com/Sayantan-Sinha-GIT/pathfolio',
-      createdAt: '2026-11-01T12:00:00.000Z'
-    }
+      id: "ev-streams",
+      title: "Engineered Multi-Tier Distributed Cache & Local State Sync",
+      category: "architecture",
+      skillTags: ["Distributed Caching", "Offline-First", "IndexedDB"],
+      impactMetric: "68% egress reduction, 120ms cold-start",
+      referenceUrl: "https://github.com/Sayantan-Sinha-GIT/pathfolio",
+      createdAt: "2026-11-01T12:00:00.000Z",
+    },
   ];
 
-  Object.values(ws).forEach(opp => {
+  Object.values(ws).forEach((opp) => {
     opportunities.push({
       id: opp.id,
       company: opp.company,
       role: opp.role,
       stage: opp.stage,
       sourceUrl: opp.url,
-      location: 'San Francisco, CA / Remote',
+      location: "San Francisco, CA / Remote",
       salaryNote: opp.salary,
-      createdAt: '2026-11-01T09:00:00.000Z',
+      createdAt: "2026-11-01T09:00:00.000Z",
       updatedAt: new Date().toISOString(),
       isArchived: false,
       notes: `Targeted opportunity with ${opp.evidence.length} verified evidence links.`,
-      linkedEvidenceIds: opp.evidence.map(e => `ev-${e}`),
-      timeline: opp.timeline.map(t => ({
-        timestamp: t.time.replace(' ', 'T') + ':00.000Z',
-        description: t.text
-      }))
+      linkedEvidenceIds: opp.evidence.map((e) => `ev-${e}`),
+      timeline: opp.timeline.map((t) => ({
+        timestamp: t.time.replace(" ", "T") + ":00.000Z",
+        description: t.text,
+      })),
     });
 
-    opp.tasks.forEach(t => {
+    opp.tasks.forEach((t) => {
       tasks.push({
         id: `task-${t.id}`,
         opportunityId: opp.id,
         title: t.text,
         isCompleted: t.done,
-        dueDate: t.overdue ? '2026-11-01T17:00:00.000Z' : '2026-11-05T17:00:00.000Z',
-        createdAt: '2026-11-01T12:00:00.000Z'
+        dueDate: t.overdue
+          ? "2026-11-01T17:00:00.000Z"
+          : "2026-11-05T17:00:00.000Z",
+        createdAt: "2026-11-01T12:00:00.000Z",
       });
     });
   });
@@ -1160,17 +1319,17 @@ function generateValidSchemaV1(ws) {
   return {
     schemaVersion: 1,
     exportedAt: new Date().toISOString(),
-    generator: 'Pathfolio Web Showcase v1.0',
+    generator: "Pathfolio Web Showcase v1.0",
     data: {
       opportunities: opportunities,
       tasks: tasks,
       evidence: evidenceBank,
       preferences: {
-        theme: document.documentElement.getAttribute('data-theme') || 'dark',
-        motion: 'full',
-        hasCompletedOnboarding: true
-      }
-    }
+        theme: document.documentElement.getAttribute("data-theme") || "dark",
+        motion: "full",
+        hasCompletedOnboarding: true,
+      },
+    },
   };
 }
 
@@ -1179,18 +1338,18 @@ function generateValidSchemaV1(ws) {
    ========================================================================== */
 function debounce(fn, ms) {
   let timer;
-  return function(...args) {
+  return function (...args) {
     clearTimeout(timer);
     timer = setTimeout(() => fn.apply(this, args), ms);
   };
 }
 
 function escapeHtml(str) {
-  if (!str) return '';
+  if (!str) return "";
   return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }

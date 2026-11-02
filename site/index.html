@@ -1,760 +1,1267 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pathfolio — Job Search Command Center for Early-Career Engineers</title>
-  <meta name="description" content="A private, offline-first career command center for early-career developers. Track multi-stage applications, manage follow-up deadlines, and cite quantifiable STAR evidence without cloud surveillance.">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <!-- Layered Background Environment -->
-  <div class="ambient-background" aria-hidden="true">
-    <div class="ambient-aurora aurora-1"></div>
-    <div class="ambient-aurora aurora-2"></div>
-    <div class="tactical-grid-overlay"></div>
-    <canvas id="career-canvas" class="career-canvas"></canvas>
-  </div>
-
-  <!-- Header -->
-  <header class="site-header">
-    <div class="header-container">
-      <a href="/" class="brand-link" aria-label="Pathfolio Home">
-        <div class="brand-icon">P</div>
-        <span class="brand-name">Pathfolio</span>
-        <span class="brand-badge">LOCAL_V1</span>
-      </a>
-
-      <nav class="main-nav" aria-label="Primary Navigation">
-        <a href="#flight-path">Flight Path</a>
-        <a href="#star-matrix">STAR Matrix</a>
-        <a href="#privacy-vault">Privacy Architecture</a>
-        <a href="#interactive-demo">Interactive Demo</a>
-        <a href="guide.html">User Guide</a>
-        <a href="privacy.html">Privacy</a>
-        <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio" target="_blank" rel="noopener">GitHub</a>
-      </nav>
-
-      <div class="header-actions">
-        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Switch to light theme" title="Switch to light theme" aria-pressed="false">
-          <svg class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        </button>
-        <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open navigation menu">
-          <svg class="menu-icon-bars" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-          <svg class="menu-icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-        <a href="/app/" class="btn btn-primary header-cta">Launch App →</a>
-      </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Pathfolio — Job Search Command Center for Early-Career Engineers
+    </title>
+    <meta
+      name="description"
+      content="A private, offline-first career command center for early-career developers. Track multi-stage applications, manage follow-up deadlines, and cite quantifiable STAR evidence without cloud surveillance."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Layered Background Environment -->
+    <div class="ambient-background" aria-hidden="true">
+      <div class="ambient-aurora aurora-1"></div>
+      <div class="ambient-aurora aurora-2"></div>
+      <div class="tactical-grid-overlay"></div>
+      <canvas id="career-canvas" class="career-canvas"></canvas>
     </div>
 
-    <!-- Accessible Mobile Navigation Panel -->
-    <nav id="mobile-nav" class="mobile-nav-panel" aria-label="Mobile Navigation" hidden>
-      <div class="mobile-nav-links">
-        <a href="#flight-path" class="mobile-nav-link">
-          <span class="nav-num">01</span>
-          <span>Flight Path Pipeline</span>
-        </a>
-        <a href="#star-matrix" class="mobile-nav-link">
-          <span class="nav-num">02</span>
-          <span>STAR Evidence Matrix</span>
-        </a>
-        <a href="#privacy-vault" class="mobile-nav-link">
-          <span class="nav-num">03</span>
-          <span>Privacy Architecture</span>
-        </a>
-        <a href="#interactive-demo" class="mobile-nav-link">
-          <span class="nav-num">04</span>
-          <span>Interactive Demo</span>
-        </a>
-        <a href="#app-tour" class="mobile-nav-link">
-          <span class="nav-num">05</span>
-          <span>App Screenshots</span>
-        </a>
-        <div class="mobile-nav-divider"></div>
-        <a href="guide.html" class="mobile-nav-link doc-link">User Guide & Strategy</a>
-        <a href="privacy.html" class="mobile-nav-link doc-link">Privacy Architecture Disclosure</a>
-        <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio" class="mobile-nav-link doc-link" target="_blank" rel="noopener">GitHub Repository ↗</a>
-      </div>
-    </nav>
-  </header>
-
-  <main>
-    <!-- Staged Hero Section -->
-    <section class="hero-section" id="hero">
-      <div class="container hero-container">
-        <!-- Hero Copy -->
-        <div class="hero-content">
-          <div class="hero-badge">
-            <span class="pulse-beacon" aria-hidden="true"></span>
-            <span class="badge-text">100% Client-Side • Sandboxed Storage • Zero Cloud Tracking</span>
-          </div>
-
-          <h1 class="hero-title">
-            The Considered Command Center for Your Career Trajectory.
-          </h1>
-
-          <p class="hero-lead">
-            Navigate multi-stage technical recruiting, cite quantifiable engineering achievements during interviews, and preserve follow-up momentum. All stored securely on your own device.
-          </p>
-
-          <div class="hero-cta-group">
-            <a href="/app/" class="btn btn-primary btn-large">
-              <span>Launch Web App</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-            <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk" class="btn btn-outline btn-large">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-              <span>Download Android APK</span>
-              <span class="pill-metric">50.8 MB</span>
-            </a>
-          </div>
-
-          <div class="hero-telemetry">
-            <div class="telemetry-item">
-              <span class="telemetry-label">CLIENT STORAGE</span>
-              <span class="telemetry-value status-active">SANDBOXED LOCAL</span>
-            </div>
-            <div class="telemetry-divider">/</div>
-            <div class="telemetry-item">
-              <span class="telemetry-label">REMOTE TRACKING</span>
-              <span class="telemetry-value">ZERO BEACONS / ZERO LOGINS</span>
-            </div>
-            <div class="telemetry-divider">/</div>
-            <div class="telemetry-item">
-              <span class="telemetry-label">BACKUP FORMAT</span>
-              <span class="telemetry-value">VALIDATED SCHEMA V1 JSON</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Hero Interactive Tactical Command Deck -->
-        <div class="hero-deck-wrapper">
-          <div class="tactical-deck" id="hero-deck">
-            <div class="deck-header">
-              <div class="deck-window-dots">
-                <span class="dot dot-red"></span>
-                <span class="dot dot-amber"></span>
-                <span class="dot dot-green"></span>
-              </div>
-              <div class="deck-window-title">pathfolio :: local-command-deck.v1</div>
-              <div class="deck-status-pill">LIVE SANDBOX</div>
-            </div>
-
-            <div class="deck-body">
-              <!-- Live Card Stage Stepper -->
-              <div class="deck-card-preview">
-                <div class="deck-card-top">
-                  <div>
-                    <span class="deck-company" id="hero-company">Linear</span>
-                    <h3 class="deck-role" id="hero-role">Founding Systems Engineer</h3>
-                  </div>
-                  <span class="deck-stage-badge" id="hero-stage-badge">Screening</span>
-                </div>
-
-                <div class="deck-card-meta">
-                  <span>📍 San Francisco / Remote</span>
-                  <span>💰 $145k – $170k + Equity</span>
-                  <span>🗓️ Next Action: System Architecture Prep</span>
-                </div>
-
-                <!-- Animated Progression Runway -->
-                <div class="deck-pipeline-stepper" aria-label="Pipeline progression">
-                  <div class="stepper-track">
-                    <div class="stepper-progress" id="hero-stepper-progress" style="width: 50%;"></div>
-                  </div>
-                  <div class="stepper-nodes">
-                    <span class="step-node completed" data-step="0">Saved</span>
-                    <span class="step-node completed" data-step="1">Applied</span>
-                    <span class="step-node active" data-step="2">Screening</span>
-                    <span class="step-node" data-step="3">Technical</span>
-                    <span class="step-node" data-step="4">Final</span>
-                    <span class="step-node" data-step="5">Offer</span>
-                  </div>
-                </div>
-
-                <!-- Evidence Citations -->
-                <div class="deck-evidence-chips">
-                  <span class="evidence-chip">
-                    <span class="chip-icon">⚡</span> p99 Latency Reduced 40%
-                  </span>
-                  <span class="evidence-chip">
-                    <span class="chip-icon">🛡️</span> Zero-Downtime v1 Schema Migration
-                  </span>
-                </div>
-
-                <!-- Activity Log Terminal -->
-                <div class="deck-terminal-log">
-                  <span class="term-prompt">$</span>
-                  <span class="term-message" id="hero-term-log">Advancing stage: Applied → Technical Screening [Logged to Timeline]</span>
-                </div>
-              </div>
-
-              <!-- Hero Scrubber Controls -->
-              <div class="deck-controls">
-                <button type="button" class="btn-deck-control" id="hero-prev-stage" aria-label="Previous pipeline stage">← Prev Stage</button>
-                <button type="button" class="btn-deck-control" id="hero-cycle-toggle" aria-label="Toggle auto-cycle">⏸ Pause Auto-Play</button>
-                <button type="button" class="btn-deck-control" id="hero-next-stage" aria-label="Next pipeline stage">Next Stage →</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Scroll Chapter 1: The 6-Stage Application Flight Path -->
-    <section class="chapter-section" id="flight-path">
-      <div class="container">
-        <div class="chapter-header">
-          <div class="chapter-eyebrow">CHAPTER 01 / PIPELINE ARCHITECTURE</div>
-          <h2 class="chapter-title">The Six-Stage Application Flight Path</h2>
-          <p class="chapter-lead">
-            Job hunting fails when applications get lost in scattered bookmarks. Pathfolio gives every opportunity an explicit trajectory with chronological timestamped milestones and velocity tracking.
-          </p>
-        </div>
-
-        <!-- Flight Path Interactive Runway -->
-        <div class="flight-path-workspace">
-          <div class="stage-runway-nav" role="tablist" aria-label="Pipeline stages">
-            <button class="stage-nav-item active" role="tab" aria-selected="true" data-stage="0">
-              <span class="stage-num">01</span>
-              <span class="stage-label">Saved</span>
-              <span class="stage-count">2</span>
-            </button>
-            <button class="stage-nav-item" role="tab" aria-selected="false" data-stage="1">
-              <span class="stage-num">02</span>
-              <span class="stage-label">Applied</span>
-              <span class="stage-count">3</span>
-            </button>
-            <button class="stage-nav-item" role="tab" aria-selected="false" data-stage="2">
-              <span class="stage-num">03</span>
-              <span class="stage-label">Screening</span>
-              <span class="stage-count">1</span>
-            </button>
-            <button class="stage-nav-item" role="tab" aria-selected="false" data-stage="3">
-              <span class="stage-num">04</span>
-              <span class="stage-label">Technical</span>
-              <span class="stage-count">2</span>
-            </button>
-            <button class="stage-nav-item" role="tab" aria-selected="false" data-stage="4">
-              <span class="stage-num">05</span>
-              <span class="stage-label">Final</span>
-              <span class="stage-count">1</span>
-            </button>
-            <button class="stage-nav-item" role="tab" aria-selected="false" data-stage="5">
-              <span class="stage-num">06</span>
-              <span class="stage-label">Offer</span>
-              <span class="stage-count">1</span>
-            </button>
-          </div>
-
-          <!-- Dynamic Stage Inspection Card -->
-          <div class="stage-detail-panel" id="stage-detail-panel">
-            <div class="panel-meta-header">
-              <div class="panel-stage-badge" id="panel-stage-badge">STAGE 01 :: SAVED OPPORTUNITY</div>
-              <div class="panel-velocity-chip" id="panel-velocity">VELOCITY: 2-4 DAYS EXPECTED</div>
-            </div>
-
-            <div class="panel-content-grid">
-              <div class="panel-column">
-                <h3 class="panel-heading" id="panel-company-title">Figma — Associate Systems Engineer</h3>
-                <p class="panel-desc" id="panel-stage-desc">
-                  Opportunity identified and bookmarked. Analyze job requirements, verify alignment with your STAR evidence bank, and tailor your portfolio focus before applying.
-                </p>
-
-                <div class="panel-action-box">
-                  <span class="box-label">RECOMMENDED PROTOCOL</span>
-                  <p id="panel-protocol">Review engineering blog posts on Figma's WebAssembly canvas rendering; map 2 STAR evidence stories to distributed caching.</p>
-                </div>
-              </div>
-
-              <div class="panel-column">
-                <div class="panel-checklist-card">
-                  <span class="checklist-title">STAGE READINESS CHECKLIST</span>
-                  <ul class="checklist-items" id="panel-checklist">
-                    <li><span class="check-icon">✓</span> Salary range validated against local benchmarks</li>
-                    <li><span class="check-icon">✓</span> 3 Evidence Bank items linked to role requirements</li>
-                    <li><span class="check-icon">●</span> Follow-up reminder set for application deadline</li>
-                  </ul>
-                  <div class="panel-cta-row">
-                    <a href="/app/" class="btn btn-primary btn-sm">Open in Web App →</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Scroll Chapter 2: The STAR Evidence Matrix -->
-    <section class="chapter-section" id="star-matrix">
-      <div class="container">
-        <div class="chapter-header">
-          <div class="chapter-eyebrow">CHAPTER 02 / VERIFIABLE PROOF</div>
-          <h2 class="chapter-title">The STAR Evidence Matrix</h2>
-          <p class="chapter-lead">
-            Technical interviewers evaluate engineering competence through concrete past impact, not vague claims. Pathfolio organizes your career accomplishments into instant, reusable interview talking points.
-          </p>
-        </div>
-
-        <div class="star-matrix-workspace">
-          <!-- Category Tabs -->
-          <div class="star-category-tabs" role="tablist" aria-label="STAR Evidence categories">
-            <button class="star-tab active" role="tab" aria-selected="true" data-category="latency">
-              <span class="tab-icon">⚡</span>
-              <span>High-Throughput Scaling</span>
-            </button>
-            <button class="star-tab" role="tab" aria-selected="false" data-category="migration">
-              <span class="tab-icon">🛡️</span>
-              <span>Zero-Downtime Reliability</span>
-            </button>
-            <button class="star-tab" role="tab" aria-selected="false" data-category="caching">
-              <span class="tab-icon">💾</span>
-              <span>Distributed Caching & Sync</span>
-            </button>
-            <button class="star-tab" role="tab" aria-selected="false" data-category="incident">
-              <span class="tab-icon">🚨</span>
-              <span>Incident Triage & Recovery</span>
-            </button>
-          </div>
-
-          <!-- Dynamic STAR Dossier Card -->
-          <div class="star-card" id="star-card-display">
-            <div class="star-card-header">
-              <div>
-                <span class="star-tag" id="star-tag">PERFORMANCE & SCALE</span>
-                <h3 class="star-title" id="star-title">Reduced p99 Webhook Ingestion Latency by 42%</h3>
-              </div>
-              <button type="button" class="btn btn-outline btn-sm" id="star-simulate-cite">
-                <span>⚡ Simulate Citing in Interview</span>
-              </button>
-            </div>
-
-            <div class="star-grid">
-              <div class="star-col">
-                <div class="star-letter">S</div>
-                <h4>Situation</h4>
-                <p id="star-situation">Third-party payment webhooks experienced severe processing bottlenecks during high-volume flash sales, creating queue backpressure.</p>
-              </div>
-
-              <div class="star-col">
-                <div class="star-letter">T</div>
-                <h4>Task</h4>
-                <p id="star-task">Architect an asynchronous, non-blocking ingestion buffer capable of absorbing 15,000 requests/sec with zero payload drops.</p>
-              </div>
-
-              <div class="star-col">
-                <div class="star-letter">A</div>
-                <h4>Action</h4>
-                <p id="star-action">Replaced synchronous database writes with Redis streams, implemented exponential backoff retries, and partitioned worker workers by consumer groups.</p>
-              </div>
-
-              <div class="star-col star-col-highlight">
-                <div class="star-letter">R</div>
-                <h4>Result</h4>
-                <p id="star-result">Processed 4.2M events with 0 lost packets. Slashed p99 response time from 840ms to 48ms, unblocking multi-region checkout scalability.</p>
-              </div>
-            </div>
-
-            <!-- Citation Feedback Bar -->
-            <div class="citation-feedback-bar" id="citation-feedback" style="display: none;">
-              <span class="cite-pulse">●</span>
-              <span>Simulated Citation Attached to Opportunity dossier: <strong>Linear — Systems Engineer</strong></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Scroll Chapter 3: Client-Side Sandboxing vs Centralized Architecture -->
-    <section class="chapter-section" id="privacy-vault">
-      <div class="container">
-        <div class="chapter-header">
-          <div class="chapter-eyebrow">CHAPTER 03 / STORAGE ARCHITECTURE</div>
-          <h2 class="chapter-title">Client-Side Sandboxing vs. Centralized Cloud Architecture</h2>
-          <p class="chapter-lead">
-            Most career tools store your private compensation notes, interview history, and search records on centralized corporate servers. Pathfolio takes an offline-first architectural approach: every opportunity record, deadline, and career evidence note stays in your own device's sandboxed storage.
-          </p>
-        </div>
-
-        <div class="vault-comparison-wrapper">
-          <!-- Interactive Mode Switcher -->
-          <div class="vault-mode-toggle">
-            <button class="mode-btn active" id="btn-mode-pathfolio" type="button">
-              <span class="mode-beacon green">●</span> Pathfolio Client Sandbox
-            </button>
-            <button class="mode-btn" id="btn-mode-cloud" type="button">
-              <span class="mode-beacon amber">●</span> Centralized Cloud Architecture
-            </button>
-          </div>
-
-          <!-- Architecture Comparison Grid -->
-          <div class="vault-diagram-grid" id="vault-diagram">
-            <!-- Pathfolio View (Default) -->
-            <div class="vault-side vault-pathfolio" id="side-pathfolio">
-              <div class="vault-badge-header">
-                <span class="vault-status-indicator">CLIENT-SIDE SANDBOX</span>
-                <span class="vault-metric">DEVICE-ONLY STORAGE</span>
-              </div>
-
-              <div class="diagram-canvas-representation">
-                <div class="diagram-node node-client">
-                  <div class="node-icon">💻</div>
-                  <div class="node-label">Your Browser / Phone</div>
-                  <div class="node-sub">Sandboxed Local Storage</div>
-                </div>
-
-                <div class="diagram-flow">
-                  <div class="flow-line safe-flow">
-                    <span class="flow-label">Direct Local Bus</span>
-                  </div>
-                </div>
-
-                <div class="diagram-node node-vault">
-                  <div class="node-icon">🛡️</div>
-                  <div class="node-label">Local JSON Vault</div>
-                  <div class="node-sub">Device-Private Preferences</div>
-                </div>
-              </div>
-
-              <div class="vault-guarantees">
-                <div class="guarantee-item">
-                  <span class="g-check">✓</span>
-                  <span>Zero remote databases, tracking beacons, or mandatory user accounts</span>
-                </div>
-                <div class="guarantee-item">
-                  <span class="g-check">✓</span>
-                  <span>Structured JSON backup export & restore allows full data portability</span>
-                </div>
-                <div class="guarantee-item">
-                  <span class="g-check">✓</span>
-                  <span>Confirmed Erase All Data action wipes local storage cleanly on demand</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Cloud View (Hidden by default, toggled via JS) -->
-            <div class="vault-side vault-cloud" id="side-cloud" style="display: none;">
-              <div class="vault-badge-header">
-                <span class="vault-status-indicator warning">CENTRALIZED CLOUD ARCHITECTURE</span>
-                <span class="vault-metric warning">REMOTE STORAGE DEPENDENCY</span>
-              </div>
-
-              <div class="diagram-canvas-representation">
-                <div class="diagram-node node-client">
-                  <div class="node-icon">💻</div>
-                  <div class="node-label">Your Machine</div>
-                  <div class="node-sub">Client Front-End</div>
-                </div>
-
-                <div class="diagram-flow">
-                  <div class="flow-line remote-flow">
-                    <span class="flow-label remote">Public Internet / Remote API</span>
-                  </div>
-                </div>
-
-                <div class="diagram-node node-cloud-leaks">
-                  <div class="node-icon">📡</div>
-                  <div class="node-label">Centralized Cloud Database</div>
-                  <div class="node-sub">Vendor-Managed Infrastructure</div>
-                </div>
-              </div>
-
-              <div class="vault-guarantees">
-                <div class="guarantee-item alert">
-                  <span class="g-alert">✕</span>
-                  <span>Requires mandatory user accounts, credentials, and constant connectivity</span>
-                </div>
-                <div class="guarantee-item alert">
-                  <span class="g-alert">✕</span>
-                  <span>Application status, salary targets, and notes stored in remote cloud databases</span>
-                </div>
-                <div class="guarantee-item alert">
-                  <span class="g-alert">✕</span>
-                  <span>Subject to remote service outages, API changes, and vendor data policies</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Interactive Product Demonstration: Playable In-Browser Mini-Engine -->
-    <section class="chapter-section interactive-demo-section" id="interactive-demo">
-      <div class="container">
-        <div class="chapter-header">
-          <div class="chapter-eyebrow">LIVE PLAYABLE MINI-ENGINE</div>
-          <h2 class="chapter-title">Test Pathfolio's Real Engine Right Now</h2>
-          <p class="chapter-lead">
-            Move applications across stages, attach verifiable STAR proof tags, toggle deadlines, and export an actual, valid schema v1 JSON backup you can immediately import into the real app.
-          </p>
-        </div>
-
-        <div class="demo-console-card">
-          <!-- Console Header -->
-          <div class="console-header">
-            <div class="console-tab-group">
-              <span class="console-title">WORKSPACE :: DEMO_SESSION_ACTIVE</span>
-              <span class="console-pill">SCHEMA V1.0 VALIDATED</span>
-            </div>
-            <div class="console-actions">
-              <button type="button" class="btn btn-outline btn-xs" id="demo-reset-btn">Reset Workspace</button>
-            </div>
-          </div>
-
-          <!-- Console Main Work Area -->
-          <div class="console-grid">
-            <!-- Col 1: Opportunity Selection & Stage Stepper -->
-            <div class="console-col">
-              <h4 class="console-col-title">1. ACTIVE OPPORTUNITY</h4>
-
-              <div class="demo-opp-selector">
-                <button type="button" class="opp-pill-btn active" data-opp="linear">Linear (Systems)</button>
-                <button type="button" class="opp-pill-btn" data-opp="stripe">Stripe (Infra)</button>
-                <button type="button" class="opp-pill-btn" data-opp="figma">Figma (WebAssembly)</button>
-              </div>
-
-              <div class="demo-opp-card">
-                <div class="demo-card-head">
-                  <div>
-                    <h3 id="demo-card-company">Linear</h3>
-                    <p id="demo-card-role">Founding Systems Engineer</p>
-                  </div>
-                  <span class="badge-stage" id="demo-card-stage">Screening</span>
-                </div>
-
-                <div class="demo-stage-actions">
-                  <span class="stage-action-label">TRANSITION STAGE:</span>
-                  <div class="stage-btn-wrap">
-                    <button type="button" class="stage-step-btn" data-stage="Saved">Saved</button>
-                    <button type="button" class="stage-step-btn" data-stage="Applied">Applied</button>
-                    <button type="button" class="stage-step-btn active" data-stage="Screening">Screening</button>
-                    <button type="button" class="stage-step-btn" data-stage="Technical">Technical</button>
-                    <button type="button" class="stage-step-btn" data-stage="Final">Final</button>
-                    <button type="button" class="stage-step-btn" data-stage="Offer">Offer</button>
-                  </div>
-                </div>
-
-                <div class="demo-timeline-box">
-                  <span class="timeline-title">TIMELINE AUDIT LOG:</span>
-                  <ul class="demo-timeline-list" id="demo-timeline-list">
-                    <li><span class="time-stamp">2026-11-02 18:30</span> Stage updated to Screening</li>
-                    <li><span class="time-stamp">2026-11-01 10:15</span> Application submitted via direct referral</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- Col 2: Follow-Up Tasks & Evidence Linking -->
-            <div class="console-col">
-              <h4 class="console-col-title">2. FOLLOW-UP TASKS</h4>
-              <div class="demo-task-box">
-                <div class="task-summary-chips">
-                  <span class="task-chip overdue" id="demo-overdue-count">1 Overdue</span>
-                  <span class="task-chip upcoming" id="demo-upcoming-count">2 Upcoming</span>
-                </div>
-
-                <ul class="demo-task-list" id="demo-task-list">
-                  <li class="demo-task-item">
-                    <label class="task-label">
-                      <input type="checkbox" class="task-chk" checked>
-                      <span>Submit technical assessment repo</span>
-                    </label>
-                    <span class="task-badge badge-done">Completed</span>
-                  </li>
-                  <li class="demo-task-item">
-                    <label class="task-label">
-                      <input type="checkbox" class="task-chk">
-                      <span>Send interview debrief thank-you note</span>
-                    </label>
-                    <span class="task-badge badge-due">Due Tomorrow</span>
-                  </li>
-                  <li class="demo-task-item">
-                    <label class="task-label">
-                      <input type="checkbox" class="task-chk">
-                      <span>Review distributed lock architecture</span>
-                    </label>
-                    <span class="task-badge badge-urgent">Overdue</span>
-                  </li>
-                </ul>
-              </div>
-
-              <h4 class="console-col-title" style="margin-top: 1.5rem;">3. EVIDENCE ATTACHMENTS</h4>
-              <div class="demo-evidence-selector">
-                <button type="button" class="evidence-tag-btn active" data-ev="latency">
-                  <span>⚡ p99 Latency -40%</span>
-                </button>
-                <button type="button" class="evidence-tag-btn" data-ev="migration">
-                  <span>🛡️ v1 Schema Migration</span>
-                </button>
-                <button type="button" class="evidence-tag-btn" data-ev="streams">
-                  <span>💾 Redis Event Pipeline</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Console Footer & Real JSON Export -->
-          <div class="console-footer">
-            <div class="footer-status-text">
-              <span>● Local State: <strong>Atomic In-Memory Preview</strong></span>
-              <span>• Ready for Physical Transfer</span>
-            </div>
-            <div class="console-footer-actions">
-              <button type="button" class="btn btn-primary" id="demo-export-json-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                <span>Export Real Pathfolio v1 JSON Backup</span>
-              </button>
-              <a href="/app/" class="btn btn-outline">
-                <span>Open in Full Web App →</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Inside the Workspace: Real App Screenshots -->
-    <section class="chapter-section product-tour" id="app-tour">
-      <div class="container">
-        <div class="chapter-header">
-          <div class="chapter-eyebrow">INSIDE THE WORKSPACE</div>
-          <h2 class="chapter-title">Real Screens from the Production Build</h2>
-          <p class="chapter-lead">
-            Every view below is captured directly from the live Flutter engine running the optional, clearly marked demo workspace. Your production workspace initializes clean and empty.
-          </p>
-        </div>
-
-        <div class="tour-grid">
-          <figure class="tour-shot tour-shot-wide">
-            <img src="screenshots/dashboard-desktop-1440.png" alt="Pathfolio desktop command center dashboard showing application stages, upcoming tasks, and recent chronological activity" loading="lazy" width="1800" height="916">
-            <figcaption>
-              <strong>01 / Panoramic Command Dashboard</strong>
-              <span>Immediate visibility over stage counts, urgent deadlines, and recent chronological transitions.</span>
-            </figcaption>
-          </figure>
-
-          <figure class="tour-shot">
-            <img src="screenshots/evidence-desktop-1440.png" alt="Pathfolio career evidence bank with reusable tagged technical achievements" loading="lazy" width="1800" height="916">
-            <figcaption>
-              <strong>02 / Verifiable Evidence Bank</strong>
-              <span>Curate concrete technical accomplishments and cite them directly in interviews without uploading documents.</span>
-            </figcaption>
-          </figure>
-
-          <figure class="tour-shot tour-shot-phone">
-            <img src="screenshots/app-mobile-390.png" alt="Pathfolio responsive mobile experience displayed on an iPhone 390px viewport" loading="lazy" width="628" height="915">
-            <figcaption>
-              <strong>03 / Pocket Command Center</strong>
-              <span>Responsive touch ergonomics, haptic-friendly buttons, and seamless offline access on mobile devices.</span>
-            </figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <!-- Features & Technical Guarantees Grid -->
-    <section class="chapter-section features-section" id="features">
-      <div class="container">
-        <div class="chapter-header">
-          <div class="chapter-eyebrow">CORE ARCHITECTURE</div>
-          <h2 class="chapter-title">Engineered for Technical Focus & Absolute Privacy</h2>
-          <p class="chapter-lead">
-            Built from scratch to eliminate the bloat, ads, and privacy violations of contemporary career platforms.
-          </p>
-        </div>
-
-        <div class="feature-grid">
-          <div class="feature-card">
-            <div class="feature-icon">📊</div>
-            <h3>Structured 6-Stage Pipeline</h3>
-            <p>Move opportunities cleanly between Saved, Applied, Screening, Technical, Final, and Offer. Every transition logs a dated audit trail in local history.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">⏰</div>
-            <h3>Follow-ups & Overdue Alerts</h3>
-            <p>Never drop recruiter communications or miss take-home deadlines. The dashboard dynamically flags overdue and upcoming tasks calculated strictly against local system time.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">⭐</div>
-            <h3>STAR Career Evidence Bank</h3>
-            <p>Structure your career accomplishments into Situation, Task, Action, and Result. Search by technical skill tags and cite directly during interviews.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">🛡️</div>
-            <h3>100% Local-First Storage</h3>
-            <p>Zero cloud servers, zero tracking cookies, zero analytics beacons. All application records remain sandboxed within your browser or Android device.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">📦</div>
-            <h3>Atomic Schema v1 JSON Backups</h3>
-            <p>Export a structured, schema-validated JSON snapshot anytime. Restore seamlessly across browsers and devices with count previews and atomic commits designed to reject malformed files.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">⌨️</div>
-            <h3>Tactile Editorial Craft</h3>
-            <p>Warm porcelain surfaces, deep ink typography, high-contrast text, visible focus rings, keyboard navigation (Tab, Enter, Esc), and strict respect for system reduced-motion preferences.</p>
-          </div>
-        </div>
-
-        <!-- Privacy Callout Banner -->
-        <div class="privacy-banner">
-          <div>
-            <h3>Your sensitive career trajectory stays entirely yours.</h3>
-            <p>Unlike centralized recruiting portals that require cloud databases, Pathfolio runs completely client-side in your local device sandbox. We do not operate a remote user database, so your private notes never leave your machine.</p>
-          </div>
-          <div>
-            <a href="privacy.html" class="btn btn-outline">Read Technical Privacy Guarantee →</a>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="footer-container">
-      <div class="footer-brand-col">
-        <a href="/" class="brand-link">
+    <!-- Header -->
+    <header class="site-header">
+      <div class="header-container">
+        <a href="/" class="brand-link" aria-label="Pathfolio Home">
           <div class="brand-icon">P</div>
           <span class="brand-name">Pathfolio</span>
+          <span class="brand-badge">LOCAL_V1</span>
         </a>
-        <p class="footer-bio">
-          A private, offline-first career command center for early-career software engineers. Built with Flutter and Web Standards.
-        </p>
+
+        <nav class="main-nav" aria-label="Primary Navigation">
+          <a href="#flight-path">Flight Path</a>
+          <a href="#star-matrix">STAR Matrix</a>
+          <a href="#privacy-vault">Privacy Architecture</a>
+          <a href="#interactive-demo">Interactive Demo</a>
+          <a href="guide.html">User Guide</a>
+          <a href="privacy.html">Privacy</a>
+          <a
+            href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
+            target="_blank"
+            rel="noopener"
+            >GitHub</a
+          >
+        </nav>
+
+        <div class="header-actions">
+          <button
+            id="theme-toggle"
+            class="theme-toggle-btn"
+            aria-label="Switch to light theme"
+            title="Switch to light theme"
+            aria-pressed="false"
+          >
+            <svg
+              class="theme-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </svg>
+          </button>
+          <button
+            id="mobile-menu-toggle"
+            class="mobile-menu-toggle"
+            aria-expanded="false"
+            aria-controls="mobile-nav"
+            aria-label="Open navigation menu"
+          >
+            <svg
+              class="menu-icon-bars"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+            <svg
+              class="menu-icon-close"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="display: none"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+          <a href="/app/" class="btn btn-primary header-cta">Launch App →</a>
+        </div>
       </div>
 
-      <div class="footer-links-col">
-        <h4>PLATFORM</h4>
-        <a href="/app/">Launch Web App</a>
-        <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk">Download Android APK</a>
-        <a href="#flight-path">Flight Path Pipeline</a>
-        <a href="#star-matrix">STAR Evidence Bank</a>
+      <!-- Accessible Mobile Navigation Panel -->
+      <nav
+        id="mobile-nav"
+        class="mobile-nav-panel"
+        aria-label="Mobile Navigation"
+        hidden
+      >
+        <div class="mobile-nav-links">
+          <a href="#flight-path" class="mobile-nav-link">
+            <span class="nav-num">01</span>
+            <span>Flight Path Pipeline</span>
+          </a>
+          <a href="#star-matrix" class="mobile-nav-link">
+            <span class="nav-num">02</span>
+            <span>STAR Evidence Matrix</span>
+          </a>
+          <a href="#privacy-vault" class="mobile-nav-link">
+            <span class="nav-num">03</span>
+            <span>Privacy Architecture</span>
+          </a>
+          <a href="#interactive-demo" class="mobile-nav-link">
+            <span class="nav-num">04</span>
+            <span>Interactive Demo</span>
+          </a>
+          <a href="#app-tour" class="mobile-nav-link">
+            <span class="nav-num">05</span>
+            <span>App Screenshots</span>
+          </a>
+          <div class="mobile-nav-divider"></div>
+          <a href="guide.html" class="mobile-nav-link doc-link"
+            >User Guide & Strategy</a
+          >
+          <a href="privacy.html" class="mobile-nav-link doc-link"
+            >Privacy Architecture Disclosure</a
+          >
+          <a
+            href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
+            class="mobile-nav-link doc-link"
+            target="_blank"
+            rel="noopener"
+            >GitHub Repository ↗</a
+          >
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Staged Hero Section -->
+      <section class="hero-section" id="hero">
+        <div class="container hero-container">
+          <!-- Hero Copy -->
+          <div class="hero-content">
+            <div class="hero-badge">
+              <span class="pulse-beacon" aria-hidden="true"></span>
+              <span class="badge-text"
+                >100% Client-Side • Sandboxed Storage • Zero Cloud
+                Tracking</span
+              >
+            </div>
+
+            <h1 class="hero-title">
+              The Considered Command Center for Your Career Trajectory.
+            </h1>
+
+            <p class="hero-lead">
+              Navigate multi-stage technical recruiting, cite quantifiable
+              engineering achievements during interviews, and preserve follow-up
+              momentum. All stored securely on your own device.
+            </p>
+
+            <div class="hero-cta-group">
+              <a href="/app/" class="btn btn-primary btn-large">
+                <span>Launch Web App</span>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </a>
+              <a
+                href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk"
+                class="btn btn-outline btn-large"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"
+                  />
+                </svg>
+                <span>Download Android APK</span>
+                <span class="pill-metric">50.8 MB</span>
+              </a>
+            </div>
+
+            <div class="hero-telemetry">
+              <div class="telemetry-item">
+                <span class="telemetry-label">CLIENT STORAGE</span>
+                <span class="telemetry-value status-active"
+                  >SANDBOXED LOCAL</span
+                >
+              </div>
+              <div class="telemetry-divider">/</div>
+              <div class="telemetry-item">
+                <span class="telemetry-label">REMOTE TRACKING</span>
+                <span class="telemetry-value">ZERO BEACONS / ZERO LOGINS</span>
+              </div>
+              <div class="telemetry-divider">/</div>
+              <div class="telemetry-item">
+                <span class="telemetry-label">BACKUP FORMAT</span>
+                <span class="telemetry-value">VALIDATED SCHEMA V1 JSON</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Interactive Tactical Command Deck -->
+          <div class="hero-deck-wrapper">
+            <div class="tactical-deck" id="hero-deck">
+              <div class="deck-header">
+                <div class="deck-window-dots">
+                  <span class="dot dot-red"></span>
+                  <span class="dot dot-amber"></span>
+                  <span class="dot dot-green"></span>
+                </div>
+                <div class="deck-window-title">
+                  pathfolio :: local-command-deck.v1
+                </div>
+                <div class="deck-status-pill">LIVE SANDBOX</div>
+              </div>
+
+              <div class="deck-body">
+                <!-- Live Card Stage Stepper -->
+                <div class="deck-card-preview">
+                  <div class="deck-card-top">
+                    <div>
+                      <span class="deck-company" id="hero-company">Linear</span>
+                      <h3 class="deck-role" id="hero-role">
+                        Founding Systems Engineer
+                      </h3>
+                    </div>
+                    <span class="deck-stage-badge" id="hero-stage-badge"
+                      >Screening</span
+                    >
+                  </div>
+
+                  <div class="deck-card-meta">
+                    <span>📍 San Francisco / Remote</span>
+                    <span>💰 $145k – $170k + Equity</span>
+                    <span>🗓️ Next Action: System Architecture Prep</span>
+                  </div>
+
+                  <!-- Animated Progression Runway -->
+                  <div
+                    class="deck-pipeline-stepper"
+                    aria-label="Pipeline progression"
+                  >
+                    <div class="stepper-track">
+                      <div
+                        class="stepper-progress"
+                        id="hero-stepper-progress"
+                        style="width: 50%"
+                      ></div>
+                    </div>
+                    <div class="stepper-nodes">
+                      <span class="step-node completed" data-step="0"
+                        >Saved</span
+                      >
+                      <span class="step-node completed" data-step="1"
+                        >Applied</span
+                      >
+                      <span class="step-node active" data-step="2"
+                        >Screening</span
+                      >
+                      <span class="step-node" data-step="3">Technical</span>
+                      <span class="step-node" data-step="4">Final</span>
+                      <span class="step-node" data-step="5">Offer</span>
+                    </div>
+                  </div>
+
+                  <!-- Evidence Citations -->
+                  <div class="deck-evidence-chips">
+                    <span class="evidence-chip">
+                      <span class="chip-icon">⚡</span> p99 Latency Reduced 40%
+                    </span>
+                    <span class="evidence-chip">
+                      <span class="chip-icon">🛡️</span> Zero-Downtime v1 Schema
+                      Migration
+                    </span>
+                  </div>
+
+                  <!-- Activity Log Terminal -->
+                  <div class="deck-terminal-log">
+                    <span class="term-prompt">$</span>
+                    <span class="term-message" id="hero-term-log"
+                      >Advancing stage: Applied → Technical Screening [Logged to
+                      Timeline]</span
+                    >
+                  </div>
+                </div>
+
+                <!-- Hero Scrubber Controls -->
+                <div class="deck-controls">
+                  <button
+                    type="button"
+                    class="btn-deck-control"
+                    id="hero-prev-stage"
+                    aria-label="Previous pipeline stage"
+                  >
+                    ← Prev Stage
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-deck-control"
+                    id="hero-cycle-toggle"
+                    aria-label="Toggle auto-cycle"
+                  >
+                    ⏸ Pause Auto-Play
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-deck-control"
+                    id="hero-next-stage"
+                    aria-label="Next pipeline stage"
+                  >
+                    Next Stage →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scroll Chapter 1: The 6-Stage Application Flight Path -->
+      <section class="chapter-section" id="flight-path">
+        <div class="container">
+          <div class="chapter-header">
+            <div class="chapter-eyebrow">
+              CHAPTER 01 / PIPELINE ARCHITECTURE
+            </div>
+            <h2 class="chapter-title">The Six-Stage Application Flight Path</h2>
+            <p class="chapter-lead">
+              Job hunting fails when applications get lost in scattered
+              bookmarks. Pathfolio gives every opportunity an explicit
+              trajectory with chronological timestamped milestones and velocity
+              tracking.
+            </p>
+          </div>
+
+          <!-- Flight Path Interactive Runway -->
+          <div class="flight-path-workspace">
+            <div
+              class="stage-runway-nav"
+              role="tablist"
+              aria-label="Pipeline stages"
+            >
+              <button
+                class="stage-nav-item active"
+                role="tab"
+                aria-selected="true"
+                data-stage="0"
+              >
+                <span class="stage-num">01</span>
+                <span class="stage-label">Saved</span>
+                <span class="stage-count">2</span>
+              </button>
+              <button
+                class="stage-nav-item"
+                role="tab"
+                aria-selected="false"
+                data-stage="1"
+              >
+                <span class="stage-num">02</span>
+                <span class="stage-label">Applied</span>
+                <span class="stage-count">3</span>
+              </button>
+              <button
+                class="stage-nav-item"
+                role="tab"
+                aria-selected="false"
+                data-stage="2"
+              >
+                <span class="stage-num">03</span>
+                <span class="stage-label">Screening</span>
+                <span class="stage-count">1</span>
+              </button>
+              <button
+                class="stage-nav-item"
+                role="tab"
+                aria-selected="false"
+                data-stage="3"
+              >
+                <span class="stage-num">04</span>
+                <span class="stage-label">Technical</span>
+                <span class="stage-count">2</span>
+              </button>
+              <button
+                class="stage-nav-item"
+                role="tab"
+                aria-selected="false"
+                data-stage="4"
+              >
+                <span class="stage-num">05</span>
+                <span class="stage-label">Final</span>
+                <span class="stage-count">1</span>
+              </button>
+              <button
+                class="stage-nav-item"
+                role="tab"
+                aria-selected="false"
+                data-stage="5"
+              >
+                <span class="stage-num">06</span>
+                <span class="stage-label">Offer</span>
+                <span class="stage-count">1</span>
+              </button>
+            </div>
+
+            <!-- Dynamic Stage Inspection Card -->
+            <div class="stage-detail-panel" id="stage-detail-panel">
+              <div class="panel-meta-header">
+                <div class="panel-stage-badge" id="panel-stage-badge">
+                  STAGE 01 :: SAVED OPPORTUNITY
+                </div>
+                <div class="panel-velocity-chip" id="panel-velocity">
+                  VELOCITY: 2-4 DAYS EXPECTED
+                </div>
+              </div>
+
+              <div class="panel-content-grid">
+                <div class="panel-column">
+                  <h3 class="panel-heading" id="panel-company-title">
+                    Figma — Associate Systems Engineer
+                  </h3>
+                  <p class="panel-desc" id="panel-stage-desc">
+                    Opportunity identified and bookmarked. Analyze job
+                    requirements, verify alignment with your STAR evidence bank,
+                    and tailor your portfolio focus before applying.
+                  </p>
+
+                  <div class="panel-action-box">
+                    <span class="box-label">RECOMMENDED PROTOCOL</span>
+                    <p id="panel-protocol">
+                      Review engineering blog posts on Figma's WebAssembly
+                      canvas rendering; map 2 STAR evidence stories to
+                      distributed caching.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="panel-column">
+                  <div class="panel-checklist-card">
+                    <span class="checklist-title"
+                      >STAGE READINESS CHECKLIST</span
+                    >
+                    <ul class="checklist-items" id="panel-checklist">
+                      <li>
+                        <span class="check-icon">✓</span> Salary range validated
+                        against local benchmarks
+                      </li>
+                      <li>
+                        <span class="check-icon">✓</span> 3 Evidence Bank items
+                        linked to role requirements
+                      </li>
+                      <li>
+                        <span class="check-icon">●</span> Follow-up reminder set
+                        for application deadline
+                      </li>
+                    </ul>
+                    <div class="panel-cta-row">
+                      <a href="/app/" class="btn btn-primary btn-sm"
+                        >Open in Web App →</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scroll Chapter 2: The STAR Evidence Matrix -->
+      <section class="chapter-section" id="star-matrix">
+        <div class="container">
+          <div class="chapter-header">
+            <div class="chapter-eyebrow">CHAPTER 02 / VERIFIABLE PROOF</div>
+            <h2 class="chapter-title">The STAR Evidence Matrix</h2>
+            <p class="chapter-lead">
+              Technical interviewers evaluate engineering competence through
+              concrete past impact, not vague claims. Pathfolio organizes your
+              career accomplishments into instant, reusable interview talking
+              points.
+            </p>
+          </div>
+
+          <div class="star-matrix-workspace">
+            <!-- Category Tabs -->
+            <div
+              class="star-category-tabs"
+              role="tablist"
+              aria-label="STAR Evidence categories"
+            >
+              <button
+                class="star-tab active"
+                role="tab"
+                aria-selected="true"
+                data-category="latency"
+              >
+                <span class="tab-icon">⚡</span>
+                <span>High-Throughput Scaling</span>
+              </button>
+              <button
+                class="star-tab"
+                role="tab"
+                aria-selected="false"
+                data-category="migration"
+              >
+                <span class="tab-icon">🛡️</span>
+                <span>Zero-Downtime Reliability</span>
+              </button>
+              <button
+                class="star-tab"
+                role="tab"
+                aria-selected="false"
+                data-category="caching"
+              >
+                <span class="tab-icon">💾</span>
+                <span>Distributed Caching & Sync</span>
+              </button>
+              <button
+                class="star-tab"
+                role="tab"
+                aria-selected="false"
+                data-category="incident"
+              >
+                <span class="tab-icon">🚨</span>
+                <span>Incident Triage & Recovery</span>
+              </button>
+            </div>
+
+            <!-- Dynamic STAR Dossier Card -->
+            <div class="star-card" id="star-card-display">
+              <div class="star-card-header">
+                <div>
+                  <span class="star-tag" id="star-tag"
+                    >PERFORMANCE & SCALE</span
+                  >
+                  <h3 class="star-title" id="star-title">
+                    Reduced p99 Webhook Ingestion Latency by 42%
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-outline btn-sm"
+                  id="star-simulate-cite"
+                >
+                  <span>⚡ Simulate Citing in Interview</span>
+                </button>
+              </div>
+
+              <div class="star-grid">
+                <div class="star-col">
+                  <div class="star-letter">S</div>
+                  <h4>Situation</h4>
+                  <p id="star-situation">
+                    Third-party payment webhooks experienced severe processing
+                    bottlenecks during high-volume flash sales, creating queue
+                    backpressure.
+                  </p>
+                </div>
+
+                <div class="star-col">
+                  <div class="star-letter">T</div>
+                  <h4>Task</h4>
+                  <p id="star-task">
+                    Architect an asynchronous, non-blocking ingestion buffer
+                    capable of absorbing 15,000 requests/sec with zero payload
+                    drops.
+                  </p>
+                </div>
+
+                <div class="star-col">
+                  <div class="star-letter">A</div>
+                  <h4>Action</h4>
+                  <p id="star-action">
+                    Replaced synchronous database writes with Redis streams,
+                    implemented exponential backoff retries, and partitioned
+                    worker workers by consumer groups.
+                  </p>
+                </div>
+
+                <div class="star-col star-col-highlight">
+                  <div class="star-letter">R</div>
+                  <h4>Result</h4>
+                  <p id="star-result">
+                    Processed 4.2M events with 0 lost packets. Slashed p99
+                    response time from 840ms to 48ms, unblocking multi-region
+                    checkout scalability.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Citation Feedback Bar -->
+              <div
+                class="citation-feedback-bar"
+                id="citation-feedback"
+                style="display: none"
+              >
+                <span class="cite-pulse">●</span>
+                <span
+                  >Simulated Citation Attached to Opportunity dossier:
+                  <strong>Linear — Systems Engineer</strong></span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scroll Chapter 3: Client-Side Sandboxing vs Centralized Architecture -->
+      <section class="chapter-section" id="privacy-vault">
+        <div class="container">
+          <div class="chapter-header">
+            <div class="chapter-eyebrow">CHAPTER 03 / STORAGE ARCHITECTURE</div>
+            <h2 class="chapter-title">
+              Client-Side Sandboxing vs. Centralized Cloud Architecture
+            </h2>
+            <p class="chapter-lead">
+              Pathfolio is built on an offline-first client architecture: every
+              opportunity record, deadline, and career evidence note is stored
+              directly in your browser or device sandbox without relying on
+              remote servers.
+            </p>
+          </div>
+
+          <div class="vault-comparison-wrapper">
+            <!-- Interactive Mode Switcher -->
+            <div class="vault-mode-toggle">
+              <button
+                class="mode-btn active"
+                id="btn-mode-pathfolio"
+                type="button"
+              >
+                <span class="mode-beacon green">●</span> Pathfolio Client
+                Sandbox
+              </button>
+              <button class="mode-btn" id="btn-mode-cloud" type="button">
+                <span class="mode-beacon amber">●</span> Centralized Cloud
+                Architecture
+              </button>
+            </div>
+
+            <!-- Architecture Comparison Grid -->
+            <div class="vault-diagram-grid" id="vault-diagram">
+              <!-- Pathfolio View (Default) -->
+              <div class="vault-side vault-pathfolio" id="side-pathfolio">
+                <div class="vault-badge-header">
+                  <span class="vault-status-indicator"
+                    >CLIENT-SIDE SANDBOX</span
+                  >
+                  <span class="vault-metric">DEVICE-ONLY STORAGE</span>
+                </div>
+
+                <div class="diagram-canvas-representation">
+                  <div class="diagram-node node-client">
+                    <div class="node-icon">💻</div>
+                    <div class="node-label">Your Browser / Phone</div>
+                    <div class="node-sub">Sandboxed Local Storage</div>
+                  </div>
+
+                  <div class="diagram-flow">
+                    <div class="flow-line safe-flow">
+                      <span class="flow-label">Direct Local Bus</span>
+                    </div>
+                  </div>
+
+                  <div class="diagram-node node-vault">
+                    <div class="node-icon">🛡️</div>
+                    <div class="node-label">Local JSON Vault</div>
+                    <div class="node-sub">Device-Private Preferences</div>
+                  </div>
+                </div>
+
+                <div class="vault-guarantees">
+                  <div class="guarantee-item">
+                    <span class="g-check">✓</span>
+                    <span
+                      >Zero remote databases, tracking beacons, or mandatory
+                      user accounts</span
+                    >
+                  </div>
+                  <div class="guarantee-item">
+                    <span class="g-check">✓</span>
+                    <span
+                      >Structured JSON backup export & restore allows full data
+                      portability</span
+                    >
+                  </div>
+                  <div class="guarantee-item">
+                    <span class="g-check">✓</span>
+                    <span
+                      >Confirmed Erase All Data action wipes local storage
+                      cleanly on demand</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cloud View (Hidden by default, toggled via JS) -->
+              <div
+                class="vault-side vault-cloud"
+                id="side-cloud"
+                style="display: none"
+              >
+                <div class="vault-badge-header">
+                  <span class="vault-status-indicator warning"
+                    >CENTRALIZED CLOUD ARCHITECTURE</span
+                  >
+                  <span class="vault-metric warning"
+                    >REMOTE STORAGE DEPENDENCY</span
+                  >
+                </div>
+
+                <div class="diagram-canvas-representation">
+                  <div class="diagram-node node-client">
+                    <div class="node-icon">💻</div>
+                    <div class="node-label">Your Machine</div>
+                    <div class="node-sub">Client Front-End</div>
+                  </div>
+
+                  <div class="diagram-flow">
+                    <div class="flow-line remote-flow">
+                      <span class="flow-label remote"
+                        >Public Internet / Remote API</span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="diagram-node node-cloud-leaks">
+                    <div class="node-icon">📡</div>
+                    <div class="node-label">Centralized Cloud Database</div>
+                    <div class="node-sub">Vendor-Managed Infrastructure</div>
+                  </div>
+                </div>
+
+                <div class="vault-guarantees">
+                  <div class="guarantee-item alert">
+                    <span class="g-alert">✕</span>
+                    <span
+                      >Requires mandatory user accounts, credentials, and
+                      constant connectivity</span
+                    >
+                  </div>
+                  <div class="guarantee-item alert">
+                    <span class="g-alert">✕</span>
+                    <span
+                      >Application status, salary targets, and notes stored in
+                      remote cloud databases</span
+                    >
+                  </div>
+                  <div class="guarantee-item alert">
+                    <span class="g-alert">✕</span>
+                    <span
+                      >Subject to remote service outages, API changes, and
+                      vendor data policies</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Product Demonstration: Playable In-Browser Mini-Engine -->
+      <section
+        class="chapter-section interactive-demo-section"
+        id="interactive-demo"
+      >
+        <div class="container">
+          <div class="chapter-header">
+            <div class="chapter-eyebrow">LIVE PLAYABLE MINI-ENGINE</div>
+            <h2 class="chapter-title">
+              Test Pathfolio's Real Engine Right Now
+            </h2>
+            <p class="chapter-lead">
+              Move applications across stages, attach verifiable STAR proof
+              tags, toggle deadlines, and export an actual, valid schema v1 JSON
+              backup you can immediately import into the real app.
+            </p>
+          </div>
+
+          <div class="demo-console-card">
+            <!-- Console Header -->
+            <div class="console-header">
+              <div class="console-tab-group">
+                <span class="console-title"
+                  >WORKSPACE :: DEMO_SESSION_ACTIVE</span
+                >
+                <span class="console-pill">SCHEMA V1.0 VALIDATED</span>
+              </div>
+              <div class="console-actions">
+                <button
+                  type="button"
+                  class="btn btn-outline btn-xs"
+                  id="demo-reset-btn"
+                >
+                  Reset Workspace
+                </button>
+              </div>
+            </div>
+
+            <!-- Console Main Work Area -->
+            <div class="console-grid">
+              <!-- Col 1: Opportunity Selection & Stage Stepper -->
+              <div class="console-col">
+                <h4 class="console-col-title">1. ACTIVE OPPORTUNITY</h4>
+
+                <div class="demo-opp-selector">
+                  <button
+                    type="button"
+                    class="opp-pill-btn active"
+                    data-opp="linear"
+                  >
+                    Linear (Systems)
+                  </button>
+                  <button type="button" class="opp-pill-btn" data-opp="stripe">
+                    Stripe (Infra)
+                  </button>
+                  <button type="button" class="opp-pill-btn" data-opp="figma">
+                    Figma (WebAssembly)
+                  </button>
+                </div>
+
+                <div class="demo-opp-card">
+                  <div class="demo-card-head">
+                    <div>
+                      <h3 id="demo-card-company">Linear</h3>
+                      <p id="demo-card-role">Founding Systems Engineer</p>
+                    </div>
+                    <span class="badge-stage" id="demo-card-stage"
+                      >Screening</span
+                    >
+                  </div>
+
+                  <div class="demo-stage-actions">
+                    <span class="stage-action-label">TRANSITION STAGE:</span>
+                    <div class="stage-btn-wrap">
+                      <button
+                        type="button"
+                        class="stage-step-btn"
+                        data-stage="Saved"
+                      >
+                        Saved
+                      </button>
+                      <button
+                        type="button"
+                        class="stage-step-btn"
+                        data-stage="Applied"
+                      >
+                        Applied
+                      </button>
+                      <button
+                        type="button"
+                        class="stage-step-btn active"
+                        data-stage="Screening"
+                      >
+                        Screening
+                      </button>
+                      <button
+                        type="button"
+                        class="stage-step-btn"
+                        data-stage="Technical"
+                      >
+                        Technical
+                      </button>
+                      <button
+                        type="button"
+                        class="stage-step-btn"
+                        data-stage="Final"
+                      >
+                        Final
+                      </button>
+                      <button
+                        type="button"
+                        class="stage-step-btn"
+                        data-stage="Offer"
+                      >
+                        Offer
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="demo-timeline-box">
+                    <span class="timeline-title">TIMELINE AUDIT LOG:</span>
+                    <ul class="demo-timeline-list" id="demo-timeline-list">
+                      <li>
+                        <span class="time-stamp">2026-11-02 18:30</span> Stage
+                        updated to Screening
+                      </li>
+                      <li>
+                        <span class="time-stamp">2026-11-01 10:15</span>
+                        Application submitted via direct referral
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Col 2: Follow-Up Tasks & Evidence Linking -->
+              <div class="console-col">
+                <h4 class="console-col-title">2. FOLLOW-UP TASKS</h4>
+                <div class="demo-task-box">
+                  <div class="task-summary-chips">
+                    <span class="task-chip overdue" id="demo-overdue-count"
+                      >1 Overdue</span
+                    >
+                    <span class="task-chip upcoming" id="demo-upcoming-count"
+                      >2 Upcoming</span
+                    >
+                  </div>
+
+                  <ul class="demo-task-list" id="demo-task-list">
+                    <li class="demo-task-item">
+                      <label class="task-label">
+                        <input type="checkbox" class="task-chk" checked />
+                        <span>Submit technical assessment repo</span>
+                      </label>
+                      <span class="task-badge badge-done">Completed</span>
+                    </li>
+                    <li class="demo-task-item">
+                      <label class="task-label">
+                        <input type="checkbox" class="task-chk" />
+                        <span>Send interview debrief thank-you note</span>
+                      </label>
+                      <span class="task-badge badge-due">Due Tomorrow</span>
+                    </li>
+                    <li class="demo-task-item">
+                      <label class="task-label">
+                        <input type="checkbox" class="task-chk" />
+                        <span>Review distributed lock architecture</span>
+                      </label>
+                      <span class="task-badge badge-urgent">Overdue</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <h4 class="console-col-title" style="margin-top: 1.5rem">
+                  3. EVIDENCE ATTACHMENTS
+                </h4>
+                <div class="demo-evidence-selector">
+                  <button
+                    type="button"
+                    class="evidence-tag-btn active"
+                    data-ev="latency"
+                  >
+                    <span>⚡ p99 Latency -40%</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="evidence-tag-btn"
+                    data-ev="migration"
+                  >
+                    <span>🛡️ v1 Schema Migration</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="evidence-tag-btn"
+                    data-ev="streams"
+                  >
+                    <span>💾 Redis Event Pipeline</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Console Footer & Real JSON Export -->
+            <div class="console-footer">
+              <div class="footer-status-text">
+                <span
+                  >● Local State:
+                  <strong>Atomic In-Memory Preview</strong></span
+                >
+                <span>• Ready for Physical Transfer</span>
+              </div>
+              <div class="console-footer-actions">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  id="demo-export-json-btn"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"
+                    />
+                  </svg>
+                  <span>Export Real Pathfolio v1 JSON Backup</span>
+                </button>
+                <a href="/app/" class="btn btn-outline">
+                  <span>Open in Full Web App →</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Inside the Workspace: Real App Screenshots -->
+      <section class="chapter-section product-tour" id="app-tour">
+        <div class="container">
+          <div class="chapter-header">
+            <div class="chapter-eyebrow">INSIDE THE WORKSPACE</div>
+            <h2 class="chapter-title">
+              Real Screens from the Production Build
+            </h2>
+            <p class="chapter-lead">
+              Every view below is captured directly from the live Flutter engine
+              running the optional, clearly marked demo workspace. Your
+              production workspace initializes clean and empty.
+            </p>
+          </div>
+
+          <div class="tour-grid">
+            <figure class="tour-shot tour-shot-wide">
+              <img
+                src="screenshots/dashboard-desktop-1440.png"
+                alt="Pathfolio desktop command center dashboard showing application stages, upcoming tasks, and recent chronological activity"
+                loading="lazy"
+                width="1800"
+                height="916"
+              />
+              <figcaption>
+                <strong>01 / Panoramic Command Dashboard</strong>
+                <span
+                  >Immediate visibility over stage counts, urgent deadlines, and
+                  recent chronological transitions.</span
+                >
+              </figcaption>
+            </figure>
+
+            <figure class="tour-shot">
+              <img
+                src="screenshots/evidence-desktop-1440.png"
+                alt="Pathfolio career evidence bank with reusable tagged technical achievements"
+                loading="lazy"
+                width="1800"
+                height="916"
+              />
+              <figcaption>
+                <strong>02 / Verifiable Evidence Bank</strong>
+                <span
+                  >Curate concrete technical accomplishments and cite them
+                  directly in interviews without uploading documents.</span
+                >
+              </figcaption>
+            </figure>
+
+            <figure class="tour-shot tour-shot-phone">
+              <img
+                src="screenshots/app-mobile-390.png"
+                alt="Pathfolio responsive mobile experience displayed on an iPhone 390px viewport"
+                loading="lazy"
+                width="628"
+                height="915"
+              />
+              <figcaption>
+                <strong>03 / Pocket Command Center</strong>
+                <span
+                  >Responsive touch ergonomics, haptic-friendly buttons, and
+                  seamless offline access on mobile devices.</span
+                >
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features & Technical Guarantees Grid -->
+      <section class="chapter-section features-section" id="features">
+        <div class="container">
+          <div class="chapter-header">
+            <div class="chapter-eyebrow">CORE ARCHITECTURE</div>
+            <h2 class="chapter-title">
+              Engineered for Technical Focus & Absolute Privacy
+            </h2>
+            <p class="chapter-lead">
+              Built from scratch to eliminate the bloat, ads, and privacy
+              violations of contemporary career platforms.
+            </p>
+          </div>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-icon">📊</div>
+              <h3>Structured 6-Stage Pipeline</h3>
+              <p>
+                Move opportunities cleanly between Saved, Applied, Screening,
+                Technical, Final, and Offer. Every transition logs a dated audit
+                trail in local history.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">⏰</div>
+              <h3>Follow-ups & Overdue Alerts</h3>
+              <p>
+                Never drop recruiter communications or miss take-home deadlines.
+                The dashboard dynamically flags overdue and upcoming tasks
+                calculated strictly against local system time.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">⭐</div>
+              <h3>STAR Career Evidence Bank</h3>
+              <p>
+                Structure your career accomplishments into Situation, Task,
+                Action, and Result. Search by technical skill tags and cite
+                directly during interviews.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🛡️</div>
+              <h3>100% Local-First Storage</h3>
+              <p>
+                Zero cloud servers, zero tracking cookies, zero analytics
+                beacons. All application records remain sandboxed within your
+                browser or Android device.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">📦</div>
+              <h3>Atomic Schema v1 JSON Backups</h3>
+              <p>
+                Export a structured, schema-validated JSON snapshot anytime.
+                Restore seamlessly across browsers and devices with count
+                previews and atomic commits designed to reject malformed files.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">⌨️</div>
+              <h3>Tactile Editorial Craft</h3>
+              <p>
+                Warm porcelain surfaces, deep ink typography, high-contrast
+                text, visible focus rings, keyboard navigation (Tab, Enter,
+                Esc), and strict respect for system reduced-motion preferences.
+              </p>
+            </div>
+          </div>
+
+          <!-- Privacy Callout Banner -->
+          <div class="privacy-banner">
+            <div>
+              <h3>Your sensitive career trajectory stays entirely yours.</h3>
+              <p>
+                Unlike centralized recruiting portals that require cloud
+                databases, Pathfolio runs completely client-side in your local
+                device sandbox. We do not operate a remote user database, so
+                your private notes never leave your machine.
+              </p>
+            </div>
+            <div>
+              <a href="privacy.html" class="btn btn-outline"
+                >Read Technical Privacy Guarantee →</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="footer-brand-col">
+          <a href="/" class="brand-link">
+            <div class="brand-icon">P</div>
+            <span class="brand-name">Pathfolio</span>
+          </a>
+          <p class="footer-bio">
+            A private, offline-first career command center for early-career
+            software engineers. Built with Flutter and Web Standards.
+          </p>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>PLATFORM</h4>
+          <a href="/app/">Launch Web App</a>
+          <a
+            href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk"
+            >Download Android APK</a
+          >
+          <a href="#flight-path">Flight Path Pipeline</a>
+          <a href="#star-matrix">STAR Evidence Bank</a>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>DOCUMENTATION</h4>
+          <a href="guide.html">User Guide & STAR Method</a>
+          <a href="privacy.html">Privacy Architecture</a>
+          <a
+            href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
+            target="_blank"
+            rel="noopener"
+            >GitHub Repository</a
+          >
+          <a
+            href="https://github.com/Sayantan-Sinha-GIT/pathfolio/blob/main/LICENSE"
+            target="_blank"
+            rel="noopener"
+            >MIT License</a
+          >
+        </div>
       </div>
 
-      <div class="footer-links-col">
-        <h4>DOCUMENTATION</h4>
-        <a href="guide.html">User Guide & STAR Method</a>
-        <a href="privacy.html">Privacy Architecture</a>
-        <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio" target="_blank" rel="noopener">GitHub Repository</a>
-        <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+      <div class="footer-bottom">
+        <div class="container footer-bottom-container">
+          <span>MIT Licensed • Open Source • Independent • 2026 Pathfolio</span>
+          <span>Built by Sayantan Sinha</span>
+        </div>
       </div>
-    </div>
+    </footer>
 
-    <div class="footer-bottom">
-      <div class="container footer-bottom-container">
-        <span>MIT Licensed • Open Source • Independent • 2026 Pathfolio</span>
-        <span>Built by Sayantan Sinha</span>
-      </div>
-    </div>
-  </footer>
-
-  <script src="app.js"></script>
-</body>
+    <script src="app.js"></script>
+  </body>
 </html>
