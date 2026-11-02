@@ -2,7 +2,7 @@
 
 ## Selected Stack & Architecture
 - **App Platform**: Flutter 3.47.7 (Android release APK + Web at `/app/`).
-- **Marketing Site**: Web-native semantic HTML5, CSS3, vanilla JS (responsive, dark/light aware, accessibility-focused, portfolio-grade editorial aesthetic).
+- **Marketing Site**: Web-native semantic HTML5, CSS3, vanilla JS (cinematic motion constellation, 6-stage flight path, STAR matrix, privacy vault, playable in-browser mini-engine with real schema v1 JSON export, dark/light aware, WCAG AA).
 - **Storage**: Local-only client persistence (`shared_preferences` + structured repository abstraction with atomic commits and schema validation). Zero cloud database, zero telemetry, full offline capability.
 - **Hosting & Deployment**: Cloudflare Pages Direct Upload via authenticated Wrangler (`srimantasutapa123@gmail.com`). Marketing site at root `/`, Flutter web app at `/app/` with SPA routing redirect fallback.
 - **VCS & Release**: GitHub repository under `Sayantan-Sinha-GIT`, GitHub Actions CI workflow, signed/release Android APK, GitHub Release with attached APK, then flipped to public.
@@ -11,12 +11,10 @@
 1. **Foundation & Setup**: Workspace layout (`app/`, `site/`, `dist/`), Flutter app bootstrap, marketing site scaffold, git setup. [COMPLETE]
 2. **Core App Implementation**: Models, repository layer, atomic persistence, schema v1 validation, pipeline state machine, task engine, evidence bank, demo workspace manager, export/import engine, settings/erase. [COMPLETE]
 3. **Responsive Editorial UI**: Design system (porcelain surfaces, deep ink, terracotta accent, typography, tactile interactions), dashboard, pipeline board/list, opportunity detail & timeline, task drawer/modal, evidence selector, onboarding & help, keyboard shortcuts, reduced-motion. [COMPLETE]
-4. **Marketing Site Craft**: High-fidelity landing page, interactive showcase, usage guide, privacy disclosure, live app launcher, APK download anchor. [COMPLETE]
-5. **Section 4A — Visual Review Loop (4 Iterations)**:
-   - Iteration 1: Composition (1440x900 desktop, 1024x768 tablet, 390x844 mobile, 320px narrow). [COMPLETE]
-   - Iteration 2: Interaction (navigation, forms, dialogs, empty/error states, keyboard/focus, touch targets). [COMPLETE]
-   - Iteration 3: Craft (editorial styling, typography, copy refinement, micro-interactions). [COMPLETE]
-   - Iteration 4: Release & Breakpoints (full anchor journey, zoom/scale, real data, deployment parity). [COMPLETE]
+4. **Marketing Site Craft & Cinematic Motion**: Living constellation canvas (drifting telemetry nodes, proximity filaments, interactive gravity), choreographed hero command deck, 3 scroll chapters (Flight Path, STAR Matrix, Privacy Vault), playable in-browser workspace with authentic schema v1 JSON export, usage guide, privacy disclosure. [COMPLETE]
+5. **Section 4A — Visual & Motion Review Loops**:
+   - App Visual Loop (4 Iterations): Composition, Interaction, Craft, Release & Breakpoints. [COMPLETE]
+   - Website Cinematic Motion Loop (6 Rounds): Motion Delta (`t0` vs `t2`), Controls & Interaction, Craft & Theme Duality, Responsive Breakpoints (1440/1024/390/320), Motion Performance & Reduced-Motion (144 FPS rAF, offscreen pause, static fallback), Final Integration & Deployed Parity. [COMPLETE]
 6. **Section 5 — Bounded Test Loop (3 Iterations + Regression)**:
    - Automated unit/widget test suite (39 automated tests passing). [COMPLETE]
    - Iteration 1: 15 distinct cases + frozen CORE suite (11 cases). [COMPLETE]
@@ -26,8 +24,8 @@
 7. **Production Builds & Cloudflare Pages Deployment**:
    - Flutter web build with `--base-href /app/`. [COMPLETE]
    - Android release APK build (`flutter build apk --release` -> 50.8 MB). [COMPLETE]
-   - Direct upload to Cloudflare Pages via Wrangler (`https://pathfolio.pages.dev/`). [COMPLETE]
-   - Live browser verification at public Pages URL. [COMPLETE]
+   - Direct upload to Cloudflare Pages via Wrangler (`https://pathfolio.pages.dev/`). [DEPLOYING UPDATED BUNDLE]
+   - Live browser verification at public Pages URL. [IN PROGRESS]
 8. **GitHub Publication & Release**:
    - GitHub Actions CI workflow configured and passing green on Ubuntu runner. [COMPLETE]
    - Secret scan verified clean, zero credentials or tokens in git history. [COMPLETE]
@@ -48,7 +46,7 @@
 | M08 | Privacy controls (local-only storage, export date, theme/motion, confirmed erase) | high | verified | `test/backup_restore_and_privacy_test.dart#L125`, `screenshots/settings-desktop-1440.png` |
 | M09 | Onboarding and help (first-run explainer, local storage notice, empty workspace, guide) | must | verified | `test/widget_test.dart#L23`, `screenshots/app-onboarding-desktop-1440.png` |
 | M10 | Cross-platform UX (responsive Android + Web, contrast, focus, safe areas, 320px-1440px) | must | verified | `test/widget_test.dart#L10`, `screenshots/app-mobile-320.png` |
-| M11 | Public website (distinctive landing page, screenshots, privacy & guide, launch CTA) | must | verified | `https://pathfolio.pages.dev`, `https://pathfolio.pages.dev/privacy.html` |
+| M11 | Public website (distinctive landing page, cinematic motion, screenshots, privacy & guide, launch CTA) | must | verified | `https://pathfolio.pages.dev`, `MOTION_SPEC.md`, `MOTION_REVIEW.md`, `UI_REVIEW.md` |
 | M12 | Release (Cloudflare Pages live, Android APK, GitHub private->public, CI pass, Release) | artifact | verified | Live deployment at `https://pathfolio.pages.dev/app/`, APK at `app/build/app/outputs/flutter-apk/app-release.apk` |
 
 ## Test Iteration Ledger

@@ -31,6 +31,7 @@ node_modules/
 .wrangler/
 
 # IDE & OS
+*.bak
 .idea/
 .vscode/
 *.iml
