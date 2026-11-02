@@ -40,22 +40,24 @@
 - **Repeated Anchor Check**: Verified transition across all 5 interactive modules.
 
 ### Round 3 — CRAFT & EDITORIAL THEME DUALITY
-- **Inspected**: Visual polish, typography, letter-spacing, and dark/light theme switching.
+- **Inspected**: Visual polish, typography, letter-spacing, and dark/light theme switching on desktop and 390px mobile.
 - **Observed Evidence**:
-  - Theme Toggle: Clicking `#theme-toggle` switches from Tactical Deep Ink (`#0B0D11`) to Warm Editorial Porcelain (`#FAF8F5`) with smooth 400ms CSS transitions (`screenshots/site-desktop-light-theme.png`).
+  - Theme Toggle: Resolved CSS selector conflict (`.theme-icon-sun { display: none; }` / `:root[data-theme="light"] .theme-icon-moon { display: none; }`) that previously caused the button to appear as a blank square. The toggle button now dynamically renders an explicit 20×20 `<svg class="theme-icon">` with `currentColor` stroke, visible Sun in dark mode (`aria-label="Switch to light theme"`), and visible Moon in light mode (`aria-label="Switch to dark theme"`).
+  - Theme Switching: Clicking `#theme-toggle` switches from Tactical Deep Ink (`#0B0D11`) to Warm Editorial Porcelain (`#FAF8F5`) with smooth 400ms CSS transitions (`screenshots/site-desktop-light-theme.png`, `screenshots/site-desktop-theme-toggle.png`).
   - Font Hierarchy: Monospace technical labels (`ui-monospace`), crisp display headings (`-apple-system`), and editorial body copy maintain high readability across both modes.
   - Micro-interactions: Laser-etched hairline borders (`--surface-border`), glowing status beacons, and hover elevations respond cleanly without jank.
-- **Defects & Corrections**: Verified theme icon toggles between sun and moon SVGs and persists preference to `localStorage['pathfolio-site-theme']`.
+- **Defects & Corrections**: Blank square icon corrected; theme button verified at 20×20 bounding box with visible SVG stroke in both themes and updated accessible labels.
 - **Repeated Anchor Check**: Tested complete hero, flight path, and demo console in both light and dark themes.
 
 ### Round 4 — RELEASE & RESPONSIVE BREAKPOINTS
 - **Inspected**: 1440×900 desktop, 1024×768 tablet, 390×844 mobile, and 320×600 narrow mobile.
 - **Observed Evidence**:
   - 1024px Tablet: Two-column grid wraps cleanly; canvas scales particle density; zero horizontal overflow (`scrollWidth: 1011px <= innerWidth: 1026px`).
-  - 390px Mobile (`screenshots/site-mobile-390-hero.png`, `screenshots/site-mobile-390-flight.png`, `screenshots/site-mobile-390-demo.png`): Header collapses nav to clean brand + theme toggle + Launch CTA; hero displays full-width tactile action buttons; flight runway displays 2-column touch tiles; interactive console stacks vertically with easy thumb reach.
+  - 390px Mobile (`screenshots/site-mobile-390-hero.png`, `screenshots/site-mobile-390-header.png`, `screenshots/site-mobile-390-menu-open.png`): Header now features an accessible mobile navigation button (`#mobile-menu-toggle`), visible theme toggle icon, and retained *"Launch App →"* CTA. Clicking the menu toggle opens the slide-down navigation panel (`#mobile-nav`) containing 8 direct section and document links. Clicking any section link smoothly scrolls to the target and automatically dismisses the menu; menu also closes on Escape key and outside click.
+  - Sticky Header Anchor Offsets: Added `scroll-padding-top: 5rem` and `scroll-margin-top: 5rem` across all sections (`#flight-path`, `#star-matrix`, `#privacy-vault`, `#interactive-demo`, `#app-tour`). Clicking any section anchor scrolls to the exact position with the section title completely visible below the 68px sticky header (target top `236.8px > 68px`, zero obscuring).
   - 320px Narrow (`screenshots/site-narrow-320.png`): Zero horizontal overflow; font sizes adjust gracefully; all cards and buttons stay within screen boundaries without clipping.
-- **Defects & Corrections**: None; verified touch friendliness and responsive text scaling.
-- **Repeated Anchor Check**: Anchor journey navigable on both desktop and mobile viewports.
+- **Defects & Corrections**: Added missing mobile section navigation drawer; corrected sticky header anchor scroll offsets.
+- **Repeated Anchor Check**: Anchor journey navigable on both desktop and mobile viewports with full section access.
 
 ### Round 5 — MOTION PERFORMANCE & REDUCED-MOTION
 - **Inspected**: Frame pacing, throttled rAF loop, IntersectionObserver offscreen pausing, tab visibility handlers, and `prefers-reduced-motion` compliance.
@@ -74,9 +76,25 @@
     - 0% Hero (`screenshots/site-desktop-1440-t0.png`)
     - 25% Scroll (`screenshots/site-desktop-1440-scroll25.png`): Flight Path Pipeline
     - 50% Scroll (`screenshots/site-desktop-1440-scroll50.png`): STAR Evidence Matrix
-    - 75% Scroll (`screenshots/site-desktop-1440-scroll75.png`): Zero-Knowledge Privacy Vault
+    - 75% Scroll (`screenshots/site-desktop-1440-scroll75.png`): Client-Side Sandboxing vs. Centralized Architecture
     - 100% Scroll / Demo (`screenshots/site-desktop-1440-demo.png`): Playable In-Browser Console
   - Live Routing Parity: Navigating to `/app/` loads the Flutter Web Application with 200 OK via `_redirects` SPA fallback; user guide at `/guide.html` and privacy disclosure at `/privacy.html` load cleanly with shared aesthetic and functioning theme toggle.
   - Public Assets: Verified direct links to latest Android APK release (`app-release.apk`) and GitHub repository (`Sayantan-Sinha-GIT/pathfolio`).
 - **Defects & Corrections**: None; production build completely verified and ready for deployment.
 - **Repeated Anchor Check**: End-to-end user path verified from marketing site directly into working Flutter workspace.
+
+---
+
+## Marketing & Privacy Claim Audit Log
+
+| Audited Claim | Initial Claim | Reality in Flutter App & Measurements | Correction Applied |
+| :--- | :--- | :--- | :--- |
+| **Local Storage Encryption** | “Local JSON Vault Encrypted Client-Side” | Flutter app uses sandboxed browser `shared_preferences` / Android app preferences without custom application-level AES/cipher encryption. | Changed to **“Sandboxed Local Storage (Device-Private)”**. Removed all claims of client-side encryption. |
+| **Network Transmission** | “0 external packets transmitted” / “0 NETWORK CALLS” | While zero user application data or career notes leave the client, loading the web site itself exchanges static HTTP packets with Cloudflare / CDN. | Changed to **“Zero Remote Trackers & Zero Logins”** / **“No User Data Transmitted”**. |
+| **Backup Integrity** | “cryptographically clean backup” | Backups are versioned JSON format (`schemaVersion: 1`), validated by field types and required schemas; no cryptographic signatures/HMACs are used. | Changed to **“Structured, Schema-Validated JSON Backups”**. Removed "cryptographically clean". |
+| **Data Corruption** | “zero data corruption risk” | Schema validation and atomic commit prevent partial imports; absolute "zero risk" is technically unverifiable against OS crashes or storage failures. | Softened to **“Atomic replacement and schema validation designed to prevent partial imports”**. |
+| **Milestone Immutability** | “immutable timestamped milestones” | Timestamps are local `DateTime.now()` entries in JSON; users can edit exports or erase records. | Changed to **“Chronological timestamped milestones”**. Removed "immutable". |
+| **Accessibility Standards** | “WCAG AA” | High contrast ratios and keyboard focus navigation are verified, but claiming certified WCAG AA requires a comprehensive formal third-party audit. | Softened to **“High-contrast text, visible focus rings, and keyboard navigation”**. |
+| **Competitive Platform Assertions** | “14+ THIRD PARTIES”, “Data Sold”, “Unencrypted ATS Telemetry” | Sweeping, unsubstantiated claims about third-party commercial platforms. | Replaced with objective architectural comparison: **“Centralized Cloud Storage vs. Local-First Architecture”**, focusing on remote server dependencies and account requirements. |
+
+

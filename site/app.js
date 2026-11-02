@@ -7,11 +7,13 @@
  * 4. Chapter 02: STAR Evidence Matrix (interactive accomplishment selector & interview citation simulator)
  * 5. Chapter 03: Zero-Knowledge Privacy Vault (side-by-side local shield vs. cloud leakage comparison)
  * 6. Interactive Demonstration Console (playable in-browser workspace with real schema v1 JSON export)
- * 7. System theme coordination & prefers-reduced-motion compliance
+ * 7. Mobile Navigation Drawer & accessible menu toggle
+ * 8. System theme coordination & prefers-reduced-motion compliance
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
+  initMobileNav();
   initLivingCanvas();
   initHeroTacticalDeck();
   initFlightPathRunway();
@@ -21,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ==========================================================================
-   0. Theme Management
+   0. Theme Management & Mobile Nav
    ========================================================================== */
 function initTheme() {
   const themeBtn = document.getElementById('theme-toggle');
@@ -45,10 +47,73 @@ function initTheme() {
 
   function updateThemeIcon(theme) {
     if (!themeBtn) return;
-    themeBtn.innerHTML = theme === 'dark'
-      ? '<svg class="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>'
-      : '<svg class="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+    const isDark = theme === 'dark';
+    themeBtn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+    themeBtn.setAttribute('title', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+    themeBtn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+    themeBtn.innerHTML = isDark
+      ? '<svg class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
+      : '<svg class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
   }
+}
+
+function initMobileNav() {
+  const menuToggle = document.getElementById('mobile-menu-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+  if (!menuToggle || !mobileNav) return;
+
+  const iconBars = menuToggle.querySelector('.menu-icon-bars');
+  const iconClose = menuToggle.querySelector('.menu-icon-close');
+
+  function openMenu() {
+    mobileNav.removeAttribute('hidden');
+    menuToggle.setAttribute('aria-expanded', 'true');
+    menuToggle.setAttribute('aria-label', 'Close navigation menu');
+    if (iconBars) iconBars.style.display = 'none';
+    if (iconClose) iconClose.style.display = 'block';
+  }
+
+  function closeMenu() {
+    mobileNav.setAttribute('hidden', '');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.setAttribute('aria-label', 'Open navigation menu');
+    if (iconBars) iconBars.style.display = 'block';
+    if (iconClose) iconClose.style.display = 'none';
+  }
+
+  menuToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    if (isExpanded) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  });
+
+  // Close when clicking any link
+  mobileNav.querySelectorAll('.mobile-nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      closeMenu();
+    });
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menuToggle.getAttribute('aria-expanded') === 'true') {
+      closeMenu();
+      menuToggle.focus();
+    }
+  });
+
+  // Close on click outside
+  document.addEventListener('click', (e) => {
+    if (menuToggle.getAttribute('aria-expanded') === 'true' &&
+        !mobileNav.contains(e.target) &&
+        !menuToggle.contains(e.target)) {
+      closeMenu();
+    }
+  });
 }
 
 /* ==========================================================================
@@ -70,7 +135,7 @@ function initLivingCanvas() {
   const evidenceLabels = [
     'p99 -42%', 'v1 schema', 'zero-downtime', '4.2M events',
     'local-vault', '15k req/s', 'distributed-lock', 'atomic-import',
-    'indexedDB', 'WCAG AA', 'offline-first', 'zero-cloud-leak',
+    'indexedDB', 'Accessible-UI', 'offline-first', 'local-first',
     'Wasm-core', 'p50 -65%', 'async-buffer', 'event-stream'
   ];
 
@@ -400,7 +465,7 @@ function initHeroTacticalDeck() {
       name: 'Offer',
       progress: '100%',
       badge: 'Offer Extended',
-      log: 'Formal offer received: $165,000 + Equity. Zero external tracking data leaked.'
+      log: 'Formal offer received: $165,000 + Equity. 100% Client-side local storage maintained.'
     }
   ];
 
@@ -661,7 +726,7 @@ function initStarMatrix() {
       title: 'Executed Zero-Downtime Migration of 12M Relational Records',
       situation: 'Legacy monolith database schema reached connection saturation and lacked foreign key indexing on user audit trails, causing table locks.',
       task: 'Migrate 12M active user records to a partitioned schema without taking the production API offline or dropping concurrent transactions.',
-      action: 'Engineered dual-write shadow pipelines with write-ahead replication, background batch backfilling, and cryptographic checksum validation.',
+      action: 'Engineered dual-write shadow pipelines with write-ahead replication, background batch backfilling, and checksum validation.',
       result: '100% data integrity verified across all 12M rows. Zero minutes of downtime or client connection timeouts during cutover.'
     },
     caching: {
