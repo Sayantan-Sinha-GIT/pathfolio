@@ -75,7 +75,7 @@ class AppTheme {
         outline: AppColors.lightBorder,
         outlineVariant: AppColors.lightBorderStrong,
       ),
-      fontFamily: 'Segoe UI',
+      fontFamily: 'Plus Jakarta Sans',
       textTheme: const TextTheme(
         headlineLarge: TextStyle(
           fontSize: 32,
@@ -208,7 +208,7 @@ class AppTheme {
         outline: AppColors.darkBorder,
         outlineVariant: AppColors.darkBorderStrong,
       ),
-      fontFamily: 'Segoe UI',
+      fontFamily: 'Plus Jakarta Sans',
       textTheme: const TextTheme(
         headlineLarge: TextStyle(
           fontSize: 32,

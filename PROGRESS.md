@@ -37,13 +37,18 @@
    - `CHECK_QUALITY_CASES.ps1` quality gate: READY (44 distinct cases). [COMPLETE]
 7. **Production Builds & Cloudflare Pages Deployment**:
    - Flutter web build with `--base-href /app/`. [COMPLETE]
-   - Android release APK build (`flutter build apk --release` -> 50.8 MB). [COMPLETE]
-   - Direct upload to Cloudflare Pages via Wrangler (`https://pathfolio.pages.dev/`). [READY TO DEPLOY]
-   - Live browser verification at public Pages URL. [IN PROGRESS]
+   - Android release APK build (`flutter build apk --release` -> 51.0 MB). [COMPLETE]
+   - Direct upload to Cloudflare Pages via Wrangler (`https://pathfolio.pages.dev/`). [COMPLETE]
+   - Live browser verification at public Pages URL (`innerWidth: 390px, scrollWidth: 390px`, zero overflow, all drawer links working). [COMPLETE]
 8. **GitHub Publication & Release**:
    - GitHub Actions CI workflow passing. [COMPLETE]
    - Secret scan clean. [COMPLETE]
-   - GitHub Release updated with new APK artifact. [READY]
+   - GitHub Release `v1.0.1` updated with new release APK artifact. [COMPLETE]
+9. **QA Hardening & Mobile Containment**:
+   - 390px mobile viewport: eliminated 468px overflow, moved drawer outside sticky header containing block to body root with 780px height, verified all 9 links visible and clickable. [COMPLETE]
+   - Storage truth alignment: confirmed `shared_preferences` storage, removed all unverified claims of Keystore, IndexedDB guarantees, or hardware encryption. [COMPLETE]
+   - Stage lifecycle alignment: aligned interactive demo and copy to `JobStage.rejected`. [COMPLETE]
+   - Typography parity: bundled SIL Open Font License Plus Jakarta Sans and Fraunces in Flutter app, replaced Segoe UI. [COMPLETE]
 
 ## Feature Ledger (PRD Must Behaviors)
 

@@ -99,27 +99,27 @@
           <a href="/app/" class="btn btn-primary">Launch App →</a>
         </div>
       </div>
-
-      <!-- Mobile Navigation Drawer -->
-      <nav id="mobile-nav" class="mobile-nav-drawer" aria-label="Mobile Navigation">
-        <div class="mobile-drawer-links">
-          <a href="/" class="mobile-drawer-link">01 // Home Dossier</a>
-          <a href="/#milestones" class="mobile-drawer-link">02 // Milestone Rail</a>
-          <a href="/#star-matrix" class="mobile-drawer-link">03 // STAR Evidence</a>
-          <a href="/#privacy-vault" class="mobile-drawer-link">04 // Sovereign Privacy</a>
-          <a href="guide.html" class="mobile-drawer-link">User Guide & Strategy</a>
-          <a href="privacy.html" class="mobile-drawer-link">Privacy Architecture</a>
-          <a
-            href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
-            class="mobile-drawer-link"
-            target="_blank"
-            rel="noopener"
-            >GitHub Repository</a
-          >
-        </div>
-        <a href="/app/" class="btn btn-primary" style="width: 100%;">Launch Web App →</a>
-      </nav>
     </header>
+
+    <!-- Mobile Navigation Drawer -->
+    <nav id="mobile-nav" class="mobile-nav-drawer" aria-label="Mobile Navigation">
+      <div class="mobile-drawer-links">
+        <a href="/" class="mobile-drawer-link">01 // Home Dossier</a>
+        <a href="/#milestones" class="mobile-drawer-link">02 // Milestone Rail</a>
+        <a href="/#star-matrix" class="mobile-drawer-link">03 // STAR Evidence</a>
+        <a href="/#privacy-vault" class="mobile-drawer-link">04 // Sovereign Privacy</a>
+        <a href="guide.html" class="mobile-drawer-link">User Guide & Strategy</a>
+        <a href="privacy.html" class="mobile-drawer-link">Privacy Architecture</a>
+        <a
+          href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
+          class="mobile-drawer-link"
+          target="_blank"
+          rel="noopener"
+          >GitHub Repository</a
+        >
+      </div>
+      <a href="/app/" class="btn btn-primary" style="width: 100%;">Launch Web App →</a>
+    </nav>
 
     <main class="reading-page-main" id="main-content">
       <div class="container reading-container">
@@ -142,12 +142,12 @@
             <li><strong>Screening:</strong> Recruiter introductory call or automated coding assessment (e.g., CodeSignal, HackerRank). Prepare talking points on your recent technical projects.</li>
             <li><strong>Interview:</strong> Active technical loops in progress (data structures & algorithms, systems architecture, live coding, and hiring manager behavioral sessions).</li>
             <li><strong>Offer:</strong> Formal written offer extended. Track base compensation, equity grants, signing bonuses, and decision deadlines with complete local privacy.</li>
-            <li><strong>Concluded:</strong> Concluded or rejected applications. Keeping structured debrief notes helps identify patterns to improve in future hiring loops.</li>
+            <li><strong>Rejected:</strong> Concluded applications. Keeping structured debrief notes helps identify patterns to improve in future hiring loops.</li>
           </ol>
           <div class="callout-box">
             <h4>Automatic Timeline Tracking</h4>
             <p>
-              Moving an opportunity between stages automatically logs an immutable dated entry in the <em>Activity History</em> timeline so you can measure your cycle velocity and average days per stage.
+              Moving an opportunity between stages automatically logs a dated entry in the <em>Activity History</em> timeline so you can measure your cycle velocity and average days per stage.
             </p>
           </div>
         </section>
@@ -160,7 +160,7 @@
           <ul>
             <li>Attach actionable tasks with target completion dates (e.g. <em>"Send thank-you email to engineering manager"</em>, <em>"Submit take-home system design repo"</em>).</li>
             <li>Tasks past today's calendar date automatically surface on your dashboard under the <strong>Overdue Actions</strong> badge with high-contrast alert indicators.</li>
-            <li>Completing a task instantly updates your pending badge counts and logs a verified completion event in your local audit trail.</li>
+            <li>Completing a task instantly updates your pending badge counts and logs a completion event in your local activity history.</li>
           </ul>
         </section>
 
@@ -190,7 +190,7 @@
           <ul>
             <li>Go to <strong>Settings → Export Backup</strong> to generate a validated JSON schema v1 backup file.</li>
             <li>To restore, select <strong>Import Backup</strong>: Pathfolio validates schema integrity, field types, and count statistics before replacing current data atomically.</li>
-            <li>All writes are committed as a single immutable snapshot, preventing partial corrupted state.</li>
+            <li>All writes are committed as a single consistent snapshot, preventing partial corrupted state.</li>
           </ul>
         </section>
 

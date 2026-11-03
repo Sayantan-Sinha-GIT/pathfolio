@@ -60,7 +60,7 @@
 - **Phase 2 (0.4s - 0.8s)**: Editorial headline fades and rises smoothly into place with Fraunces letterform rendering.
 - **Phase 3 (0.7s - 1.1s)**: Executive lead copy and action button group transition smoothly into place.
 - **Phase 4 (0.9s - 1.6s & continuous)**: The Kinetic Dossier Card reveals its interactive milestone rail:
-  - 6 milestone stations (`Saved`, `Applied`, `Screening`, `Interview`, `Offer`, `Accepted`).
+  - 6 milestone stations (`Saved`, `Applied`, `Screening`, `Interview`, `Offer`, `Rejected`).
   - Active milestone indicator smoothly slides across stages.
   - Attached STAR evidence badge displays quantifiable impact metrics (*"Reduced p99 latency by 38% under 15k req/s"*).
   - Users can scrub forward and backward through milestones, immediately seeing candidate timeline history update.

@@ -32,7 +32,28 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | 1. Composition & Motifs | Hero, Milestone Dossier at 1440×900 | Browser DevTools Viewport Check | Homepage copied CodeSense cosmic graph, dark void, and orange filaments; lacked unique product metaphor | Overhauled visual world to Kinetic Career Dossier: warm porcelain `#F8F7F4`, Alpine Verdigris `#134E43`, architectural drafting grid with kinetic guide rails | Display headline in `Fraunces` serif immediately readable before animation completes; primary CTA prominent above fold | Passed |
 | 2. Self-Hosted Typography | Computed styles across all elements (`h1`, `h2`, `p`, `button`, `code`) | `document.fonts` inspection in DevTools | System fonts were used without self-hosted loading, causing fallback shifts | Self-hosted 8 woff2 files in `/fonts/` (`Fraunces` 600/700, `Plus Jakarta Sans` 400/500/600/700, `JetBrains Mono` 400/500); verified `status: "loaded"` in browser | Clean typography hierarchy with zero external font requests | Passed |
-| 3. Interaction & Scrubber | Hero Scrubber, Milestone Stations, Profile Cycling | Browser automation inspection | Stepper was static mock; lacked candidate switching | Built dynamic milestone controller in `site/app.js`: clicking stations or prev/next advances fill width, badge, and audit log; cycles realistic candidate profiles | Tested full progression (Saved → Applied → Screening → Interview → Offer → Accepted) | Passed |
+| 3. Interaction & Scrubber | Hero Scrubber, Milestone Stations, Profile Cycling | Browser automation inspection | Stepper was static mock; lacked candidate switching | Built dynamic milestone controller in `site/app.js`: clicking stations or prev/next advances fill width, badge, and audit log; cycles realistic candidate profiles | Tested full progression (Saved → Applied → Screening → Interview → Offer → Rejected) | Passed |
 | 4. Scroll Narrative & Chapters | 6-Stage Runway, STAR Matrix, Privacy Vault, Schema Inspector | Browser automation inspection | App tour grid and schema inspector button overflowed on smaller widths | Added `.app-tour-grid` responsive class; flex-wrapped schema inspector header; connected STAR filter tabs and simulated citation feedback | All 3 chapters verified with smooth transitions and valid schema v1 JSON download | Passed |
-| 5. Mobile Ergonomics | Desktop (1440px), Mobile (390px), Narrow (320px) | Browser DevTools Viewport Check | Schema inspector header and tour grid caused horizontal overflow on 390px | Wrapped header controls, updated grid to 1 column on mobile; verified `scrollWidth: 487px == clientWidth: 487px` (`hasHorizontalOverflow: false`) | Tested slide-down mobile menu drawer with 8 destination links | Passed |
+| 5. Mobile Ergonomics | Desktop (1440px), Mobile (390px), Narrow (320px) | Browser DevTools Viewport Check (390×844 true emulation) | Prior 487px measurement was an intermediate desktop window-border artifact, not a valid 390px pass; under true 390px mobile emulation, document `scrollWidth` blew out to 468px due to header CTA button, and mobile menu drawer was clipped inside header `backdrop-filter` containing block to 64.8px height | Hid desktop header CTA on mobile (`.site-header .header-actions .btn { display: none; }`), flex-wrapped dossier header, bounded canvas pips away from hero text zone, and moved `#mobile-nav` outside sticky header containing block to body root with `height: calc(100vh - var(--header-height)); z-index: 999;` | Measured in DevTools: `innerWidth: 390px, clientWidth: 390px, scrollWidth: 390px` (`hasHorizontalOverflow: false`). Tested open mobile drawer with all 9 links visible down to y: 844px; clicked Launch Web App and Guide links with verified navigation and zero overflow | Passed |
 | 6. Cross-Route Cohesion | `/`, `/guide.html`, `/privacy.html`, `/app/` | Browser DevTools Cross-Route Check | `/guide.html` and `/privacy.html` had haphazard raw inline styles and lacked theme toggle/mobile drawer | Replaced inline styles with unified design system classes; linked `app.js` across all routes; verified theme persistence and reduced motion | Cross-route matrix confirms shared fonts, colors, nav, theme, and 0px text overlap | Passed |
+
+---
+
+## Part 3: QA Hardening & Truth Verification Addendum
+
+Following independent QA audit, four critical hardening requirements were executed and verified:
+1. **True 390px Mobile Viewport & Menu Drawer Containment**:
+   - Eliminated horizontal scroll blowout (`scrollWidth: 468px -> 390px`).
+   - Resolved CSS containing-block trap where `.site-header`'s `backdrop-filter: blur(12px)` clipped `.mobile-nav-drawer` to 64.8px. Moved `#mobile-nav` to body root with full viewport height (`780px` visible space beneath 64px header).
+   - Guarded canvas milestone rails and pips away from hero text zone (`y >= 60 && y <= 440 && px >= width * 0.04 && px <= width * 0.96`), ensuring zero dots or lines obscure hero headline or body copy.
+2. **Storage Truth & Architecture Alignment**:
+   - Confirmed `IStorageService` implementation is purely `SharedPreferences` (browser `localStorage` on web, sandboxed app storage on Android).
+   - Removed all unsupported claims of "Android Keystore", "guaranteed IndexedDB", "hardware encryption", or "libsodium".
+3. **Six-Stage Lifecycle Scope (`stage.dart`)**:
+   - Replaced "Accepted" with `Rejected` across hero scrubber, interactive stations, guide walkthrough, and copy to match `JobStage.rejected`.
+   - Removed unverified mentions of automatic reminders, total-compensation calculations, and immutable audit ledgers.
+   - Replaced competitor accusations with objective architectural comparisons.
+4. **App Font & Theme Parity**:
+   - Bundled SIL Open Font License `Plus Jakarta Sans` and `Fraunces` TTFs in `app/assets/fonts/` and registered in `app/pubspec.yaml`.
+   - Replaced missing `Segoe UI` with `Plus Jakarta Sans` in `app_theme.dart` for true cross-platform typography on Android and Web.
+   - Refined dark theme to matte architect's slate (`#1A1C22`) and light theme to warm porcelain (`#F8F7F4` / `#FAF8F5`).

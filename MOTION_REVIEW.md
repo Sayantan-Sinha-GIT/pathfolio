@@ -77,13 +77,13 @@
 - **Inspected**: Rendered screens at 1440×900, 1024×768, 390×844, and 320×600.
 - **Observed Evidence**:
   - 390px Mobile Viewport:
-    - Horizontal overflow check: `scrollWidth: 487px == clientWidth: 487px` (`hasHorizontalOverflow: false`).
-    - Mobile header displays brand seal, title, version pill, theme toggle, and hamburger menu button.
-    - Mobile drawer menu opens smoothly (`aria-expanded="true"`), listing 8 navigation targets with comfortable touch targets (>44px).
-    - Hero actions stack vertically with full-width ergonomic touch buttons.
+    - Horizontal overflow check: `scrollWidth: 390px == clientWidth: 390px` (`hasHorizontalOverflow: false`).
+    - Mobile header displays brand seal, title, version pill, theme toggle, and hamburger menu button (desktop Launch App button hidden on mobile to avoid overflow).
+    - Mobile drawer menu moved outside sticky header containing block to body root; opens smoothly (`aria-expanded="true"`), listing 9 navigation targets across full 780px viewport height with comfortable touch targets (>44px).
+    - Hero actions stack vertically with full-width ergonomic touch buttons; canvas pips guarded from hero text zone.
     - Milestone rail transitions into a clean horizontal wrap with station nodes.
   - 320px Narrow Mobile: Zero text clipping or horizontal overflow.
-- **Defects & Corrections**: Fixed schema inspector header and app tour grid to wrap cleanly on mobile, eliminating all horizontal scrolling.
+- **Defects & Corrections**: Fixed desktop header CTA overflow, moved mobile drawer out of header backdrop-filter containing block, and wrapped schema inspector/tour grid to eliminate all horizontal scrolling.
 - **Status**: PASSED.
 
 ### Round 6 — Cross-Route Cohesion, Theme Persistence & Reduced Motion

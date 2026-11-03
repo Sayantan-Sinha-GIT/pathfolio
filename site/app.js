@@ -108,12 +108,12 @@
     let height = 0;
     let dpr = 1;
 
-    // Career Guide Rails
+    // Career Guide Rails (positioned outside headline text bounding boxes)
     const rails = [
-      { yRatio: 0.18, speed: 0.35, pips: [0.15, 0.45, 0.75], label: 'STAGE_01 :: APPLIED_VELOCITY' },
-      { yRatio: 0.38, speed: 0.45, pips: [0.25, 0.65], label: 'STAGE_02 :: SCREENING_THROUGHPUT' },
-      { yRatio: 0.58, speed: 0.3, pips: [0.1, 0.5, 0.85], label: 'STAGE_03 :: INTERVIEW_MILESTONES' },
-      { yRatio: 0.78, speed: 0.4, pips: [0.35, 0.8], label: 'STAGE_04 :: OFFER_EVALUATION' }
+      { yRatio: 0.04, speed: 0.35, pips: [0.15, 0.45, 0.75], label: 'STAGE_01 :: APPLIED_VELOCITY' },
+      { yRatio: 0.48, speed: 0.45, pips: [0.25, 0.65], label: 'STAGE_02 :: SCREENING_THROUGHPUT' },
+      { yRatio: 0.74, speed: 0.3, pips: [0.1, 0.5, 0.85], label: 'STAGE_03 :: INTERVIEW_MILESTONES' },
+      { yRatio: 0.94, speed: 0.4, pips: [0.35, 0.8], label: 'STAGE_04 :: OFFER_EVALUATION' }
     ];
 
     function resize() {
@@ -191,6 +191,11 @@
           rail.pips[pIdx] = (pos + rail.speed * 0.05 * dt) % 1.0;
           const px = rail.pips[pIdx] * width;
 
+          // Guard: never render decorative pips over hero text area
+          if (y >= 60 && y <= 440 && px >= width * 0.04 && px <= width * 0.96) {
+            return;
+          }
+
           // Milestone Pip
           ctx.fillStyle = pipColor;
           ctx.beginPath();
@@ -207,13 +212,15 @@
 
         // Architectural registration cross at rail edges
         const crossX = (width * (0.05 + idx * 0.25)) % width;
-        ctx.strokeStyle = crossColor;
-        ctx.beginPath();
-        ctx.moveTo(crossX - 5, y);
-        ctx.lineTo(crossX + 5, y);
-        ctx.moveTo(crossX, y - 5);
-        ctx.lineTo(crossX, y + 5);
-        ctx.stroke();
+        if (y < 60 || y > 440 || crossX < width * 0.04 || crossX > width * 0.96) {
+          ctx.strokeStyle = crossColor;
+          ctx.beginPath();
+          ctx.moveTo(crossX - 5, y);
+          ctx.lineTo(crossX + 5, y);
+          ctx.moveTo(crossX, y - 5);
+          ctx.lineTo(crossX + 5, y);
+          ctx.stroke();
+        }
       });
 
       animationFrameId = requestAnimationFrame(render);
@@ -283,12 +290,12 @@
         log: 'Stage updated: Offer Extended [Written offer details recorded]'
       },
       {
-        name: 'Accepted',
+        name: 'Rejected',
         fillWidth: '100%',
-        color: 'var(--accent)',
-        bg: 'var(--accent-light)',
-        nextAction: 'Offer signed! Background check completed',
-        log: 'Stage updated: Offer Accepted [Recruiting cycle concluded]'
+        color: 'var(--stage-concluded)',
+        bg: 'var(--stage-concluded-bg)',
+        nextAction: 'Application concluded; debrief lessons saved',
+        log: 'Stage updated: Rejected [Concluded application debrief saved]'
       }
     ];
 
@@ -444,22 +451,22 @@
         summary: 'Highlight during frontend architecture and client performance loops to prove rigorous engineering discipline.'
       },
       security: {
-        situation: 'Previous team stored raw API client credentials in centralized databases, introducing severe exposure risk in case of credential leaks.',
-        task: 'Build a zero-knowledge hardware token vault enforcing local client encryption with zero server-side plaintext persistence.',
-        action: 'Implemented WebAuthn PRF extensions and Libsodium asymmetric envelope encryption, keeping sensitive client tokens strictly in local device keystores.',
-        result: 'Eliminated centralized plaintext exposure; passed external SOC2 Type II audit with zero findings on credential storage.',
-        title: 'Sovereign Hardware Keystore Integration',
-        tags: 'TAGS: WebAuthn, Libsodium, Zero-Knowledge, Cryptography',
-        summary: 'Demonstrate to security engineers your understanding of local sovereignty, cryptographic threat models, and secure storage.'
+        situation: 'Previous team stored raw API client credentials directly in repository environment files, creating exposure risks during team onboarding.',
+        task: 'Design an automated scoped credential rotation protocol with zero plaintext persistence in source control.',
+        action: 'Implemented automated time-bound ephemeral token generation, short-lived session grants, and client-side secret rotation checks.',
+        result: 'Eliminated static credential leaks; reduced credential provisioning latency by 80% with verified audit trail.',
+        title: 'Scoped Credential Rotation Protocol',
+        tags: 'TAGS: OAuth2, Ephemeral-Tokens, Least-Privilege, IAM',
+        summary: 'Demonstrate during systems and security discussions your understanding of least privilege, token lifecycles, and credential hygiene.'
       },
       frontend: {
-        situation: 'User experience suffered severe jitter when unstable network connections interrupted multi-step forms, causing lost candidate notes.',
-        task: 'Architect an offline-first state persistence engine with atomic snapshots and background conflict-free local sync.',
-        action: 'Engineered an IndexedDB transaction wrapper with single-snapshot commits, rollbacks on failed writes, and immediate optimistic UI updates.',
-        result: 'Zero data loss across 10,000 simulated network drop tests; instantaneous sub-5ms screen updates on all client devices.',
-        title: 'Offline-First Atomic Persistence Layer',
-        tags: 'TAGS: IndexedDB, Flutter-Web, Atomic-Transactions, Local-First',
-        summary: 'Cite during client architecture debriefs to show how offline-first resilience directly improves user retention.'
+        situation: 'Application state occasionally lost unsaved candidate interview notes during intermittent network drops or abrupt browser tab closures.',
+        task: 'Architect an offline-first client persistence engine with atomic snapshots and sub-millisecond local state synchronization.',
+        action: 'Engineered single-snapshot atomic JSON commits via local storage with schema validation, transactional rollbacks on write failure, and optimistic UI updates.',
+        result: 'Zero state loss across 10,000 simulated offline tests; instantaneous sub-5ms screen updates across mobile and desktop clients.',
+        title: 'Offline-First Client Persistence Architecture',
+        tags: 'TAGS: Local-First, State-Machine, JSON-Schema, Flutter-Web',
+        summary: 'Cite during client architecture debriefs to show how offline-first resilience eliminates data loss and ensures snappy responsiveness.'
       }
     };
 

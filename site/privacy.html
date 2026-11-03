@@ -99,27 +99,27 @@
           <a href="/app/" class="btn btn-primary">Launch App →</a>
         </div>
       </div>
-
-      <!-- Mobile Navigation Drawer -->
-      <nav id="mobile-nav" class="mobile-nav-drawer" aria-label="Mobile Navigation">
-        <div class="mobile-drawer-links">
-          <a href="/" class="mobile-drawer-link">01 // Home Dossier</a>
-          <a href="/#milestones" class="mobile-drawer-link">02 // Milestone Rail</a>
-          <a href="/#star-matrix" class="mobile-drawer-link">03 // STAR Evidence</a>
-          <a href="/#privacy-vault" class="mobile-drawer-link">04 // Sovereign Privacy</a>
-          <a href="guide.html" class="mobile-drawer-link">User Guide & Strategy</a>
-          <a href="privacy.html" class="mobile-drawer-link">Privacy Architecture</a>
-          <a
-            href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
-            class="mobile-drawer-link"
-            target="_blank"
-            rel="noopener"
-            >GitHub Repository</a
-          >
-        </div>
-        <a href="/app/" class="btn btn-primary" style="width: 100%;">Launch Web App →</a>
-      </nav>
     </header>
+
+    <!-- Mobile Navigation Drawer -->
+    <nav id="mobile-nav" class="mobile-nav-drawer" aria-label="Mobile Navigation">
+      <div class="mobile-drawer-links">
+        <a href="/" class="mobile-drawer-link">01 // Home Dossier</a>
+        <a href="/#milestones" class="mobile-drawer-link">02 // Milestone Rail</a>
+        <a href="/#star-matrix" class="mobile-drawer-link">03 // STAR Evidence</a>
+        <a href="/#privacy-vault" class="mobile-drawer-link">04 // Sovereign Privacy</a>
+        <a href="guide.html" class="mobile-drawer-link">User Guide & Strategy</a>
+        <a href="privacy.html" class="mobile-drawer-link">Privacy Architecture</a>
+        <a
+          href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
+          class="mobile-drawer-link"
+          target="_blank"
+          rel="noopener"
+          >GitHub Repository</a
+        >
+      </div>
+      <a href="/app/" class="btn btn-primary" style="width: 100%;">Launch Web App →</a>
+    </nav>
 
     <main class="reading-page-main" id="main-content">
       <div class="container reading-container">
@@ -137,8 +137,8 @@
             Pathfolio does not operate a user database, auth server, or analytics backend. When you use the web application or install the Android APK, all data is written directly to your client sandbox:
           </p>
           <ul>
-            <li><strong>Web:</strong> Records are saved in browser <code>localStorage</code> / IndexedDB scoped solely to your current browser profile.</li>
-            <li><strong>Android:</strong> Records are saved in the app's sandboxed private storage directory.</li>
+            <li><strong>Web:</strong> Records are saved locally in browser storage via <code>shared_preferences</code> (backed by browser <code>localStorage</code>), scoped solely to your current browser profile.</li>
+            <li><strong>Android:</strong> Records are saved locally in sandboxed application storage via <code>shared_preferences</code>.</li>
             <li><strong>Network Calls:</strong> The only outbound network requests made are when you explicitly click an external link to visit a company's job posting or GitHub repository.</li>
           </ul>
         </section>
