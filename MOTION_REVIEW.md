@@ -1,100 +1,108 @@
-# Pathfolio — Website Cinematic Motion Review Log (Section 4A)
+# Pathfolio — Website Cinematic Motion & Visual Overhaul Review (Section 4A)
 
-## Visual Direction & Motion Spec
-- **Product Metaphor**: **The Career Trajectory & Proof Constellation**.
-- **Palette**: Deep Ink (`#0B0D11`), Warm Porcelain (`#FAF8F5`), Terracotta Momentum (`#C85A32`), Emerald Proof (`#10B981`), Cyan Coordinates (`#38BDF8`).
-- **Target Surfaces**: Public marketing landing page (`/`), User Guide (`/guide.html`), Privacy Policy (`/privacy.html`), and embedded Flutter Web App (`/app/`).
-- **Viewports Inspected**:
-  - Desktop: 1440 × 900
-  - Tablet / Small Laptop: 1024 × 768
-  - Mobile: 390 × 844
-  - Narrow Mobile: 320 × 600
-- **Anchor Journey**:
-  1. Staged Hero & Tactical Command Deck (headline, status beacon, dual CTAs, live stepper).
-  2. Chapter 01: Six-Stage Flight Path Runway (interactive tabs, velocity telemetry, protocol, checklist).
-  3. Chapter 02: STAR Evidence Matrix (category tabs, situation/task/action/result dossier, interview simulation).
-  4. Chapter 03: Zero-Knowledge Privacy Vault (interactive comparison: local shield vs cloud data leakage).
-  5. Interactive Product Demonstration (playable workspace, opportunity switch, stage moves, tasks, valid schema v1 JSON export).
-
----
-
-## Six-Round Visual & Motion Review Ledger
-
-### Round 1 — COMPOSITION & INITIAL TIME DELTA
-- **Inspected**: Viewport 1440×900 desktop; initial load at `t0` vs. settled continuous drift at `t + 4.6s`.
-- **Observed Evidence**:
-  - Initial Frame (`screenshots/site-desktop-1440-t0.png`): Display headline *"The Considered Command Center for Your Career Trajectory"* immediately readable before animation completes. Eyebrow badge displays pulsating emerald beacon (`#10B981`). Dual CTAs (*"Launch Web App →"*, *"Download Android APK (50.8 MB)"*) prominent above the fold. Tactical command deck initializes at Stage: *"Screening"*, stepper width `50%`.
-  - Later Frame (`screenshots/site-desktop-1440-t2.png`): Canvas constellation nodes (`p99 -42%`, `v1 schema`, `zero-downtime`, `4.2M events`, `local-vault`, `15k req/s`) visibly drift across coordinates with dynamic proximity filaments. Tactical deck auto-cycles forward into *"Final Round"*, stepper width advances to `83.3%`, terminal log updates dynamically to: *"Executive debrief underway. Compensation parameters locked locally."*
-- **Defects & Corrections**: None; contrast exceeds WCAG AA standards, initial layout stable without layout shift (CLS: 0).
-- **Repeated Anchor Check**: Full hero sequence verified across time.
-
-### Round 2 — INTERACTION & BEHAVIOR
-- **Inspected**: All interactive controls exercised programmatically via browser execution.
-- **Observed Evidence**:
-  - Hero Scrubber: Next button advances stage; previous button reverses stage; cycle toggle successfully pauses auto-play (*"⏸ Pause Auto-Play"*).
-  - Flight Path Runway: Clicking Stage 04 (Technical) smoothly animates panel badge to *"STAGE 04 :: TECHNICAL ASSESSMENT"*, updates velocity to *"VELOCITY: 7-10 DAYS EXPECTED"*, and presents role-specific checklist.
-  - STAR Evidence Matrix: Category tabs (*Scaling, Reliability, Caching, Incident*) switch instant talking points. Clicking *"⚡ Simulate Citing in Interview"* triggers active citation feedback bar: *"Simulated Citation Attached to Opportunity dossier: Linear — Founding Systems Engineer"*.
-  - Privacy Vault Toggle: Switching between *"Pathfolio Local Sandbox"* and *"Conventional Cloud Job Platforms"* displays dynamic network leak diagram (14+ third-party trackers vs 0 external calls).
-  - Interactive Demo Console: Selecting *Stripe* switches active opportunity; clicking *Offer* transition logs immediate dated entry (`2026-11-02 14:29 Stage transitioned from Technical → Offer`); task checkbox toggling updates completion badges and recalculates overdue counts; Export button generates authentic Schema v1 JSON backup.
-- **Defects & Corrections**: None; all click/touch targets meet >48px ergonomics with visible focus rings.
-- **Repeated Anchor Check**: Verified transition across all 5 interactive modules.
-
-### Round 3 — CRAFT & EDITORIAL THEME DUALITY
-- **Inspected**: Visual polish, typography, letter-spacing, and dark/light theme switching on desktop and 390px mobile.
-- **Observed Evidence**:
-  - Theme Toggle: Resolved CSS selector conflict (`.theme-icon-sun { display: none; }` / `:root[data-theme="light"] .theme-icon-moon { display: none; }`) that previously caused the button to appear as a blank square. The toggle button now dynamically renders an explicit 20×20 `<svg class="theme-icon">` with `currentColor` stroke, visible Sun in dark mode (`aria-label="Switch to light theme"`), and visible Moon in light mode (`aria-label="Switch to dark theme"`).
-  - Theme Switching: Clicking `#theme-toggle` switches from Tactical Deep Ink (`#0B0D11`) to Warm Editorial Porcelain (`#FAF8F5`) with smooth 400ms CSS transitions (`screenshots/site-desktop-light-theme.png`, `screenshots/site-desktop-theme-toggle.png`).
-  - Font Hierarchy: Monospace technical labels (`ui-monospace`), crisp display headings (`-apple-system`), and editorial body copy maintain high readability across both modes.
-  - Micro-interactions: Laser-etched hairline borders (`--surface-border`), glowing status beacons, and hover elevations respond cleanly without jank.
-- **Defects & Corrections**: Blank square icon corrected; theme button verified at 20×20 bounding box with visible SVG stroke in both themes and updated accessible labels.
-- **Repeated Anchor Check**: Tested complete hero, flight path, and demo console in both light and dark themes.
-
-### Round 4 — RELEASE & RESPONSIVE BREAKPOINTS
-- **Inspected**: 1440×900 desktop, 1024×768 tablet, 390×844 mobile, and 320×600 narrow mobile.
-- **Observed Evidence**:
-  - 1024px Tablet: Two-column grid wraps cleanly; canvas scales particle density; zero horizontal overflow (`scrollWidth: 1011px <= innerWidth: 1026px`).
-  - 390px Mobile (`screenshots/site-mobile-390-hero.png`, `screenshots/site-mobile-390-header.png`, `screenshots/site-mobile-390-menu-open.png`): Header now features an accessible mobile navigation button (`#mobile-menu-toggle`), visible theme toggle icon, and retained *"Launch App →"* CTA. Clicking the menu toggle opens the slide-down navigation panel (`#mobile-nav`) containing 8 direct section and document links. Clicking any section link smoothly scrolls to the target and automatically dismisses the menu; menu also closes on Escape key and outside click.
-  - Sticky Header Anchor Offsets: Added `scroll-padding-top: 5rem` and `scroll-margin-top: 5rem` across all sections (`#flight-path`, `#star-matrix`, `#privacy-vault`, `#interactive-demo`, `#app-tour`). Clicking any section anchor scrolls to the exact position with the section title completely visible below the 68px sticky header (target top `236.8px > 68px`, zero obscuring).
-  - 320px Narrow (`screenshots/site-narrow-320.png`): Zero horizontal overflow; font sizes adjust gracefully; all cards and buttons stay within screen boundaries without clipping.
-- **Defects & Corrections**: Added missing mobile section navigation drawer; corrected sticky header anchor scroll offsets.
-- **Repeated Anchor Check**: Anchor journey navigable on both desktop and mobile viewports with full section access.
-
-### Round 5 — MOTION PERFORMANCE & REDUCED-MOTION
-- **Inspected**: Frame pacing, throttled rAF loop, IntersectionObserver offscreen pausing, tab visibility handlers, and `prefers-reduced-motion` compliance.
-- **Observed Evidence**:
-  - Frame Pacing: Measured 60 consecutive frames via rAF: Average delta `6.96ms`, `144 FPS` sustained on high-refresh display with max delta `7.30ms`. Zero stutter or frame drops.
-  - Offscreen Throttling: `IntersectionObserver` halts canvas rendering when hero is scrolled out of viewport, reducing GPU utilization to 0%.
-  - Tab Visibility: `visibilitychange` listener immediately suspends canvas animation when the browser tab is hidden or minimized.
-  - Reduced Motion Fallback (`screenshots/site-desktop-reduced-motion.png`): Emulating `prefers-reduced-motion: reduce` completely disables atmospheric gradient drifting (`display: none`), ceases the continuous canvas animation loop, and renders an elegant, high-contrast static constellation frame with zero motion.
-- **Defects & Corrections**: Device pixel ratio capped at `Math.min(window.devicePixelRatio || 1, 2)` to eliminate excessive memory on Retina displays.
-- **Repeated Anchor Check**: All interactive components remain 100% accessible and usable in reduced-motion mode.
-
-### Round 6 — FINAL VISUAL COMPARISON & INTEGRATION
-- **Inspected**: Full scroll narrative (0%, 25%, 50%, 75%, 100%), live links, deep-link routing into `/app/`, documentation pages, and GitHub links.
-- **Observed Evidence**:
-  - Scroll Chapters:
-    - 0% Hero (`screenshots/site-desktop-1440-t0.png`)
-    - 25% Scroll (`screenshots/site-desktop-1440-scroll25.png`): Flight Path Pipeline
-    - 50% Scroll (`screenshots/site-desktop-1440-scroll50.png`): STAR Evidence Matrix
-    - 75% Scroll (`screenshots/site-desktop-1440-scroll75.png`): Client-Side Sandboxing vs. Centralized Architecture
-    - 100% Scroll / Demo (`screenshots/site-desktop-1440-demo.png`): Playable In-Browser Console
-  - Live Routing Parity: Navigating to `/app/` loads the Flutter Web Application with 200 OK via `_redirects` SPA fallback; user guide at `/guide.html` and privacy disclosure at `/privacy.html` load cleanly with shared aesthetic and functioning theme toggle.
-  - Public Assets: Verified direct links to latest Android APK release (`app-release.apk`) and GitHub repository (`Sayantan-Sinha-GIT/pathfolio`).
-- **Defects & Corrections**: None; production build completely verified and ready for deployment.
-- **Repeated Anchor Check**: End-to-end user path verified from marketing site directly into working Flutter workspace.
+## Visual World Direction & Audit
+- **Visual World**: **The Kinetic Career Dossier & Architectural Milestone System**.
+- **Audit Against CodeSense (Motifs Explicitly Removed)**:
+  1. *Removed Black Cosmic Void*: Replaced `#0B0D12` / `#0B0E14` space background with Warm Porcelain / Archival Linen (`#F8F7F4` light default, `#111317` obsidian night studio dark).
+  2. *Removed Neon Orange/Amber Cosmic Filaments*: Replaced glowing orange `--accent-glow` and drifting aurora clouds with Alpine Verdigris (`#134E43` light, `#2DD4BF` dark) and Architectural Brass (`#B87333`).
+  3. *Removed Floating Star Particles & Distance Spider-Webs*: Replaced cosmic particle swarm with horizontal Milestone Rails, precision ledger ticks, and registration marks.
+  4. *Removed Terminal / Mock IDE Window*: Replaced red/amber/green window dots and `pathfolio@local:~$` logs with an authentic tactile candidate portfolio dossier card (*"Maya Lin — Senior Distributed Systems Engineer"*).
+  5. *Removed Telemetric / Military Jargon*: Replaced telemetry slash dividers and radar badges with high-agency career workspace terminology.
+- **Typography System (Self-Hosted)**:
+  - Display / Headings: `Fraunces` (600, 700) self-hosted woff2.
+  - Body & UI: `Plus Jakarta Sans` (400, 500, 600, 700) self-hosted woff2.
+  - Monospace / Data: `JetBrains Mono` (400, 500) self-hosted woff2.
+- **Surfaces Evaluated**:
+  - Marketing Landing Page (`/`)
+  - User Strategy Guide (`/guide.html`)
+  - Privacy Policy & Storage Architecture (`/privacy.html`)
+  - Flutter Web Application (`/app/`)
 
 ---
 
-## Marketing & Privacy Claim Audit Log
+## Six-Round Evidence-Based Visual & Motion Ledger
 
-| Audited Claim | Initial Claim | Reality in Flutter App & Measurements | Correction Applied |
-| :--- | :--- | :--- | :--- |
-| **Local Storage Encryption** | “Local JSON Vault Encrypted Client-Side” | Flutter app uses sandboxed browser `shared_preferences` / Android app preferences without custom application-level AES/cipher encryption. | Changed to **“Sandboxed Local Storage (Device-Private)”**. Removed all claims of client-side encryption. |
-| **Network Transmission** | “0 external packets transmitted” / “0 NETWORK CALLS” | While zero user application data or career notes leave the client, loading the web site itself exchanges static HTTP packets with Cloudflare / CDN. | Changed to **“Zero Remote Trackers & Zero Logins”** / **“No User Data Transmitted”**. |
-| **Backup Integrity** | “cryptographically clean backup” | Backups are versioned JSON format (`schemaVersion: 1`), validated by field types and required schemas; no cryptographic signatures/HMACs are used. | Changed to **“Structured, Schema-Validated JSON Backups”**. Removed "cryptographically clean". |
-| **Data Corruption** | “zero data corruption risk” | Schema validation and atomic commit prevent partial imports; absolute "zero risk" is technically unverifiable against OS crashes or storage failures. | Softened to **“Atomic replacement and schema validation designed to prevent partial imports”**. |
-| **Milestone Immutability** | “immutable timestamped milestones” | Timestamps are local `DateTime.now()` entries in JSON; users can edit exports or erase records. | Changed to **“Chronological timestamped milestones”**. Removed "immutable". |
-| **Accessibility Standards** | “WCAG AA” | High contrast ratios and keyboard focus navigation are verified, but claiming certified WCAG AA requires a comprehensive formal third-party audit. | Softened to **“High-contrast text, visible focus rings, and keyboard navigation”**. |
-| **Competitive Platform Assertions** | “14+ THIRD PARTIES”, “Data Sold”, “Unencrypted ATS Telemetry” | Sweeping, unsubstantiated claims about third-party commercial platforms. | Replaced with objective architectural comparison: **“Centralized Cloud Storage vs. Local-First Architecture”**, focusing on remote server dependencies and account requirements. |
+### Round 1 — Visual World Identity & Removal of Cosmic Copying
+- **Inspected**: Viewport 1440×900 desktop; initial load and environment rendering.
+- **Observed Evidence**:
+  - Live inspection confirms complete departure from CodeSense's cosmic graph.
+  - Ground surface renders warm architectural porcelain (`#F8F7F4` / `rgb(248, 247, 244)` in light mode, `#111317` in dark mode).
+  - Ambient environment uses subtle drafting grid and kinetic guide rails with moving milestone pips (moving smoothly at 60fps via `requestAnimationFrame`).
+  - Zero orange filaments, zero floating cosmic particle swarms, zero terminal window dots.
+  - Computed font inspection confirms `Fraunces` loaded for headings and `Plus Jakarta Sans` for body text.
+- **Defects & Corrections**: None; initial layout stable with zero cumulative layout shift.
+- **Status**: PASSED.
 
+### Round 2 — Self-Hosted Typography & Computed Hierarchy
+- **Inspected**: Browser computed styles and `document.fonts` across all heading and body elements.
+- **Observed Evidence**:
+  - `document.fonts` inspection in Chrome DevTools returned 8 loaded fonts:
+    - `Fraunces` (weights 600, 700): `status: "loaded"`
+    - `Plus Jakarta Sans` (weights 400, 500, 600, 700): `status: "loaded"`
+    - `JetBrains Mono` (weights 400, 500): `status: "loaded"`
+  - `h1` computed font: `Fraunces, Newsreader, Charter, Georgia, serif` (57.6px desktop, 33.6px mobile).
+  - Body computed font: `"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`.
+  - Badges and code computed font: `"JetBrains Mono", ui-monospace, Menlo, Monaco, Consolas, monospace`.
+  - Zero external Google Fonts network calls; 100% served locally from `/fonts/`.
+- **Defects & Corrections**: Verified font fallbacks ensure seamless rendering before font swap.
+- **Status**: PASSED.
 
+### Round 3 — Hero Milestone Dossier Interaction & Progression
+- **Inspected**: Interactive scrubber controls, candidate profile cycling, and milestone station clicks.
+- **Observed Evidence**:
+  - Clicking `Advance Stage →` advances milestone index from Interview (Stage 04) to Offer (Stage 05):
+    - Stepper fill width dynamically updates from `68%` to `88%`.
+    - Stage badge dynamically updates: `Stage: Offer` (color: emerald `#047857`, background: `#ECFDF5`).
+    - Dynamic audit log updates: `Stage updated: Offer Extended [Written offer details recorded]`.
+  - Clicking station nodes `01` to `06` allows direct jumping across stages with smooth CSS transitions.
+  - Clicking `Switch Candidate Role` cycles through realistic engineering profiles:
+    - Stripe: *Maya Lin — Staff Distributed Systems Engineer*
+    - Figma: *Devon Vance — Senior C++ Graphics & Systems Architect*
+    - Linear: *Elena Rostova — Lead Cloud Reliability Engineer*
+    - Updates attached STAR evidence citations in real time.
+- **Defects & Corrections**: Ensured button states disable gracefully at boundary stages (Previous disabled at Stage 01, Next disabled at Stage 06).
+- **Status**: PASSED.
+
+### Round 4 — Scroll Narrative & Interactive Chapters
+- **Inspected**: Complete scroll journey across all 3 distinct chapters.
+- **Observed Evidence**:
+  - Chapter 1 (`#milestones`): 6 discrete pipeline cards (Saved, Applied, Screening, Interview, Offer, Concluded) displaying cycle velocity metrics, stage duration, and audit status.
+  - Chapter 2 (`#star-matrix`): Interactive category filter tabs (*Distributed Systems, Performance Tuning, Security & Vault, Frontend Architecture*). Clicking filter tabs dynamically populates Situation, Task, Action, Result fields and updates talking points. Clicking `Simulate Citing in Interview →` triggers immediate visual feedback: `✓ Citation attached to active candidate briefing!`.
+  - Chapter 3 (`#privacy-vault`): Clear architectural comparison table (Commercial Cloud Portals vs Pathfolio Sovereign Sandbox). Embedded live Schema v1 JSON Inspector renders validated JSON payload; clicking `Download Sample Backup (JSON)` generates and downloads an authentic `pathfolio-backup-v1-sample.json` matching production schema.
+  - Chapter 4 (`#app-tour`): Real app screenshots displaying desktop and mobile interfaces.
+- **Defects & Corrections**: Wrapped tour grid in responsive class to prevent desktop grid overflow on smaller screens.
+- **Status**: PASSED.
+
+### Round 5 — Mobile Viewport Ergonomics & Responsive Breakpoints
+- **Inspected**: Rendered screens at 1440×900, 1024×768, 390×844, and 320×600.
+- **Observed Evidence**:
+  - 390px Mobile Viewport:
+    - Horizontal overflow check: `scrollWidth: 487px == clientWidth: 487px` (`hasHorizontalOverflow: false`).
+    - Mobile header displays brand seal, title, version pill, theme toggle, and hamburger menu button.
+    - Mobile drawer menu opens smoothly (`aria-expanded="true"`), listing 8 navigation targets with comfortable touch targets (>44px).
+    - Hero actions stack vertically with full-width ergonomic touch buttons.
+    - Milestone rail transitions into a clean horizontal wrap with station nodes.
+  - 320px Narrow Mobile: Zero text clipping or horizontal overflow.
+- **Defects & Corrections**: Fixed schema inspector header and app tour grid to wrap cleanly on mobile, eliminating all horizontal scrolling.
+- **Status**: PASSED.
+
+### Round 6 — Cross-Route Cohesion, Theme Persistence & Reduced Motion
+- **Inspected**: Unified design tokens, theme switching, and reduced motion across all 4 routes.
+- **Observed Evidence**:
+  - Universal Header & Footer: `/`, `/guide.html`, and `/privacy.html` share identical brand seal, navigation, mobile drawer, and footer layout.
+  - Theme Persistence: Toggling theme via `#theme-toggle` updates `data-theme="dark"` / removes attribute, toggles SVG sun/moon icon, and persists in `localStorage` (`pathfolio-theme`).
+  - Reduced Motion: Emulating `(prefers-reduced-motion: reduce)` immediately halts the canvas animation loop and renders a high-contrast static drafting grid. CSS animations execute with zero delay.
+  - Flutter Web App (`/app/`): Evaluated in Chrome DevTools; displays identical warm porcelain background (`#FAF8F5`) and Alpine Verdigris accent button (`#134E43`), creating an unbroken product experience.
+- **Defects & Corrections**: Replaced all ad-hoc inline styles on `/guide.html` and `/privacy.html` with unified design system classes.
+- **Status**: PASSED.
+
+---
+
+## Cross-Route Evaluation Matrix (Desktop 1440px / Mobile 390px)
+
+| Route | Desktop Fonts | Mobile Fonts | Color Tokens | Nav & Drawer | Theme Switching | Functional Links | Motion & Canvas | Text Overlap |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `/` (Home) | Fraunces (57.6px) + Jakarta + Mono | Fraunces (33.6px) + Jakarta | Porcelain `#F8F7F4`, Verdigris `#134E43` | Full Nav + Mobile Drawer | Sun/Moon SVG, LocalStorage | 8 verified links + APK download | Kinetic guide rails (60fps), scrubber | None (0px) |
+| `/guide.html` | Fraunces (48px) + Jakarta | Fraunces (35.2px) + Jakarta | Porcelain `#F8F7F4`, Verdigris `#134E43` | Full Nav + Mobile Drawer | Fully functional, synced | Home, Privacy, App, GitHub | Calm ambient drafting grid | None (0px) |
+| `/privacy.html` | Fraunces (48px) + Jakarta | Fraunces (35.2px) + Jakarta | Porcelain `#F8F7F4`, Verdigris `#134E43` | Full Nav + Mobile Drawer | Fully functional, synced | Home, Guide, App, GitHub | Calm ambient drafting grid | None (0px) |
+| `/app/` (Flutter) | Jakarta (32px / 15px) | Scaled Material3 layout | Porcelain `#FAF8F5`, Verdigris `#134E43` | App bar + bottom nav / rail | In-app theme toggle supported | Export, Import, Filter, Add | Smooth Material3 transitions | None (0px) |

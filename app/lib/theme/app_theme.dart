@@ -11,10 +11,10 @@ class AppColors {
   static const Color lightInkSecondary = Color(0xFF565B66);
   static const Color lightInkMuted = Color(0xFF868C98);
 
-  // Terracotta Accent
-  static const Color accent = Color(0xFFC85A32);
-  static const Color accentLight = Color(0xFFFBF1EC);
-  static const Color accentDark = Color(0xFFA6421E);
+  // Alpine Verdigris Accent
+  static const Color accent = Color(0xFF134E43);
+  static const Color accentLight = Color(0xFFEBF5F2);
+  static const Color accentDark = Color(0xFF0D3830);
 
   // Semantic Colors
   static const Color emerald = Color(0xFF227B4E);
@@ -35,8 +35,8 @@ class AppColors {
   static const Color darkInkPrimary = Color(0xFFF3F1EC);
   static const Color darkInkSecondary = Color(0xFFA0A5B2);
   static const Color darkInkMuted = Color(0xFF6B7180);
-  static const Color darkAccent = Color(0xFFE06D44);
-  static const Color darkAccentBg = Color(0xFF2E1C15);
+  static const Color darkAccent = Color(0xFF2DD4BF);
+  static const Color darkAccentBg = Color(0xFF0A2B24);
 }
 
 class AppBreakpoints {

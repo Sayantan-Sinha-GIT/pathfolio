@@ -1,114 +1,265 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Guide & Job-Search Strategy — Pathfolio</title>
-  <meta name="description" content="Step-by-step guide to tracking applications, managing recruiter deadlines, and writing impactful career evidence entries in Pathfolio.">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <header class="site-header">
-    <div class="header-container">
-      <a href="/" class="brand-link">
-        <div class="brand-icon">P</div>
-        <span>Pathfolio</span>
-      </a>
-
-      <nav class="main-nav">
-        <a href="/">Home</a>
-        <a href="privacy.html">Privacy</a>
-        <a href="guide.html" class="active">User Guide</a>
-        <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio" target="_blank" rel="noopener">GitHub</a>
-      </nav>
-
-      <div class="header-actions">
-        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
-        <a href="/app/" class="btn btn-primary">Launch App →</a>
-      </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Guide & Job-Search Strategy — Pathfolio</title>
+    <meta
+      name="description"
+      content="Step-by-step strategy for tracking engineering applications, managing recruiter deadlines, and writing impactful STAR evidence entries in Pathfolio."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Universal Ambient Drafting Background -->
+    <div class="ambient-environment" aria-hidden="true">
+      <div class="drafting-grid-overlay"></div>
     </div>
-  </header>
 
-  <main>
-    <div class="container" style="max-width: 820px; padding: 4rem 1.5rem;">
-      <h1 style="font-size: 2.6rem; letter-spacing: -0.03em; margin-bottom: 1rem;">Pathfolio User Guide</h1>
-      <p style="font-size: 1.1rem; color: var(--ink-secondary); margin-bottom: 2.5rem;">
-        How to get the most out of your application pipeline, follow-up deadlines, and career evidence bank.
-      </p>
+    <!-- Universal Site Header -->
+    <header class="site-header">
+      <div class="container header-container">
+        <a href="/" class="brand-link" aria-label="Pathfolio Home">
+          <div class="brand-seal" aria-hidden="true">P</div>
+          <span class="brand-title">Pathfolio</span>
+          <span class="brand-badge">v1.0.1</span>
+        </a>
 
-      <section style="margin-bottom: 3rem;">
-        <h2 style="font-size: 1.5rem; margin-bottom: 0.75rem;">1. Navigating the Pipeline Lifecycle</h2>
-        <p style="margin-bottom: 1rem; color: var(--ink-secondary); line-height: 1.65;">
-          Every role moves through six standardized stages:
-        </p>
-        <ol style="margin-left: 1.5rem; color: var(--ink-secondary); line-height: 1.7; margin-bottom: 1rem;">
-          <li><strong>Saved:</strong> Roles you are researching, tailoring materials for, or requesting employee referrals on.</li>
-          <li><strong>Applied:</strong> Application officially submitted; waiting for recruiter acknowledgment.</li>
-          <li><strong>Screening:</strong> Recruiter initial chat or automated technical assessment link.</li>
-          <li><strong>Interview:</strong> Technical coding loops, system design sessions, or behavioral rounds in progress.</li>
-          <li><strong>Offer:</strong> Written offer extended; evaluating compensation, benefits, and decision deadlines.</li>
-          <li><strong>Rejected:</strong> Concluded application. Keep notes on what was learned for future cycles.</li>
-        </ol>
-        <p style="color: var(--ink-secondary); line-height: 1.65;">
-          <strong>Tip:</strong> Moving an opportunity between stages automatically creates a dated entry in the <em>Activity History</em> timeline so you can track how long each interview cycle took.
-        </p>
-      </section>
+        <nav class="main-nav" aria-label="Primary Navigation">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/#milestones" class="nav-link">Milestone Rail</a>
+          <a href="/#star-matrix" class="nav-link">STAR Matrix</a>
+          <a href="/#privacy-vault" class="nav-link">Privacy Vault</a>
+          <a href="guide.html" class="nav-link active">User Guide</a>
+          <a href="privacy.html" class="nav-link">Privacy</a>
+          <a
+            href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
+            class="nav-link"
+            target="_blank"
+            rel="noopener"
+            >GitHub</a
+          >
+        </nav>
 
-      <section style="margin-bottom: 3rem;">
-        <h2 style="font-size: 1.5rem; margin-bottom: 0.75rem;">2. Managing Follow-Up Deadlines</h2>
-        <p style="margin-bottom: 1rem; color: var(--ink-secondary); line-height: 1.65;">
-          Recruiting momentum is lost when follow-ups are delayed. Pathfolio helps you stay on top of next actions:
-        </p>
-        <ul style="margin-left: 1.5rem; color: var(--ink-secondary); line-height: 1.7; margin-bottom: 1rem;">
-          <li>Attach tasks with due dates (e.g. "Send thank-you email to engineering manager", "Complete take-home challenge").</li>
-          <li>Tasks past today's date automatically appear in the <strong>Overdue Actions</strong> badge on your dashboard.</li>
-          <li>Completing a task instantly updates your pending counts and logs a completion event.</li>
-        </ul>
-      </section>
+        <div class="header-actions">
+          <button
+            id="theme-toggle"
+            class="theme-toggle-btn"
+            aria-label="Toggle light and dark theme"
+            title="Toggle theme"
+          >
+            <svg
+              id="theme-icon"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </svg>
+          </button>
 
-      <section style="margin-bottom: 3rem;">
-        <h2 style="font-size: 1.5rem; margin-bottom: 0.75rem;">3. Structuring Career Evidence Entries</h2>
-        <p style="margin-bottom: 1rem; color: var(--ink-secondary); line-height: 1.65;">
-          During interviews, answering behavioral questions with quantifiable facts is critical. Use the Evidence Bank to store entries formatted with the STAR principle:
-        </p>
-        <div style="background: var(--bg-subdued); border: 1px solid var(--surface-border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem;">
-          <h4 style="font-size: 0.95rem; margin-bottom: 0.25rem;">Example Evidence Item:</h4>
-          <p style="font-weight: 700; font-size: 1rem; margin-bottom: 0.25rem;">Distributed Telemetry Pipeline</p>
-          <p style="font-size: 0.88rem; color: var(--ink-secondary); margin-bottom: 0.5rem;"><strong>Tags:</strong> Go, Kafka, Docker, Prometheus</p>
-          <p style="font-size: 0.9rem; line-height: 1.5;"><strong>Concise Result:</strong> Processed 15,000 events/sec with under 20ms p99 latency during peak university registration traffic, reducing cluster cost by 35%.</p>
+          <button
+            id="mobile-menu-toggle"
+            class="mobile-menu-toggle"
+            aria-expanded="false"
+            aria-controls="mobile-nav"
+            aria-label="Toggle navigation menu"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+
+          <a href="/app/" class="btn btn-primary">Launch App →</a>
         </div>
-        <p style="color: var(--ink-secondary); line-height: 1.65;">
-          You can reference this entry across multiple job applications without having to duplicate text or re-upload files.
-        </p>
-      </section>
-
-      <div style="background: var(--bg-subdued); border: 1px solid var(--surface-border); border-radius: 8px; padding: 1.5rem; margin-top: 2rem;">
-        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Get Started Today</h3>
-        <p style="color: var(--ink-secondary); font-size: 0.95rem; margin-bottom: 1rem;">Open the live app or load the interactive sample workspace to explore.</p>
-        <a href="/app/" class="btn btn-primary">Launch Pathfolio →</a>
       </div>
-    </div>
-  </main>
 
-  <footer class="site-footer">
-    <div class="footer-container">
-      <div class="brand-link">
-        <div class="brand-icon">P</div>
-        <span>Pathfolio</span>
-      </div>
-      <div class="footer-links">
-        <a href="/">Home</a>
-        <a href="/app/">Launch App</a>
-        <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk">Download APK</a>
-        <a href="privacy.html">Privacy Details</a>
-        <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio" target="_blank" rel="noopener">GitHub</a>
-      </div>
-      <div class="footer-copy">MIT Licensed • 100% Client-Side</div>
-    </div>
-  </footer>
+      <!-- Mobile Navigation Drawer -->
+      <nav id="mobile-nav" class="mobile-nav-drawer" aria-label="Mobile Navigation">
+        <div class="mobile-drawer-links">
+          <a href="/" class="mobile-drawer-link">01 // Home Dossier</a>
+          <a href="/#milestones" class="mobile-drawer-link">02 // Milestone Rail</a>
+          <a href="/#star-matrix" class="mobile-drawer-link">03 // STAR Evidence</a>
+          <a href="/#privacy-vault" class="mobile-drawer-link">04 // Sovereign Privacy</a>
+          <a href="guide.html" class="mobile-drawer-link">User Guide & Strategy</a>
+          <a href="privacy.html" class="mobile-drawer-link">Privacy Architecture</a>
+          <a
+            href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
+            class="mobile-drawer-link"
+            target="_blank"
+            rel="noopener"
+            >GitHub Repository</a
+          >
+        </div>
+        <a href="/app/" class="btn btn-primary" style="width: 100%;">Launch Web App →</a>
+      </nav>
+    </header>
 
-  <script src="app.js"></script>
-</body>
+    <main class="reading-page-main" id="main-content">
+      <div class="container reading-container">
+        <div class="reading-hero">
+          <span class="reading-eyebrow">Playbook & Workflow</span>
+          <h1 class="reading-title">Pathfolio Strategy Guide</h1>
+          <p class="reading-lead">
+            How to manage your application velocity, never miss recruiter follow-ups, and structure quantifiable engineering evidence that wins offers.
+          </p>
+        </div>
+
+        <section class="reading-section">
+          <h2>1. Navigating the 6-Stage Pipeline Lifecycle</h2>
+          <p>
+            Early-career technical recruiting requires organizing dozens of opportunities without losing context. Pathfolio standardizes every application into six discrete, audited stages:
+          </p>
+          <ol>
+            <li><strong>Saved:</strong> Target companies and open requisitions under research. Use this stage to gather internal referrals, note compensation bands, and tailor your portfolio focus before officially submitting.</li>
+            <li><strong>Applied:</strong> Application formally submitted. Record the exact submission timestamp, recruiter portal URL, and confirmation ID.</li>
+            <li><strong>Screening:</strong> Recruiter introductory call or automated coding assessment (e.g., CodeSignal, HackerRank). Prepare talking points on your recent technical projects.</li>
+            <li><strong>Interview:</strong> Active technical loops in progress (data structures & algorithms, systems architecture, live coding, and hiring manager behavioral sessions).</li>
+            <li><strong>Offer:</strong> Formal written offer extended. Track base compensation, equity grants, signing bonuses, and decision deadlines with complete local privacy.</li>
+            <li><strong>Concluded:</strong> Concluded or rejected applications. Keeping structured debrief notes helps identify patterns to improve in future hiring loops.</li>
+          </ol>
+          <div class="callout-box">
+            <h4>Automatic Timeline Tracking</h4>
+            <p>
+              Moving an opportunity between stages automatically logs an immutable dated entry in the <em>Activity History</em> timeline so you can measure your cycle velocity and average days per stage.
+            </p>
+          </div>
+        </section>
+
+        <section class="reading-section">
+          <h2>2. Managing Action Items & Follow-Up Deadlines</h2>
+          <p>
+            Candidate momentum is lost when follow-ups are delayed. Pathfolio helps you stay ahead of recruiter communications and technical milestones:
+          </p>
+          <ul>
+            <li>Attach actionable tasks with target completion dates (e.g. <em>"Send thank-you email to engineering manager"</em>, <em>"Submit take-home system design repo"</em>).</li>
+            <li>Tasks past today's calendar date automatically surface on your dashboard under the <strong>Overdue Actions</strong> badge with high-contrast alert indicators.</li>
+            <li>Completing a task instantly updates your pending badge counts and logs a verified completion event in your local audit trail.</li>
+          </ul>
+        </section>
+
+        <section class="reading-section">
+          <h2>3. Structuring Quantifiable STAR Evidence Entries</h2>
+          <p>
+            During technical and behavioral rounds, engineering interviewers look for verified impact, not generic responsibilities. Use the <strong>Evidence Bank</strong> to store achievements formatted with the STAR principle:
+          </p>
+          <div class="callout-box">
+            <h4>Example STAR Evidence Item:</h4>
+            <p style="font-weight: 700; color: var(--ink-primary); margin-bottom: 0.35rem;">High-Throughput Telemetry Ingestion Engine</p>
+            <p style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--brass); margin-bottom: 0.5rem;">TAGS: Go, Kafka, Docker, Prometheus</p>
+            <p>
+              <strong>Concise Result:</strong> Processed 22,000 events/sec with under 18ms p99 latency during peak university registration traffic, reducing cluster hosting cost by 35%.
+            </p>
+          </div>
+          <p>
+            You can cite this evidence entry across multiple job opportunities without duplicating files or copying paragraphs into multiple folders.
+          </p>
+        </section>
+
+        <section class="reading-section">
+          <h2>4. Atomic Versioned Backups & Device Transfer</h2>
+          <p>
+            Because Pathfolio operates entirely offline with client-side storage, your records live in your browser sandbox or Android app. To move data across devices or create safe checkpoints:
+          </p>
+          <ul>
+            <li>Go to <strong>Settings → Export Backup</strong> to generate a validated JSON schema v1 backup file.</li>
+            <li>To restore, select <strong>Import Backup</strong>: Pathfolio validates schema integrity, field types, and count statistics before replacing current data atomically.</li>
+            <li>All writes are committed as a single immutable snapshot, preventing partial corrupted state.</li>
+          </ul>
+        </section>
+
+        <div style="background-color: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius-md); padding: 2rem; box-shadow: var(--shadow-sm); margin-top: 3rem; text-align: center;">
+          <h3 style="margin-bottom: 0.5rem;">Ready to Organize Your Job Search?</h3>
+          <p style="color: var(--ink-secondary); margin-bottom: 1.5rem;">Open Pathfolio in your browser or install the Android release APK.</p>
+          <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="/app/" class="btn btn-primary btn-large">Launch Web App →</a>
+            <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk" class="btn btn-secondary btn-large">Download APK</a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Universal Site Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand-col">
+            <a href="/" class="brand-link">
+              <div class="brand-seal" aria-hidden="true">P</div>
+              <span class="brand-title">Pathfolio</span>
+            </a>
+            <p>
+              A private, offline-first career workspace for ambitious engineers. Built with Flutter and deployed to Cloudflare Pages.
+            </p>
+          </div>
+
+          <div>
+            <div class="footer-col-title">Navigation</div>
+            <ul class="footer-links">
+              <li><a href="/">Home Dossier</a></li>
+              <li><a href="/#milestones">Milestone Rail</a></li>
+              <li><a href="/#star-matrix">STAR Evidence Matrix</a></li>
+              <li><a href="/#privacy-vault">Privacy Architecture</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="footer-col-title">Documentation</div>
+            <ul class="footer-links">
+              <li><a href="guide.html">User Guide & Strategy</a></li>
+              <li><a href="privacy.html">Privacy Policy & Storage</a></li>
+              <li><a href="/app/">Launch Web Application</a></li>
+              <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk">Download Android APK</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="footer-col-title">Architecture</div>
+            <ul class="footer-links">
+              <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio" target="_blank" rel="noopener">GitHub Repository</a></li>
+              <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/blob/main/LICENSE" target="_blank" rel="noopener">MIT Open Source License</a></li>
+              <li><span>Flutter 3.47.7 & Dart 3.13</span></li>
+              <li><span>Schema Version 1 JSON</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom-row">
+          <div>© 2026 Pathfolio. Crafted with sovereign privacy. Open source under MIT License.</div>
+          <div style="font-family: var(--font-mono); font-size: 0.78rem;">
+            100% CLIENT STORAGE • ZERO TRACKERS • OFFLINE READY
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Unified JavaScript Application -->
+    <script src="app.js"></script>
+  </body>
 </html>
