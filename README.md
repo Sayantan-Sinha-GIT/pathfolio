@@ -93,6 +93,11 @@ Pathfolio adheres to the Antigravity-Kit testing protocol:
   - Iteration 3 (Combinations & Release): 15 distinct cases + CORE rerun.
   - Coverage floors met: >=3 cases per Must requirement, >=6 cases per High-risk requirement (M02, M07, M08).
 - **Visual Review (Section 4A)**: 4 completed app visual review iterations and 6 website cinematic motion rounds documented in `UI_REVIEW.md` and `MOTION_REVIEW.md` across 1440px desktop, 1024px tablet, 390px mobile, and 320px narrow mobile viewports.
+- **Automated Playwright Scroll Gate**: Tested both local (`http://127.0.0.1:8085`) and production (`https://pathfolio.pages.dev`) with `test-scroll-gate.js`:
+  - Verified non-zero computed deltas for Chapter 1 (runway carriage advance $x = 258\text{px} \rightarrow 787\text{px}$, bar scale $0.243 \rightarrow 0.741$).
+  - Verified non-zero computed deltas for Chapter 2 (STAR fragment assembly convergence, verification seal stamp scale $0.388 \rightarrow 0.908$, opacity $0 \rightarrow 0.8$).
+  - Verified non-zero computed deltas for Chapter 3 (envelope flap 3D fold $\text{rotateX } -74^\circ \rightarrow -23^\circ$, hot brass wax seal press $y: -44\text{px} \rightarrow -14\text{px}$, drawer slide).
+  - Verified exact mobile containment (`scrollWidth === innerWidth === 390px` and `320px`, zero overflow), full mobile drawer visibility, sticky header clearance, reduced-motion static fallback, and all linked routes (`/guide.html`, `/privacy.html`, `/app/`).
 
 ---
 

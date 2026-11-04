@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pathfolio — Kinetic Career Dossier & Private Command Center</title>
+    <title>Pathfolio — Kinetic Career Dossier & Sovereign Command Center</title>
     <meta
       name="description"
-      content="A private, offline-first career workspace for ambitious engineers. Track multi-stage applications through a verified milestone rail, cite quantifiable STAR evidence during interviews, and store data securely on your device."
+      content="A private, offline-first career workspace for ambitious engineers. Track multi-stage applications through an architectural milestone rail, cite quantifiable STAR evidence during interviews, and store data securely on your device."
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -14,7 +14,7 @@
     <!-- Living Ambient Environment (Milestone Rails & Drafting Matrix) -->
     <div class="ambient-environment" aria-hidden="true">
       <canvas id="dossier-canvas" class="dossier-canvas"></canvas>
-      <div class="drafting-grid-overlay"></div>
+      <div class="drafting-grid-overlay" id="drafting-overlay"></div>
     </div>
 
     <!-- Universal Site Header -->
@@ -30,7 +30,7 @@
           <a href="#hero" class="nav-link active">Dossier</a>
           <a href="#milestones" class="nav-link">Milestone Rail</a>
           <a href="#star-matrix" class="nav-link">STAR Matrix</a>
-          <a href="#privacy-vault" class="nav-link">Storage Tradeoffs</a>
+          <a href="#privacy-vault" class="nav-link">Storage Vault</a>
           <a href="#app-tour" class="nav-link">App Tour</a>
           <a href="guide.html" class="nav-link">Strategy Guide</a>
           <a href="privacy.html" class="nav-link">Privacy Policy</a>
@@ -107,9 +107,9 @@
     <nav id="mobile-nav" class="mobile-nav-drawer" aria-label="Mobile Navigation">
       <div class="mobile-drawer-links">
         <a href="#hero" class="mobile-drawer-link">01 // Dossier Hero</a>
-        <a href="#milestones" class="mobile-drawer-link">02 // Milestone Rail</a>
-        <a href="#star-matrix" class="mobile-drawer-link">03 // STAR Evidence</a>
-        <a href="#privacy-vault" class="mobile-drawer-link">04 // Storage Tradeoffs</a>
+        <a href="#milestones" class="mobile-drawer-link">02 // Milestone Runway</a>
+        <a href="#star-matrix" class="mobile-drawer-link">03 // STAR Assembly</a>
+        <a href="#privacy-vault" class="mobile-drawer-link">04 // Storage Vault</a>
         <a href="#app-tour" class="mobile-drawer-link">05 // App Tour</a>
         <a href="guide.html" class="mobile-drawer-link">Strategy & Workflow Guide</a>
         <a href="privacy.html" class="mobile-drawer-link">Privacy Policy & Storage</a>
@@ -125,138 +125,161 @@
     </nav>
 
     <main id="main-content">
-      <!-- Hero Section: Kinetic Career Dossier -->
+      <!-- Hero Section: Dramatic Asymmetrical First Viewport -->
       <section class="hero-section" id="hero">
         <div class="container">
-          <div class="hero-briefing">
-            <div class="status-badge">
-              <span class="pulse-pip" aria-hidden="true"></span>
-              <span>Private Career Workspace • Local Storage Only</span>
-            </div>
-
-            <h1 class="hero-headline">
-              The Private Career Dossier for Ambitious Engineers.
-            </h1>
-
-            <p class="hero-lead">
-              Organize multi-stage technical applications through an architectural milestone rail, cite quantifiable STAR evidence during high-stakes interviews, and keep sensitive recruitment history securely on your device.
-            </p>
-
-            <div class="hero-actions">
-              <a href="/app/" class="btn btn-primary btn-large">
-                <span>Launch Web App</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </a>
-
-              <a
-                href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk"
-                class="btn btn-secondary btn-large"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-                <span>Download Android APK</span>
-              </a>
-
-              <a href="#milestones" class="btn btn-secondary btn-large">
-                <span>Explore Milestone Rail ↓</span>
-              </a>
-            </div>
-          </div>
-
-          <!-- Hero Centerpiece: Kinetic Milestone Dossier Card -->
-          <div class="dossier-card-container">
-            <div class="dossier-card" id="hero-dossier">
-              <div class="dossier-header">
-                <div class="dossier-tab-group">
-                  <button type="button" class="dossier-tab active" id="tab-active-card">Candidate Dossier</button>
-                  <button type="button" class="dossier-tab" id="tab-audit-trail">Activity Timeline</button>
-                  <button type="button" class="dossier-tab" id="tab-evidence-sheet">STAR Evidence Sheet</button>
-                </div>
-                <div class="dossier-status-indicator">
-                  <span class="pulse-pip" aria-hidden="true"></span>
-                  <span>LOCAL_SANDBOX :: ENCLOSED</span>
-                </div>
+          <div class="hero-layout-grid">
+            <!-- Left Editorial Command Briefing -->
+            <div class="hero-briefing-col">
+              <div class="status-badge">
+                <span class="pulse-pip" aria-hidden="true"></span>
+                <span>SOVEREIGN CAREER WORKSPACE • LOCAL PERSISTENCE</span>
               </div>
 
-              <div class="dossier-body">
-                <!-- Candidate Profile Row -->
-                <div class="candidate-profile-row">
-                  <div class="candidate-info">
-                    <div class="candidate-company-tag" id="dossier-company">STRIPE // INFRASTRUCTURE</div>
-                    <h2 class="candidate-role-title" id="dossier-role">Staff Distributed Systems Engineer</h2>
-                    <div class="candidate-meta-chips">
-                      <span class="meta-chip">📍 San Francisco / Remote</span>
-                      <span class="meta-chip">💼 $210k - $240k + Equity</span>
-                      <span class="meta-chip" id="dossier-next-action">📅 Next: Systems Architecture Loop (Nov 5)</span>
+              <h1 class="hero-headline">
+                The Sovereign Career Dossier for Engineers Who Build.
+              </h1>
+
+              <p class="hero-lead">
+                Organize high-stakes technical applications through a physically driven milestone runway, cite quantifiable STAR evidence under intense interview pressure, and keep your recruitment intelligence on your own device.
+              </p>
+
+              <div class="hero-actions">
+                <a href="/app/" class="btn btn-primary btn-large">
+                  <span>Launch Web App</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </a>
+
+                <a
+                  href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk"
+                  class="btn btn-secondary btn-large"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  <span>Download APK (51.0 MB)</span>
+                </a>
+
+                <a href="#milestones" class="btn btn-secondary btn-large">
+                  <span>Explore Runway ↓</span>
+                </a>
+              </div>
+
+              <div class="hero-proof-ledger">
+                <div class="proof-item">
+                  <span class="dot"></span>
+                  <span>39 Automated Tests Passing</span>
+                </div>
+                <div class="proof-item">
+                  <span class="dot"></span>
+                  <span>Zero Cloud Databases</span>
+                </div>
+                <div class="proof-item">
+                  <span class="dot"></span>
+                  <span>Schema v1 JSON Portability</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: The 3D Kinetic Candidate Dossier Folio -->
+            <div class="hero-dossier-col">
+              <div class="dossier-stack-container">
+                <div class="dossier-underlay-sheet-2" aria-hidden="true"></div>
+                <div class="dossier-underlay-sheet-1" aria-hidden="true"></div>
+
+                <div class="dossier-card" id="hero-dossier-card">
+                  <div class="dossier-header">
+                    <div class="dossier-tab-group">
+                      <button type="button" class="dossier-tab active" id="tab-active-card">Candidate Dossier</button>
+                      <button type="button" class="dossier-tab" id="tab-audit-trail">Activity Timeline</button>
+                      <button type="button" class="dossier-tab" id="tab-evidence-sheet">STAR Proof Sheet</button>
+                    </div>
+                    <div class="dossier-status-indicator">
+                      <span class="pulse-pip" aria-hidden="true"></span>
+                      <span>LOCAL_SANDBOX :: SECURED</span>
                     </div>
                   </div>
 
-                  <span class="stage-badge-large" id="dossier-stage-pill" style="background-color: var(--stage-interview-bg); color: var(--stage-interview);">
-                    Stage: Technical Interview
-                  </span>
-                </div>
+                  <div class="dossier-body">
+                    <!-- Candidate Profile Row -->
+                    <div class="candidate-profile-row">
+                      <div class="candidate-info">
+                        <div class="candidate-company-tag" id="dossier-company">STRIPE // INFRASTRUCTURE</div>
+                        <h2 class="candidate-role-title" id="dossier-role">Staff Distributed Systems Engineer</h2>
+                        <div class="candidate-meta-chips">
+                          <span class="meta-chip">📍 San Francisco / Remote</span>
+                          <span class="meta-chip">💼 $210k - $240k + Equity</span>
+                          <span class="meta-chip" id="dossier-next-action">📅 Next: Architecture Loop (Nov 5)</span>
+                        </div>
+                      </div>
 
-                <!-- Milestone Progress Rail -->
-                <div class="milestone-rail-block">
-                  <div class="rail-track-wrapper" aria-hidden="true">
-                    <div class="rail-track-line"></div>
-                    <div class="rail-track-fill" id="dossier-rail-fill" style="width: 60%;"></div>
-                  </div>
+                      <span class="stage-badge-large" id="dossier-stage-pill" style="background-color: var(--stage-interview-bg); color: var(--stage-interview);">
+                        Stage: Technical Interview
+                      </span>
+                    </div>
 
-                  <div class="milestone-stations" role="tablist" aria-label="Pipeline Stages">
-                    <button type="button" class="station-item completed" data-stage="0" role="tab" aria-selected="false">
-                      <div class="station-node">01</div>
-                      <span class="station-label">Saved</span>
-                    </button>
-                    <button type="button" class="station-item completed" data-stage="1" role="tab" aria-selected="false">
-                      <div class="station-node">02</div>
-                      <span class="station-label">Applied</span>
-                    </button>
-                    <button type="button" class="station-item completed" data-stage="2" role="tab" aria-selected="false">
-                      <div class="station-node">03</div>
-                      <span class="station-label">Screening</span>
-                    </button>
-                    <button type="button" class="station-item active" data-stage="3" role="tab" aria-selected="true">
-                      <div class="station-node">04</div>
-                      <span class="station-label">Interview</span>
-                    </button>
-                    <button type="button" class="station-item" data-stage="4" role="tab" aria-selected="false">
-                      <div class="station-node">05</div>
-                      <span class="station-label">Offer</span>
-                    </button>
-                    <button type="button" class="station-item" data-stage="5" role="tab" aria-selected="false">
-                      <div class="station-node">06</div>
-                      <span class="station-label">Rejected</span>
-                    </button>
-                  </div>
-                </div>
+                    <!-- Milestone Progress Rail Inside Card -->
+                    <div class="milestone-rail-block">
+                      <div class="rail-track-wrapper" aria-hidden="true">
+                        <div class="rail-track-line"></div>
+                        <div class="rail-track-fill" id="dossier-rail-fill" style="width: 60%;"></div>
+                      </div>
 
-                <!-- Attached STAR Citation -->
-                <div class="dossier-evidence-attachment" id="dossier-evidence-block">
-                  <div class="evidence-header">
-                    <span class="evidence-tag">STAR Citation Attached</span>
-                    <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-muted);">TAGS: Kafka, Go, Distributed-Storage, Latency</span>
-                  </div>
-                  <h3 class="evidence-citation-title" id="dossier-evidence-title">High-Throughput Ingestion Engine Optimization</h3>
-                  <p class="evidence-citation-result" id="dossier-evidence-result">
-                    "Engineered distributed Kafka event pipeline handling 22,000 req/s with under 18ms p99 latency during peak load, cutting cluster hosting costs by 32%."
-                  </p>
-                </div>
+                      <div class="milestone-stations" role="tablist" aria-label="Pipeline Stages">
+                        <button type="button" class="station-item completed" data-stage="0" role="tab" aria-selected="false">
+                          <div class="station-node">01</div>
+                          <span class="station-label">Saved</span>
+                        </button>
+                        <button type="button" class="station-item completed" data-stage="1" role="tab" aria-selected="false">
+                          <div class="station-node">02</div>
+                          <span class="station-label">Applied</span>
+                        </button>
+                        <button type="button" class="station-item completed" data-stage="2" role="tab" aria-selected="false">
+                          <div class="station-node">03</div>
+                          <span class="station-label">Screening</span>
+                        </button>
+                        <button type="button" class="station-item active" data-stage="3" role="tab" aria-selected="true">
+                          <div class="station-node">04</div>
+                          <span class="station-label">Interview</span>
+                        </button>
+                        <button type="button" class="station-item" data-stage="4" role="tab" aria-selected="false">
+                          <div class="station-node">05</div>
+                          <span class="station-label">Offer</span>
+                        </button>
+                        <button type="button" class="station-item" data-stage="5" role="tab" aria-selected="false">
+                          <div class="station-node">06</div>
+                          <span class="station-label">Rejected</span>
+                        </button>
+                      </div>
+                    </div>
 
-                <!-- Interactive Scrubber Controls -->
-                <div class="dossier-scrubber-controls">
-                  <div class="scrubber-btn-group">
-                    <button type="button" class="btn-scrubber" id="btn-prev-stage">← Previous Stage</button>
-                    <button type="button" class="btn-scrubber" id="btn-next-stage">Advance Stage →</button>
-                    <button type="button" class="btn-scrubber" id="btn-cycle-candidate">Switch Candidate Role</button>
-                  </div>
-                  <div class="scrubber-audit-log" id="dossier-audit-log">
-                    Stage updated: Technical Interview [Saved to local Activity History]
+                    <!-- Attached STAR Citation -->
+                    <div class="dossier-evidence-attachment" id="dossier-evidence-block">
+                      <div class="evidence-header">
+                        <span class="evidence-tag">STAR Proof Linked</span>
+                        <span style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-muted);">TAGS: Kafka, Go, Distributed-Storage</span>
+                      </div>
+                      <h3 class="evidence-citation-title" id="dossier-evidence-title">High-Throughput Ingestion Engine Optimization</h3>
+                      <p class="evidence-citation-result" id="dossier-evidence-result">
+                        "Engineered distributed Kafka event pipeline handling 22,000 req/s with under 18ms p99 latency during peak load, cutting cluster hosting costs by 32%."
+                      </p>
+                    </div>
+
+                    <!-- Interactive Scrubber Controls -->
+                    <div class="dossier-scrubber-controls">
+                      <div class="scrubber-btn-group">
+                        <button type="button" class="btn-scrubber" id="btn-prev-stage">← Previous Stage</button>
+                        <button type="button" class="btn-scrubber" id="btn-next-stage">Advance Stage →</button>
+                        <button type="button" class="btn-scrubber" id="btn-cycle-candidate">Switch Candidate Role</button>
+                      </div>
+                      <div class="scrubber-audit-log" id="dossier-audit-log">
+                        Stage: Technical Interview [Saved to local Activity History]
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -265,163 +288,207 @@
         </div>
       </section>
 
-      <!-- Chapter 1: The Milestone Pipeline Rail -->
+      <!-- Chapter 1: The Six-Stage Career Pipeline Runway -->
       <section class="section-chapter" id="milestones">
-        <div class="container">
+        <div class="container" id="chapter-pipeline">
           <div class="section-header-block">
             <span class="section-eyebrow">01 // Operational Architecture</span>
-            <h2 class="section-title">A 6-Stage Progress Rail That Keeps Momentum.</h2>
+            <h2 class="section-title">A 6-Stage Progress Rail That Physically Advances.</h2>
             <p class="section-lead">
-              Technical recruiting moves fast. Dropped recruiter emails and forgotten debriefs derail strong candidacies. Pathfolio structures your search into discrete, velocity-tracked milestones with automatic local timeline auditing.
+              Technical recruiting moves at high velocity. As you scroll down this workspace, the milestone carriage physically tracks through your application pipeline, activating each operational stage with timestamped audit durability.
             </p>
           </div>
 
-          <div class="pipeline-grid">
-            <div class="pipeline-card">
-              <span class="pipeline-card-stage-chip" style="background-color: var(--stage-saved-bg); color: var(--stage-saved);">01 // Saved</span>
-              <h3 class="pipeline-card-title">Discovery & Research</h3>
-              <p class="pipeline-card-desc">
-                Log target opportunities, compensation ranges, and engineering stack notes before submitting. Track referral requests and tailor your portfolio milestones.
-              </p>
-              <div class="pipeline-card-meta">
-                <span>Avg Stage Duration: 2-5 days</span>
-                <span>Audit: Timestamped</span>
+          <div class="pipeline-runway-container">
+            <div class="pipeline-runway-header">
+              <div>
+                <span style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--ink-primary);">
+                  APPLICATION_LIFECYCLE_RUNWAY :: 6_STAGES
+                </span>
+                <span style="font-size: 0.78rem; color: var(--ink-muted); margin-left: 0.5rem;">[Scroll Position Synchronized]</span>
+              </div>
+              <div class="runway-telemetry-badge" id="pipeline-stage-telemetry">
+                <span class="pulse-pip" aria-hidden="true"></span>
+                <span id="pipeline-telemetry-text">ACTIVE: 01 // SAVED DISCOVERY</span>
               </div>
             </div>
 
-            <div class="pipeline-card">
-              <span class="pipeline-card-stage-chip" style="background-color: var(--stage-applied-bg); color: var(--stage-applied);">02 // Applied</span>
-              <h3 class="pipeline-card-title">Submission & Tracking</h3>
-              <p class="pipeline-card-desc">
-                Record exact submission timestamps, application URLs, and recruiter contact info. Easily track next action dates and attach follow-up tasks.
-              </p>
-              <div class="pipeline-card-meta">
-                <span>Avg Stage Duration: 5-10 days</span>
-                <span>In-App Follow-Up Badges: Active</span>
+            <!-- The Master Scroll-Driven Carriage Rail -->
+            <div class="pipeline-rail-track-outer" id="pipeline-rail-track-wrapper" aria-hidden="true">
+              <div class="pipeline-rail-base-line"></div>
+              <div class="pipeline-scroll-bar" id="pipeline-scroll-bar"></div>
+              <div class="pipeline-rail-carriage" id="pipeline-rail-carriage" title="Current Milestone Position">
+                ◆
               </div>
             </div>
 
-            <div class="pipeline-card">
-              <span class="pipeline-card-stage-chip" style="background-color: var(--stage-screening-bg); color: var(--stage-screening);">03 // Screening</span>
-              <h3 class="pipeline-card-title">Recruiter & Tech Screen</h3>
-              <p class="pipeline-card-desc">
-                Track recruiter screening dates, automated technical assessments, and core competencies discussed. Prepare talking points tailored to the hiring manager.
-              </p>
-              <div class="pipeline-card-meta">
-                <span>Avg Stage Duration: 3-7 days</span>
-                <span>Checklist: 3 Items</span>
+            <!-- Six Sequential Runway Stations -->
+            <div class="pipeline-runway-grid">
+              <div class="pipeline-runway-card active" data-stage="0">
+                <div class="runway-stage-indicator">
+                  <span class="runway-station-num">01</span>
+                  <span class="runway-stage-chip" style="background-color: var(--stage-saved-bg); color: var(--stage-saved);">Saved</span>
+                </div>
+                <h3 class="runway-stage-title">Discovery</h3>
+                <p class="runway-stage-desc">
+                  Capture target opportunities, compensation ranges, and engineering stack notes before submitting.
+                </p>
+                <div class="runway-stage-meta">
+                  <span>Velocity: 2-5 Days</span>
+                  <span>Audit: Timestamped</span>
+                </div>
               </div>
-            </div>
 
-            <div class="pipeline-card">
-              <span class="pipeline-card-stage-chip" style="background-color: var(--stage-interview-bg); color: var(--stage-interview);">04 // Interview</span>
-              <h3 class="pipeline-card-title">Technical Loops & System Design</h3>
-              <p class="pipeline-card-desc">
-                Manage full interview panels across algorithms, systems architecture, and behavioral rounds. Attach STAR evidence cards directly to panel debriefs.
-              </p>
-              <div class="pipeline-card-meta">
-                <span>Avg Stage Duration: 7-14 days</span>
-                <span>STAR Tags: Linked</span>
+              <div class="pipeline-runway-card" data-stage="1">
+                <div class="runway-stage-indicator">
+                  <span class="runway-station-num">02</span>
+                  <span class="runway-stage-chip" style="background-color: var(--stage-applied-bg); color: var(--stage-applied);">Applied</span>
+                </div>
+                <h3 class="runway-stage-title">Submission</h3>
+                <p class="runway-stage-desc">
+                  Record exact application timestamps, contact URLs, and attach follow-up reminders.
+                </p>
+                <div class="runway-stage-meta">
+                  <span>Velocity: 5-10 Days</span>
+                  <span>In-App Badges: Active</span>
+                </div>
               </div>
-            </div>
 
-            <div class="pipeline-card">
-              <span class="pipeline-card-stage-chip" style="background-color: var(--stage-offer-bg); color: var(--stage-offer);">05 // Offer</span>
-              <h3 class="pipeline-card-title">Written Offer & Compensation</h3>
-              <p class="pipeline-card-desc">
-                Evaluate base salary notes, equity terms, sign-on bonuses, and decision deadlines privately. Store sensitive compensation notes without cloud exposure.
-              </p>
-              <div class="pipeline-card-meta">
-                <span>Decision Window: 7-10 days</span>
-                <span>Privacy: Strictly Local</span>
+              <div class="pipeline-runway-card" data-stage="2">
+                <div class="runway-stage-indicator">
+                  <span class="runway-station-num">03</span>
+                  <span class="runway-stage-chip" style="background-color: var(--stage-screening-bg); color: var(--stage-screening);">Screening</span>
+                </div>
+                <h3 class="runway-stage-title">Recruiter Loop</h3>
+                <p class="runway-stage-desc">
+                  Track recruiter screens, initial technical sizing, and role alignment parameters.
+                </p>
+                <div class="runway-stage-meta">
+                  <span>Velocity: 3-7 Days</span>
+                  <span>Checklist: 3 Items</span>
+                </div>
               </div>
-            </div>
 
-            <div class="pipeline-card">
-              <span class="pipeline-card-stage-chip" style="background-color: var(--stage-concluded-bg); color: var(--stage-concluded);">06 // Rejected</span>
-              <h3 class="pipeline-card-title">Debrief & Archive</h3>
-              <p class="pipeline-card-desc">
-                Concluded or declined applications preserve full timeline history for future interview loops. Archived records leave active pipeline counts.
-              </p>
-              <div class="pipeline-card-meta">
-                <span>Timeline: Chronological</span>
-                <span>Archive: Isolated</span>
+              <div class="pipeline-runway-card" data-stage="3">
+                <div class="runway-stage-indicator">
+                  <span class="runway-station-num">04</span>
+                  <span class="runway-stage-chip" style="background-color: var(--stage-interview-bg); color: var(--stage-interview);">Interview</span>
+                </div>
+                <h3 class="runway-stage-title">Technical Loops</h3>
+                <p class="runway-stage-desc">
+                  Manage algorithmic rounds, systems architecture panels, and behavioral debriefs.
+                </p>
+                <div class="runway-stage-meta">
+                  <span>Velocity: 7-14 Days</span>
+                  <span>STAR Proof: Linked</span>
+                </div>
+              </div>
+
+              <div class="pipeline-runway-card" data-stage="4">
+                <div class="runway-stage-indicator">
+                  <span class="runway-station-num">05</span>
+                  <span class="runway-stage-chip" style="background-color: var(--stage-offer-bg); color: var(--stage-offer);">Offer</span>
+                </div>
+                <h3 class="runway-stage-title">Compensation</h3>
+                <p class="runway-stage-desc">
+                  Evaluate base salary, equity grants, sign-on bonuses, and decision deadlines in privacy.
+                </p>
+                <div class="runway-stage-meta">
+                  <span>Decision: 7-10 Days</span>
+                  <span>Vault: Sandboxed</span>
+                </div>
+              </div>
+
+              <div class="pipeline-runway-card" data-stage="5">
+                <div class="runway-stage-indicator">
+                  <span class="runway-station-num">06</span>
+                  <span class="runway-stage-chip" style="background-color: var(--stage-concluded-bg); color: var(--stage-concluded);">Rejected</span>
+                </div>
+                <h3 class="runway-stage-title">Archival Debrief</h3>
+                <p class="runway-stage-desc">
+                  Preserve interview debrief logs and lessons learned without cluttering active pipeline counts.
+                </p>
+                <div class="runway-stage-meta">
+                  <span>Status: Terminal</span>
+                  <span>History: Permanent</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Chapter 2: The STAR Evidence Matrix -->
+      <!-- Chapter 2: The STAR Evidence Assembly Deck -->
       <section class="section-chapter" id="star-matrix">
-        <div class="container">
+        <div class="container" id="chapter-evidence">
           <div class="section-header-block">
             <span class="section-eyebrow">02 // Behavioral Mastery</span>
-            <h2 class="section-title">Cite Quantifiable Engineering Proof on Demand.</h2>
+            <h2 class="section-title">STAR Evidence Fragments Assembling on Demand.</h2>
             <p class="section-lead">
-              Generic resume bullets fail in senior technical interviews. Pathfolio's Evidence Bank stores your engineering milestones structured with the STAR principle (Situation, Task, Action, Result) so you cite crisp metrics under pressure.
+              Generic resume bullets evaporate during difficult systems interviews. As you scroll, separate Situation, Task, Action, and Result fragments fly together and lock into a cohesive verified proof sheet with quantifiable impact metrics.
             </p>
           </div>
 
-          <div class="star-matrix-workbench">
+          <div class="star-assembly-workbench">
             <div class="matrix-filter-nav" role="tablist" aria-label="Evidence Domains">
               <button type="button" class="matrix-filter-btn active" data-domain="systems" role="tab">Distributed Systems</button>
               <button type="button" class="matrix-filter-btn" data-domain="perf" role="tab">Performance Tuning</button>
-              <button type="button" class="matrix-filter-btn" data-domain="security" role="tab">Security & Vault</button>
-              <button type="button" class="matrix-filter-btn" data-domain="frontend" role="tab">Frontend Architecture</button>
+              <button type="button" class="matrix-filter-btn" data-domain="security" role="tab">Security & Ephemeral IAM</button>
+              <button type="button" class="matrix-filter-btn" data-domain="frontend" role="tab">Client State Persistence</button>
             </div>
 
-            <div class="matrix-display-deck">
-              <div class="star-breakdown-card">
-                <div class="star-row">
-                  <div class="star-letter-badge">S</div>
-                  <div class="star-content">
-                    <h4>Situation</h4>
-                    <p id="star-situation">
-                      Legacy telemetry ingestion service suffered memory exhaustion and 1,800ms tail latency during peak registration spikes, causing dropped metrics and customer alerting delays.
-                    </p>
-                  </div>
+            <div class="star-assembly-deck" id="star-assembly-deck">
+              <!-- Central Stamped Seal (appears as fragments lock together) -->
+              <div class="star-assembly-seal" id="star-assembly-seal" aria-hidden="true">
+                VERIFIED<br />PROOF
+              </div>
+
+              <!-- 4 Modular Floating Fragments -->
+              <div class="star-fragments-grid">
+                <div class="star-fragment frag-s" id="star-frag-situation">
+                  <div class="star-fragment-badge">S</div>
+                  <h4 class="star-fragment-title">Situation</h4>
+                  <p class="star-fragment-body" id="star-situation">
+                    Legacy telemetry ingestion service suffered memory exhaustion and 1,800ms tail latency during peak registration spikes, causing dropped metrics and customer alerting delays.
+                  </p>
                 </div>
 
-                <div class="star-row">
-                  <div class="star-letter-badge">T</div>
-                  <div class="star-content">
-                    <h4>Task</h4>
-                    <p id="star-task">
-                      Redesign the message ingestion pipeline to support 20,000+ events/sec with sub-50ms p99 latency without increasing server cluster budget.
-                    </p>
-                  </div>
+                <div class="star-fragment frag-t" id="star-frag-task">
+                  <div class="star-fragment-badge">T</div>
+                  <h4 class="star-fragment-title">Task</h4>
+                  <p class="star-fragment-body" id="star-task">
+                    Redesign the message ingestion pipeline to support 20,000+ events/sec with sub-50ms p99 latency without increasing server cluster budget.
+                  </p>
                 </div>
 
-                <div class="star-row">
-                  <div class="star-letter-badge">A</div>
-                  <div class="star-content">
-                    <h4>Action</h4>
-                    <p id="star-action">
-                      Re-architected buffer pooling in Go, migrated unbounded channels to partitioned Kafka topics, and introduced memory-mapped batching with backpressure controls.
-                    </p>
-                  </div>
+                <div class="star-fragment frag-a" id="star-frag-action">
+                  <div class="star-fragment-badge">A</div>
+                  <h4 class="star-fragment-title">Action</h4>
+                  <p class="star-fragment-body" id="star-action">
+                    Re-architected buffer pooling in Go, migrated unbounded channels to partitioned Kafka topics, and introduced memory-mapped batching with backpressure controls.
+                  </p>
                 </div>
 
-                <div class="star-row">
-                  <div class="star-letter-badge">R</div>
-                  <div class="star-content">
-                    <h4>Result (Quantifiable)</h4>
-                    <p id="star-result" style="color: var(--accent); font-weight: 600;">
-                      Processed 22,000 events/sec with 18ms p99 latency; reduced memory footprint by 45% and cloud infrastructure bill by $14,000/month.
-                    </p>
-                  </div>
+                <div class="star-fragment frag-r" id="star-frag-result">
+                  <div class="star-fragment-badge">R</div>
+                  <h4 class="star-fragment-title" style="color: var(--accent);">Result (Quantifiable)</h4>
+                  <p class="star-fragment-body" id="star-result" style="color: var(--ink-primary); font-weight: 600;">
+                    Processed 22,000 events/sec with 18ms p99 latency; reduced memory footprint by 45% and cloud infrastructure bill by $14,000/month.
+                  </p>
                 </div>
               </div>
 
-              <div class="star-citation-preview-panel">
+              <!-- Right: Active Citation Proof Panel -->
+              <div class="star-citation-panel">
                 <div>
-                  <div class="preview-pill">Active Interview Talking Point</div>
-                  <h3 id="citation-title" style="font-size: 1.15rem; margin-bottom: 0.5rem;">Distributed Telemetry Engine</h3>
+                  <div class="citation-domain-pill">Active Interview Talking Point</div>
+                  <h3 id="citation-title" style="font-size: 1.18rem; margin-bottom: 0.5rem; color: var(--ink-primary);">
+                    Distributed Telemetry Engine
+                  </h3>
                   <div id="citation-tags" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-secondary); margin-bottom: 1rem;">
                     TAGS: Go, Kafka, Prometheus, Zero-Allocation
                   </div>
-                  <p id="citation-summary" style="font-size: 0.9rem; line-height: 1.5; color: var(--ink-secondary);">
+                  <p id="citation-summary" style="font-size: 0.9rem; line-height: 1.55; color: var(--ink-secondary);">
                     Use during systems architecture and concurrency rounds to demonstrate measured performance engineering under real production load.
                   </p>
                 </div>
@@ -430,8 +497,8 @@
                   <button type="button" class="btn btn-primary" id="btn-cite-simulation" style="width: 100%;">
                     Simulate Citing in Interview →
                   </button>
-                  <div id="citation-feedback" style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--accent); margin-top: 0.6rem; text-align: center; display: none;">
-                    ✓ Evidence attached to active candidate briefing.
+                  <div id="citation-feedback" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); margin-top: 0.6rem; text-align: center; display: none;">
+                    ✓ Evidence attached to active candidate briefing!
                   </div>
                 </div>
               </div>
@@ -440,17 +507,79 @@
         </div>
       </section>
 
-      <!-- Chapter 3: Sovereign Privacy & Atomic Vault -->
+      <!-- Chapter 3: Sovereign Dossier Vault & Backup Sealing -->
       <section class="section-chapter" id="privacy-vault">
-        <div class="container">
+        <div class="container" id="chapter-vault">
           <div class="section-header-block">
             <span class="section-eyebrow">03 // Storage Architecture & Tradeoffs</span>
-            <h2 class="section-title">Local-First Storage. Transparent Architectural Tradeoffs.</h2>
+            <h2 class="section-title">A Dossier Folding & Sealing Into a Portable Packet.</h2>
             <p class="section-lead">
-              Centralized platforms prioritize seamless multi-device synchronization, while Pathfolio prioritizes complete on-device data sovereignty and zero telemetry with deliberate JSON export.
+              While centralized portals keep your sensitive job hunt in remote databases, Pathfolio folds and seals your records into a strictly local, schema-validated JSON packet that stays under your personal custody.
             </p>
           </div>
 
+          <!-- The Dimensional Dossier Folding Envelope -->
+          <div class="vault-presentation-block">
+            <div class="vault-envelope-packet" id="vault-packet-envelope">
+              <div class="vault-envelope-flap" id="vault-envelope-flap" aria-hidden="true"></div>
+              <div class="vault-wax-seal" id="vault-wax-seal" aria-hidden="true">P</div>
+
+              <!-- Sliding Schema v1 JSON Drawer -->
+              <div class="vault-code-drawer" id="vault-code-drawer">
+                <div class="schema-inspector-card">
+                  <div class="schema-inspector-header">
+                    <div>
+                      <span style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--ink-primary);">
+                        PATHFOLIO_BACKUP_SCHEMA_V1.JSON
+                      </span>
+                      <span style="font-size: 0.78rem; color: var(--ink-muted); margin-left: 0.5rem;">[Live Validated Schema]</span>
+                    </div>
+                    <button type="button" class="btn btn-secondary" id="btn-download-sample-json">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                      </svg>
+                      <span>Download Sample Backup (JSON)</span>
+                    </button>
+                  </div>
+
+                  <pre class="schema-json-body"><code>{
+  "schemaVersion": 1,
+  "exportedAt": "2026-11-04T08:00:00.000Z",
+  "appVersion": "1.0.1",
+  "opportunities": [
+    {
+      "id": "opp-stripe-001",
+      "company": "Stripe",
+      "role": "Staff Distributed Systems Engineer",
+      "stage": "interview",
+      "salaryNote": "$210k - $240k + Equity",
+      "nextActionDate": "2026-11-05T14:00:00.000Z",
+      "timeline": [
+        { "id": "t-1", "stage": "saved", "timestamp": "2026-10-14T09:00:00.000Z" },
+        { "id": "t-2", "stage": "applied", "timestamp": "2026-10-18T11:20:00.000Z" },
+        { "id": "t-3", "stage": "screening", "timestamp": "2026-10-24T16:00:00.000Z" },
+        { "id": "t-4", "stage": "interview", "timestamp": "2026-11-01T10:00:00.000Z" }
+      ],
+      "evidenceIds": ["ev-telemetry-01"]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev-telemetry-01",
+      "title": "High-Throughput Ingestion Engine Optimization",
+      "tags": ["Go", "Kafka", "Prometheus", "Distributed-Storage"],
+      "result": "Engineered distributed Kafka pipeline processing 22k events/sec with 18ms p99 latency."
+    }
+  ]
+}</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Neutral Architectural Comparison Grid -->
           <div class="privacy-comparison-grid">
             <div class="comparison-box commercial">
               <h3 class="comparison-title">Centralized Cloud Platforms</h3>
@@ -496,61 +625,10 @@
               </ul>
             </div>
           </div>
-
-          <!-- Schema v1 JSON Inspector -->
-          <div class="schema-inspector-card">
-            <div class="schema-inspector-header">
-              <div>
-                <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--ink-primary);">
-                  PATHFOLIO_BACKUP_SCHEMA_V1.JSON
-                </span>
-                <span style="font-size: 0.78rem; color: var(--ink-muted); margin-left: 0.5rem;">[Live Validated Schema]</span>
-              </div>
-              <button type="button" class="btn btn-secondary" id="btn-download-sample-json">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-                <span>Download Sample Backup (JSON)</span>
-              </button>
-            </div>
-
-            <pre class="schema-json-body"><code>{
-  "schemaVersion": 1,
-  "exportedAt": "2026-11-03T18:30:00.000Z",
-  "appVersion": "1.0.1",
-  "opportunities": [
-    {
-      "id": "opp-stripe-001",
-      "company": "Stripe",
-      "role": "Staff Distributed Systems Engineer",
-      "stage": "interview",
-      "salaryNote": "$210k - $240k + Equity",
-      "nextActionDate": "2026-11-05T14:00:00.000Z",
-      "timeline": [
-        { "id": "t-1", "stage": "saved", "timestamp": "2026-10-14T09:00:00.000Z" },
-        { "id": "t-2", "stage": "applied", "timestamp": "2026-10-18T11:20:00.000Z" },
-        { "id": "t-3", "stage": "screening", "timestamp": "2026-10-24T16:00:00.000Z" },
-        { "id": "t-4", "stage": "interview", "timestamp": "2026-11-01T10:00:00.000Z" }
-      ],
-      "evidenceIds": ["ev-telemetry-01"]
-    }
-  ],
-  "evidence": [
-    {
-      "id": "ev-telemetry-01",
-      "title": "High-Throughput Ingestion Engine Optimization",
-      "tags": ["Go", "Kafka", "Prometheus", "Distributed-Storage"],
-      "result": "Engineered distributed Kafka pipeline processing 22k events/sec with 18ms p99 latency."
-    }
-  ]
-}</code></pre>
-          </div>
         </div>
       </section>
 
-      <!-- App Tour Section -->
+      <!-- Chapter 4: Product Craft & App Tour -->
       <section class="section-chapter" id="app-tour">
         <div class="container">
           <div class="section-header-block">
@@ -562,27 +640,25 @@
           </div>
 
           <div class="app-tour-grid">
-            <div style="background-color: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: var(--shadow-card);">
+            <div class="app-tour-card">
               <img
                 src="screenshots/dashboard-desktop-1440.png"
                 alt="Pathfolio Desktop Command Center showing pipeline overview, tasks, and recent timeline"
-                style="width: 100%; height: auto; border-radius: var(--radius-md); border: 1px solid var(--surface-border); display: block;"
                 loading="lazy"
               />
-              <div style="margin-top: 1rem; font-size: 0.88rem; color: var(--ink-secondary); display: flex; justify-content: space-between;">
+              <div class="app-tour-caption">
                 <span>Desktop Workspace (1440×900)</span>
                 <span style="font-family: var(--font-mono);">FLUTTER_WEB_ENGINE</span>
               </div>
             </div>
 
-            <div style="background-color: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: var(--shadow-card);">
+            <div class="app-tour-card">
               <img
                 src="screenshots/app-mobile-390.png"
                 alt="Pathfolio Mobile Application view at 390px width"
-                style="width: 100%; height: auto; border-radius: var(--radius-md); border: 1px solid var(--surface-border); display: block;"
                 loading="lazy"
               />
-              <div style="margin-top: 1rem; font-size: 0.88rem; color: var(--ink-secondary); display: flex; justify-content: space-between;">
+              <div class="app-tour-caption">
                 <span>Mobile Android (390×844)</span>
                 <span style="font-family: var(--font-mono);">STANDALONE_APK</span>
               </div>
@@ -610,9 +686,9 @@
             <div class="footer-col-title">Navigation</div>
             <ul class="footer-links">
               <li><a href="#hero">Candidate Dossier</a></li>
-              <li><a href="#milestones">Milestone Rail</a></li>
-              <li><a href="#star-matrix">STAR Evidence Matrix</a></li>
-              <li><a href="#privacy-vault">Storage Tradeoffs</a></li>
+              <li><a href="#milestones">Milestone Runway</a></li>
+              <li><a href="#star-matrix">STAR Assembly</a></li>
+              <li><a href="#privacy-vault">Storage Vault</a></li>
               <li><a href="#app-tour">Product Screenshots</a></li>
             </ul>
           </div>

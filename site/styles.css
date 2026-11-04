@@ -74,7 +74,7 @@
    2. Design Tokens & Theme Variables
    -------------------------------------------------------------------------- */
 :root {
-  /* Default: Airy Porcelain & Archival Linen */
+  /* Default: Warm Architectural Porcelain & Archival Linen */
   --bg: #F8F7F4;
   --bg-subdued: #F1EEE7;
   --bg-sunken: #EBE6DC;
@@ -83,21 +83,22 @@
   --surface-border: #E4DFD7;
   --surface-border-strong: #D3CCC0;
 
-  --ink-primary: #16171A;
-  --ink-secondary: #525760;
-  --ink-muted: #808693;
+  --ink-primary: #141816;
+  --ink-secondary: #4A5652;
+  --ink-muted: #798682;
 
-  /* Signature Accent: Alpine Verdigris */
-  --accent: #134E43;
-  --accent-hover: #0D3830;
-  --accent-light: rgba(19, 78, 67, 0.08);
-  --accent-border: rgba(19, 78, 67, 0.22);
+  /* Signature Accent: Alpine Verdigris / Confident Evergreen */
+  --accent: #0F4D3F;
+  --accent-hover: #09382E;
+  --accent-light: rgba(15, 77, 63, 0.08);
+  --accent-border: rgba(15, 77, 63, 0.24);
   --accent-on-primary: #FFFFFF;
+  --accent-glow: rgba(15, 77, 63, 0.25);
 
-  /* Secondary Accent: Architectural Brass / Chamois */
-  --brass: #B87333;
-  --brass-light: rgba(184, 115, 51, 0.09);
-  --brass-border: rgba(184, 115, 51, 0.25);
+  /* Secondary Accent: Bookbinder Brass / Warm Foil */
+  --brass: #B8860B;
+  --brass-light: rgba(184, 134, 11, 0.1);
+  --brass-border: rgba(184, 134, 11, 0.3);
 
   /* Semantic Pipeline Tones */
   --stage-saved: #475569;
@@ -119,17 +120,17 @@
   --font-mono: 'JetBrains Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
 
   /* Layout & Elevations */
-  --container-max: 1180px;
+  --container-max: 1220px;
   --header-height: 72px;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 1px 3px rgba(22, 23, 26, 0.04), 0 1px 2px rgba(22, 23, 26, 0.03);
-  --shadow-md: 0 4px 14px rgba(22, 23, 26, 0.06), 0 1px 3px rgba(22, 23, 26, 0.03);
-  --shadow-lg: 0 12px 32px rgba(22, 23, 26, 0.08), 0 2px 6px rgba(22, 23, 26, 0.04);
-  --shadow-card: 0 2px 6px rgba(22, 23, 26, 0.03), 0 16px 36px rgba(22, 23, 26, 0.05);
+  --shadow-sm: 0 1px 3px rgba(20, 24, 22, 0.04), 0 1px 2px rgba(20, 24, 22, 0.03);
+  --shadow-md: 0 4px 14px rgba(20, 24, 22, 0.06), 0 1px 3px rgba(20, 24, 22, 0.03);
+  --shadow-lg: 0 12px 32px rgba(20, 24, 22, 0.08), 0 2px 6px rgba(20, 24, 22, 0.04);
+  --shadow-card: 0 2px 8px rgba(20, 24, 22, 0.04), 0 18px 40px rgba(20, 24, 22, 0.06);
 
   --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
   --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -137,49 +138,50 @@
 
 :root[data-theme="dark"] {
   /* Deep-Forest Ink Dossier Atmosphere */
-  --bg: #0C1513;
-  --bg-subdued: #111D1A;
-  --bg-sunken: #080E0D;
-  --surface: #14221F;
-  --surface-elevated: #1B2D28;
-  --surface-border: #233832;
-  --surface-border-strong: #334F47;
+  --bg: #0A1210;
+  --bg-subdued: #111E1A;
+  --bg-sunken: #070D0B;
+  --surface: #13221E;
+  --surface-elevated: #1A2D28;
+  --surface-border: #233C34;
+  --surface-border-strong: #33544A;
 
   /* Archival Parchment Ivory & Soft Sage Typography */
-  --ink-primary: #F2EFEA;
-  --ink-secondary: #B4C4BE;
-  --ink-muted: #7E948D;
+  --ink-primary: #F4F1EA;
+  --ink-secondary: #B2C4BD;
+  --ink-muted: #798E87;
 
-  /* Tactile Malachite / Alpine Verdigris Accent (Non-fluorescent) */
+  /* Tactile Alpine Verdigris / Emerald Accent */
   --accent: #2EB88A;
   --accent-hover: #3CCB9B;
   --accent-light: rgba(46, 184, 138, 0.14);
-  --accent-border: rgba(46, 184, 138, 0.28);
+  --accent-border: rgba(46, 184, 138, 0.32);
   --accent-on-primary: #061A14;
+  --accent-glow: rgba(46, 184, 138, 0.3);
 
   /* Archival Bookbinder Brass Foil */
   --brass: #D4AF37;
-  --brass-light: rgba(212, 175, 55, 0.12);
-  --brass-border: rgba(212, 175, 55, 0.3);
+  --brass-light: rgba(212, 175, 55, 0.14);
+  --brass-border: rgba(212, 175, 55, 0.35);
 
   /* Semantic Pipeline Tones (Dark) */
   --stage-saved: #8E9BAE;
   --stage-saved-bg: #1B2A26;
   --stage-applied: #60A5FA;
-  --stage-applied-bg: rgba(37, 99, 235, 0.18);
+  --stage-applied-bg: rgba(37, 99, 235, 0.2);
   --stage-screening: #FBBF24;
-  --stage-screening-bg: rgba(180, 83, 9, 0.2);
+  --stage-screening-bg: rgba(180, 83, 9, 0.22);
   --stage-interview: #A78BFA;
-  --stage-interview-bg: rgba(109, 40, 217, 0.2);
+  --stage-interview-bg: rgba(109, 40, 217, 0.22);
   --stage-offer: #2EB88A;
-  --stage-offer-bg: rgba(46, 184, 138, 0.2);
+  --stage-offer-bg: rgba(46, 184, 138, 0.22);
   --stage-concluded: #8B9894;
-  --stage-concluded-bg: rgba(139, 152, 148, 0.14);
+  --stage-concluded-bg: rgba(139, 152, 148, 0.16);
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
-  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.35), 0 16px 36px rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.4), 0 20px 44px rgba(0, 0, 0, 0.5);
 }
 
 /* --------------------------------------------------------------------------
@@ -197,6 +199,8 @@ html {
   scroll-padding-top: calc(var(--header-height) + 24px);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
@@ -207,6 +211,7 @@ body {
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
+  max-width: 100vw;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -214,7 +219,7 @@ h1, h2, h3, h4 {
   font-family: var(--font-display);
   color: var(--ink-primary);
   font-weight: 700;
-  line-height: 1.18;
+  line-height: 1.15;
   letter-spacing: -0.025em;
 }
 
@@ -268,7 +273,7 @@ code, pre {
   width: 100%;
   height: 100%;
   display: block;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .drafting-grid-overlay {
@@ -277,8 +282,9 @@ code, pre {
   background-image: 
     linear-gradient(to right, var(--surface-border) 1px, transparent 1px),
     linear-gradient(to bottom, var(--surface-border) 1px, transparent 1px);
-  background-size: 48px 48px;
-  opacity: 0.15;
+  background-size: 32px 32px;
+  opacity: 0.12;
+  will-change: transform;
 }
 
 :root[data-theme="dark"] .drafting-grid-overlay {
@@ -305,7 +311,8 @@ code, pre {
 }
 
 :root[data-theme="dark"] .site-header {
-  background-color: rgba(12, 21, 19, 0.92);
+  background-color: rgba(10, 18, 16, 0.88);
+  border-bottom-color: var(--surface-border);
 }
 
 .header-container {
@@ -318,14 +325,12 @@ code, pre {
 .brand-link {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  text-decoration: none;
-  font-weight: 600;
+  gap: 0.75rem;
 }
 
 .brand-seal {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 8px;
   background-color: var(--accent);
   color: var(--accent-on-primary);
@@ -335,17 +340,13 @@ code, pre {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.15rem;
-  box-shadow: 0 2px 6px rgba(19, 78, 67, 0.25);
-}
-
-:root[data-theme="dark"] .brand-seal {
-  box-shadow: 0 2px 8px rgba(45, 212, 191, 0.3);
+  box-shadow: 0 2px 8px var(--accent-glow);
 }
 
 .brand-title {
   font-family: var(--font-display);
-  font-size: 1.3rem;
   font-weight: 700;
+  font-size: 1.25rem;
   color: var(--ink-primary);
   letter-spacing: -0.02em;
 }
@@ -353,28 +354,27 @@ code, pre {
 .brand-badge {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  font-weight: 600;
   padding: 0.15rem 0.45rem;
-  background: var(--bg-subdued);
-  border: 1px solid var(--surface-border);
   border-radius: var(--radius-sm);
-  color: var(--ink-muted);
-  letter-spacing: 0.04em;
+  background-color: var(--bg-subdued);
+  border: 1px solid var(--surface-border);
+  color: var(--ink-secondary);
+  font-weight: 500;
 }
 
 .main-nav {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.75rem;
 }
 
 .nav-link {
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 500;
   color: var(--ink-secondary);
   transition: color var(--transition-fast);
-  padding: 0.35rem 0.1rem;
   position: relative;
+  padding: 0.3rem 0;
 }
 
 .nav-link:hover,
@@ -390,74 +390,72 @@ code, pre {
   right: 0;
   height: 2px;
   background-color: var(--accent);
-  border-radius: 2px;
+  border-radius: 1px;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 1rem;
 }
 
 .theme-toggle-btn {
   width: 38px;
   height: 38px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--surface-border);
-  background-color: var(--surface);
-  color: var(--ink-secondary);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--ink-secondary);
+  background-color: var(--bg-subdued);
+  border: 1px solid var(--surface-border);
   transition: all var(--transition-fast);
 }
 
 .theme-toggle-btn:hover {
   color: var(--ink-primary);
+  background-color: var(--surface);
   border-color: var(--surface-border-strong);
-  background-color: var(--bg-subdued);
 }
 
 .mobile-menu-toggle {
   display: none;
   width: 38px;
   height: 38px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--surface-border);
-  background-color: var(--surface);
-  color: var(--ink-secondary);
+  border-radius: 8px;
   align-items: center;
   justify-content: center;
+  color: var(--ink-secondary);
+  background-color: var(--bg-subdued);
+  border: 1px solid var(--surface-border);
 }
 
 /* --------------------------------------------------------------------------
-   6. Primary Buttons & Controls
+   6. Universal Buttons & Badges
    -------------------------------------------------------------------------- */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-weight: 600;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-sm);
   font-size: 0.92rem;
-  padding: 0.62rem 1.15rem;
-  border-radius: var(--radius-md);
+  font-weight: 600;
   transition: all var(--transition-fast);
-  text-decoration: none;
-  cursor: pointer;
   white-space: nowrap;
 }
 
 .btn-primary {
   background-color: var(--accent);
   color: var(--accent-on-primary);
-  box-shadow: 0 2px 6px rgba(19, 78, 67, 0.2);
+  box-shadow: 0 2px 8px var(--accent-glow);
 }
 
 .btn-primary:hover {
   background-color: var(--accent-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(19, 78, 67, 0.28);
+  box-shadow: 0 4px 14px var(--accent-glow);
 }
 
 .btn-secondary {
@@ -473,31 +471,40 @@ code, pre {
 }
 
 .btn-large {
-  padding: 0.8rem 1.5rem;
+  padding: 0.85rem 1.6rem;
   font-size: 1rem;
   border-radius: var(--radius-md);
 }
 
 /* --------------------------------------------------------------------------
-   7. Hero Section (Kinetic Career Dossier)
+   7. Dramatic Asymmetrical Hero Section
    -------------------------------------------------------------------------- */
 .hero-section {
   position: relative;
   z-index: 1;
-  padding: 4.5rem 0 3.5rem;
+  padding: 3.5rem 0 4.5rem;
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
+  align-items: center;
 }
 
-.hero-briefing {
-  text-align: center;
-  max-width: 820px;
-  margin: 0 auto 3rem;
+.hero-layout-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 3.5rem;
+  align-items: center;
+  width: 100%;
+}
+
+.hero-briefing-col {
+  text-align: left;
 }
 
 .status-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.3rem 0.85rem;
+  padding: 0.35rem 0.85rem;
   background-color: var(--accent-light);
   border: 1px solid var(--accent-border);
   border-radius: var(--radius-full);
@@ -517,60 +524,119 @@ code, pre {
 }
 
 @keyframes pulse-ring {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(19, 78, 67, 0.4); }
-  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(19, 78, 67, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(19, 78, 67, 0); }
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(15, 77, 63, 0.4); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(15, 77, 63, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(15, 77, 63, 0); }
 }
 
 .hero-headline {
-  font-size: clamp(2.3rem, 5vw, 3.6rem);
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
   letter-spacing: -0.035em;
   margin-bottom: 1.25rem;
   color: var(--ink-primary);
+  line-height: 1.12;
 }
 
 .hero-lead {
-  font-size: clamp(1.05rem, 2vw, 1.25rem);
-  line-height: 1.6;
+  font-size: clamp(1.05rem, 1.8vw, 1.22rem);
+  line-height: 1.65;
   color: var(--ink-secondary);
   margin-bottom: 2rem;
-  max-width: 680px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 580px;
 }
 
 .hero-actions {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
   margin-bottom: 2rem;
 }
 
+.hero-proof-ledger {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+  flex-wrap: wrap;
+  border-top: 1px solid var(--surface-border);
+  padding-top: 1.25rem;
+}
+
+.proof-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.proof-item span.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--accent);
+}
+
 /* --------------------------------------------------------------------------
-   8. The Hero Centerpiece: Kinetic Milestone Dossier Card
+   8. The 3D Kinetic Career Dossier Object (Hero Right Column)
    -------------------------------------------------------------------------- */
-.dossier-card-container {
-  max-width: 980px;
-  margin: 0 auto;
+.hero-dossier-col {
+  position: relative;
+  perspective: 1200px;
+}
+
+.dossier-stack-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Dimensional Layered Sheets behind main dossier */
+.dossier-underlay-sheet-2 {
+  position: absolute;
+  inset: -12px -10px 12px 10px;
+  background-color: var(--bg-sunken);
+  border: 1px solid var(--surface-border-strong);
+  border-radius: var(--radius-lg);
+  transform: rotate(3deg) translateZ(-40px);
+  z-index: 1;
+  opacity: 0.75;
+}
+
+.dossier-underlay-sheet-1 {
+  position: absolute;
+  inset: -6px -5px 6px 5px;
+  background-color: var(--bg-subdued);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  transform: rotate(-1.5deg) translateZ(-20px);
+  z-index: 2;
+  opacity: 0.85;
 }
 
 .dossier-card {
+  position: relative;
+  z-index: 3;
   background-color: var(--surface);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   overflow: hidden;
-  position: relative;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transform: rotateY(-7deg) rotateX(3deg) translateZ(0);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  will-change: transform;
+}
+
+.dossier-card:hover {
+  transform: rotateY(-3deg) rotateX(1deg) translateZ(10px);
+  box-shadow: 0 8px 24px rgba(20, 24, 22, 0.08), 0 24px 50px rgba(20, 24, 22, 0.1);
 }
 
 .dossier-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.15rem 1.5rem;
+  padding: 1rem 1.4rem;
   background-color: var(--bg-subdued);
   border-bottom: 1px solid var(--surface-border);
 }
@@ -582,9 +648,9 @@ code, pre {
 }
 
 .dossier-tab {
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  padding: 0.35rem 0.8rem;
+  padding: 0.35rem 0.75rem;
   border-radius: var(--radius-sm);
   color: var(--ink-secondary);
   background: transparent;
@@ -603,51 +669,51 @@ code, pre {
   align-items: center;
   gap: 0.4rem;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: var(--accent);
 }
 
 .dossier-body {
-  padding: 1.75rem 2rem;
+  padding: 1.5rem 1.75rem;
 }
 
 .candidate-profile-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 1.5rem;
-  margin-bottom: 1.75rem;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
   flex-wrap: wrap;
 }
 
 .candidate-info {
   flex: 1;
-  min-width: 260px;
+  min-width: 240px;
 }
 
 .candidate-company-tag {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--brass);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
 }
 
 .candidate-role-title {
-  font-size: 1.45rem;
+  font-size: 1.35rem;
   letter-spacing: -0.02em;
   color: var(--ink-primary);
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.35rem;
 }
 
 .candidate-meta-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  font-size: 0.84rem;
+  gap: 0.45rem;
+  font-size: 0.82rem;
   color: var(--ink-secondary);
 }
 
@@ -656,15 +722,15 @@ code, pre {
   align-items: center;
   gap: 0.35rem;
   background-color: var(--bg-subdued);
-  padding: 0.2rem 0.6rem;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--surface-border);
 }
 
 .stage-badge-large {
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-weight: 600;
-  padding: 0.35rem 0.9rem;
+  padding: 0.35rem 0.85rem;
   border-radius: var(--radius-full);
   align-self: flex-start;
   transition: all 0.25s ease;
@@ -672,8 +738,8 @@ code, pre {
 
 /* Milestone Progress Rail */
 .milestone-rail-block {
-  margin-bottom: 1.75rem;
-  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  padding: 1.15rem;
   background-color: var(--bg-subdued);
   border-radius: var(--radius-md);
   border: 1px solid var(--surface-border);
@@ -681,7 +747,7 @@ code, pre {
 
 .rail-track-wrapper {
   position: relative;
-  margin-bottom: 1rem;
+  margin-bottom: 0.85rem;
 }
 
 .rail-track-line {
@@ -722,8 +788,8 @@ code, pre {
 }
 
 .station-node {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background-color: var(--surface);
   border: 2px solid var(--surface-border-strong);
@@ -732,9 +798,9 @@ code, pre {
   align-items: center;
   justify-content: center;
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   transition: all 0.25s ease;
 }
 
@@ -753,7 +819,7 @@ code, pre {
 }
 
 .station-label {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--ink-secondary);
   transition: color 0.2s ease;
@@ -766,11 +832,11 @@ code, pre {
 
 /* Dossier Evidence Card */
 .dossier-evidence-attachment {
-  padding: 1.15rem 1.25rem;
+  padding: 1.1rem 1.2rem;
   background-color: var(--surface);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-md);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   box-shadow: var(--shadow-sm);
 }
 
@@ -778,7 +844,7 @@ code, pre {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.45rem;
 }
 
 .evidence-tag {
@@ -795,14 +861,14 @@ code, pre {
 }
 
 .evidence-citation-title {
-  font-size: 0.98rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--ink-primary);
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.3rem;
 }
 
 .evidence-citation-result {
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   color: var(--ink-secondary);
   line-height: 1.5;
 }
@@ -815,7 +881,7 @@ code, pre {
   padding-top: 1rem;
   border-top: 1px solid var(--surface-border);
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .scrubber-btn-group {
@@ -825,9 +891,9 @@ code, pre {
 }
 
 .btn-scrubber {
-  padding: 0.4rem 0.85rem;
+  padding: 0.4rem 0.8rem;
   border-radius: var(--radius-sm);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   border: 1px solid var(--surface-border);
   background-color: var(--surface);
@@ -848,28 +914,28 @@ code, pre {
 
 .scrubber-audit-log {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--ink-muted);
 }
 
 /* --------------------------------------------------------------------------
-   9. Scroll Chapters (General Layout)
+   9. Scroll Chapters — General Layout
    -------------------------------------------------------------------------- */
 .section-chapter {
   position: relative;
   z-index: 1;
-  padding: 5.5rem 0;
+  padding: 6rem 0;
   border-top: 1px solid var(--surface-border);
 }
 
 .section-header-block {
-  max-width: 720px;
+  max-width: 760px;
   margin-bottom: 3.5rem;
 }
 
 .section-eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -879,83 +945,199 @@ code, pre {
 }
 
 .section-title {
-  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-size: clamp(2.1rem, 3.8vw, 2.9rem);
   letter-spacing: -0.03em;
   margin-bottom: 1rem;
 }
 
 .section-lead {
-  font-size: 1.1rem;
+  font-size: 1.12rem;
   color: var(--ink-secondary);
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 /* --------------------------------------------------------------------------
-   10. Chapter 1: The Milestone Pipeline Rail (Operational Velocity)
+   10. Chapter 1: The Six-Stage Career Pipeline Runway (#chapter-pipeline)
    -------------------------------------------------------------------------- */
-.pipeline-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-}
-
-.pipeline-card {
+.pipeline-runway-container {
   background-color: var(--surface);
   border: 1px solid var(--surface-border);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-fast);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 2rem 2.5rem;
   position: relative;
+  overflow: hidden;
 }
 
-.pipeline-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+.pipeline-runway-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.runway-telemetry-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+  background-color: var(--bg-subdued);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-full);
+  color: var(--accent);
+}
+
+/* Master Progress Rail */
+.pipeline-rail-track-outer {
+  position: relative;
+  height: 38px;
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.pipeline-rail-base-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: var(--surface-border-strong);
+  border-radius: 2px;
+}
+
+.pipeline-scroll-bar {
+  position: absolute;
+  left: 0;
+  top: 17px;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--brass));
+  border-radius: 2px;
+  transform-origin: left center;
+  transform: scaleX(0);
+  will-change: transform;
+}
+
+.pipeline-rail-carriage {
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--brass);
+  border: 3px solid var(--surface);
+  box-shadow: 0 0 14px var(--brass-light), 0 2px 6px rgba(0, 0, 0, 0.25);
+  transform: translateX(0px);
+  will-change: transform;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+/* Pipeline Stage Stations Grid */
+.pipeline-runway-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.pipeline-runway-card {
+  background-color: var(--bg-subdued);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s var(--transition-smooth), border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  will-change: transform;
+}
+
+.pipeline-runway-card.active {
+  background-color: var(--surface);
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px var(--accent-light);
+  transform: translateY(-10px) scale(1.04);
+}
+
+.pipeline-runway-card.completed {
   border-color: var(--surface-border-strong);
+  opacity: 0.9;
 }
 
-.pipeline-card-stage-chip {
-  display: inline-block;
+.runway-stage-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.runway-station-num {
   font-family: var(--font-mono);
   font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+
+.pipeline-runway-card.active .runway-station-num {
+  color: var(--accent);
+}
+
+.runway-stage-chip {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
   font-weight: 600;
-  text-transform: uppercase;
-  padding: 0.2rem 0.55rem;
+  padding: 0.15rem 0.45rem;
   border-radius: var(--radius-sm);
-  margin-bottom: 0.85rem;
+  text-transform: uppercase;
 }
 
-.pipeline-card-title {
-  font-size: 1.2rem;
-  margin-bottom: 0.65rem;
+.runway-stage-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--ink-primary);
 }
 
-.pipeline-card-desc {
-  font-size: 0.92rem;
-  color: var(--ink-secondary);
-  line-height: 1.55;
-  margin-bottom: 1.15rem;
-}
-
-.pipeline-card-meta {
-  border-top: 1px solid var(--surface-border);
-  padding-top: 0.85rem;
+.runway-stage-desc {
   font-size: 0.82rem;
+  color: var(--ink-secondary);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  flex-grow: 1;
+}
+
+.runway-stage-meta {
+  border-top: 1px solid var(--surface-border);
+  padding-top: 0.65rem;
+  font-size: 0.75rem;
   color: var(--ink-muted);
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
 /* --------------------------------------------------------------------------
-   11. Chapter 2: The STAR Evidence Matrix (Quantifiable Interview Proof)
+   11. Chapter 2: The STAR Evidence Assembly Deck (#chapter-evidence)
    -------------------------------------------------------------------------- */
-.star-matrix-workbench {
+.star-assembly-workbench {
   background-color: var(--surface);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   overflow: hidden;
+  position: relative;
 }
 
 .matrix-filter-nav {
@@ -968,7 +1150,7 @@ code, pre {
 }
 
 .matrix-filter-btn {
-  padding: 0.4rem 0.9rem;
+  padding: 0.4rem 0.95rem;
   border-radius: var(--radius-sm);
   font-size: 0.85rem;
   font-weight: 600;
@@ -991,62 +1173,134 @@ code, pre {
   box-shadow: var(--shadow-sm);
 }
 
-.matrix-display-deck {
-  padding: 2rem;
+.star-assembly-deck {
+  padding: 2.5rem;
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 2rem;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 2.5rem;
+  position: relative;
+  min-height: 460px;
+  overflow: hidden;
 }
 
-.star-breakdown-card {
+/* The 4 Physical Assembling Fragments */
+.star-fragments-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  position: relative;
+}
+
+.star-fragment {
+  background-color: var(--bg-subdued);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 1.35rem;
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 0.6rem;
+  will-change: transform, opacity;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.star-row {
-  display: flex;
-  gap: 1rem;
-}
-
-.star-letter-badge {
+.star-fragment-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background-color: var(--bg-subdued);
+  background-color: var(--surface);
   border: 1px solid var(--surface-border);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ink-primary);
+}
+
+.frag-r .star-fragment-badge {
+  background-color: var(--accent);
+  color: var(--accent-on-primary);
+  border-color: var(--accent);
+}
+
+.star-fragment-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-family: var(--font-mono);
+}
+
+.star-fragment-body {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--ink-secondary);
+}
+
+/* Initial detached states for scroll animation */
+#star-frag-situation {
+  transform: translate3d(-50px, 25px, 0) rotate(-5deg);
+  opacity: 0.55;
+}
+
+#star-frag-task {
+  transform: translate3d(45px, 20px, 0) rotate(4deg);
+  opacity: 0.55;
+}
+
+#star-frag-action {
+  transform: translate3d(-35px, -20px, 0) rotate(3deg);
+  opacity: 0.55;
+}
+
+#star-frag-result {
+  transform: translate3d(40px, -30px, 0) rotate(-4deg);
+  opacity: 0.55;
+}
+
+/* Stamped Verification Seal */
+.star-assembly-seal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -36px;
+  margin-left: -36px;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: var(--brass);
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1rem;
-  color: var(--ink-primary);
-  flex-shrink: 0;
+  font-size: 0.72rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(184, 134, 11, 0.4);
+  transform: scale(0.4) rotate(-30deg);
+  opacity: 0;
+  will-change: transform, opacity;
+  z-index: 10;
+  pointer-events: none;
+  border: 3px solid var(--surface);
 }
 
-.star-content h4 {
-  font-size: 0.95rem;
-  margin-bottom: 0.25rem;
-}
-
-.star-content p {
-  font-size: 0.9rem;
-  color: var(--ink-secondary);
-  margin-bottom: 0;
-}
-
-.star-citation-preview-panel {
+/* Right Side: Active Interview Citation Preview */
+.star-citation-panel {
   background-color: var(--bg-subdued);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-md);
-  padding: 1.5rem;
+  padding: 1.75rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.preview-pill {
+.citation-domain-pill {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 600;
@@ -1062,8 +1316,72 @@ code, pre {
 }
 
 /* --------------------------------------------------------------------------
-   12. Chapter 3: Sovereign Privacy & Atomic Vault (Storage Architecture)
+   12. Chapter 3: Sovereign Dossier Vault & Backup Sealing (#chapter-vault)
    -------------------------------------------------------------------------- */
+.vault-presentation-block {
+  margin-bottom: 3.5rem;
+}
+
+/* Dimensional Dossier Envelope Packet */
+.vault-envelope-packet {
+  position: relative;
+  background-color: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+  perspective: 1000px;
+  overflow: hidden;
+}
+
+.vault-envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--bg-sunken), var(--bg-subdued));
+  border-bottom: 2px solid var(--surface-border-strong);
+  transform-origin: top center;
+  transform: perspective(1000px) rotateX(-75deg);
+  will-change: transform;
+  z-index: 5;
+  clip-path: polygon(0 0, 50% 100%, 100% 0);
+}
+
+.vault-wax-seal {
+  position: absolute;
+  top: 36px;
+  left: 50%;
+  margin-left: -28px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #E5C158, #B8860B 75%);
+  border: 2px solid #D4AF37;
+  color: #141816;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 16px rgba(184, 134, 11, 0.4);
+  transform: translateY(-45px) scale(0.6);
+  opacity: 0;
+  will-change: transform, opacity;
+  z-index: 12;
+}
+
+.vault-code-drawer {
+  transform: translateY(45px);
+  opacity: 0.35;
+  will-change: transform, opacity;
+  transition: border-color var(--transition-fast);
+}
+
+/* Comparison Grid: Cloud vs Pathfolio */
 .privacy-comparison-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1133,13 +1451,6 @@ code, pre {
   gap: 0.75rem;
 }
 
-.app-tour-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-  align-items: start;
-}
-
 .schema-json-body {
   padding: 1.5rem;
   background-color: var(--bg-sunken);
@@ -1151,7 +1462,41 @@ code, pre {
 }
 
 /* --------------------------------------------------------------------------
-   13. Reading Page Layouts (Guide & Privacy)
+   13. Chapter 4: Product Craft & App Tour (#app-tour)
+   -------------------------------------------------------------------------- */
+.app-tour-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.app-tour-card {
+  background-color: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-card);
+}
+
+.app-tour-card img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--surface-border);
+  display: block;
+}
+
+.app-tour-caption {
+  margin-top: 1rem;
+  font-size: 0.88rem;
+  color: var(--ink-secondary);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* --------------------------------------------------------------------------
+   14. Reading Page Layouts (Guide & Privacy)
    -------------------------------------------------------------------------- */
 .reading-page-main {
   position: relative;
@@ -1248,7 +1593,7 @@ code, pre {
 }
 
 /* --------------------------------------------------------------------------
-   14. Universal Site Footer
+   15. Universal Site Footer
    -------------------------------------------------------------------------- */
 .site-footer {
   position: relative;
@@ -1313,7 +1658,7 @@ code, pre {
 }
 
 /* --------------------------------------------------------------------------
-   15. Mobile Navigation Drawer
+   16. Mobile Navigation Drawer
    -------------------------------------------------------------------------- */
 .mobile-nav-drawer {
   display: none;
@@ -1350,19 +1695,50 @@ code, pre {
 
 .mobile-drawer-link {
   font-family: var(--font-display);
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 600;
   color: var(--ink-primary);
 }
 
 /* --------------------------------------------------------------------------
-   16. Responsive Media Queries
+   17. Responsive Media Queries
    -------------------------------------------------------------------------- */
-@media (max-width: 1024px) {
-  .pipeline-grid {
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 1100px) {
+  .pipeline-runway-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
-  .matrix-display-deck {
+}
+
+@media (max-width: 1024px) {
+  .hero-layout-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .hero-briefing-col {
+    text-align: center;
+  }
+  .hero-dossier-col {
+    max-width: 580px;
+    margin: 0 auto;
+    width: 100%;
+    overflow: hidden;
+    padding: 8px;
+  }
+  .hero-lead {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-actions {
+    justify-content: center;
+  }
+  .hero-proof-ledger {
+    justify-content: center;
+  }
+  .star-assembly-deck {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .privacy-comparison-grid {
     grid-template-columns: 1fr;
   }
   .footer-grid {
@@ -1379,7 +1755,7 @@ code, pre {
     display: none;
   }
   .site-header .header-actions .btn {
-    display: none; /* Mobile header relies on drawer Launch App button */
+    display: none; /* Relies on drawer full-width CTA */
   }
   .mobile-menu-toggle {
     display: flex;
@@ -1389,6 +1765,13 @@ code, pre {
   }
   .hero-section {
     padding: 2.5rem 0 2rem;
+  }
+  .dossier-card {
+    transform: none !important;
+  }
+  .dossier-underlay-sheet-1,
+  .dossier-underlay-sheet-2 {
+    display: none;
   }
   .dossier-header {
     flex-direction: column;
@@ -1405,24 +1788,20 @@ code, pre {
   .dossier-body {
     padding: 1.25rem 1rem;
   }
-  .dossier-card,
-  .star-matrix-workbench,
-  .schema-inspector-card {
-    max-width: 100%;
-    overflow: hidden;
+  .pipeline-runway-container {
+    padding: 1.5rem 1rem;
   }
-  .matrix-filter-nav {
-    max-width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .schema-json-body {
-    max-width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .pipeline-grid {
+  .pipeline-runway-grid {
     grid-template-columns: 1fr;
+  }
+  .star-assembly-deck {
+    padding: 1.25rem 1rem;
+  }
+  .star-fragments-grid {
+    grid-template-columns: 1fr;
+  }
+  .vault-envelope-packet {
+    padding: 1.5rem 1rem;
   }
   .app-tour-grid {
     grid-template-columns: 1fr;
@@ -1430,16 +1809,13 @@ code, pre {
   .schema-inspector-header .btn {
     width: 100%;
   }
-  .privacy-comparison-grid {
-    grid-template-columns: 1fr;
-  }
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
   .rail-track-line,
   .rail-track-fill {
-    display: none; /* Mobile rail switches to clean card step flow */
+    display: none;
   }
   .milestone-stations {
     flex-wrap: wrap;
@@ -1463,8 +1839,11 @@ code, pre {
 }
 
 @media (max-width: 390px) {
+  .container {
+    padding: 0 16px;
+  }
   .hero-headline {
-    font-size: 2.1rem;
+    font-size: 2.15rem;
   }
   .candidate-role-title {
     font-size: 1.2rem;
@@ -1475,11 +1854,51 @@ code, pre {
   }
   .hero-actions .btn {
     width: 100%;
+    white-space: normal;
+    text-align: center;
+    justify-content: center;
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
+  }
+  .hero-proof-ledger {
+    justify-content: center;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .container {
+    padding: 0 12px;
+  }
+  .status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+  .hero-headline {
+    font-size: 1.85rem;
+  }
+  .hero-lead {
+    font-size: 0.95rem;
+  }
+  .hero-actions .btn {
+    padding: 0.75rem 0.75rem;
+    font-size: 0.86rem;
+  }
+  .hero-proof-ledger {
+    font-size: 0.72rem;
+    gap: 0.5rem;
+  }
+  .dossier-meta-item .meta-val {
+    font-size: 0.76rem;
+  }
+  .matrix-filter-btn {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.74rem;
   }
 }
 
 /* --------------------------------------------------------------------------
-   17. Accessibility & Reduced Motion
+   18. Accessibility & Reduced Motion
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -1493,5 +1912,38 @@ code, pre {
   }
   .dossier-canvas {
     opacity: 0.4;
+  }
+  .pipeline-scroll-bar {
+    transform: scaleX(1) !important;
+  }
+  .pipeline-rail-carriage {
+    transform: translateX(0) !important;
+  }
+  .star-fragment, 
+  #star-frag-situation, 
+  #star-frag-task, 
+  #star-frag-action, 
+  #star-frag-result {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .star-assembly-seal {
+    transform: scale(1) rotate(0deg) !important;
+    opacity: 1 !important;
+  }
+  .vault-envelope-flap {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .vault-wax-seal {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .vault-code-drawer {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .dossier-card {
+    transform: none !important;
   }
 }

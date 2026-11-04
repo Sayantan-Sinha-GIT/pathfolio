@@ -1,10 +1,12 @@
 /**
- * Pathfolio — Kinetic Career Dossier & Milestone Engine
+ * Pathfolio — Kinetic Career Dossier & Sovereign Milestone Engine
  * Unified Client Controller for Marketing Site, Guide & Privacy Pages
  */
 
 (function () {
   'use strict';
+
+  const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ---------------------------------------------------------------------------
   // 1. Theme Management (Sovereign Local Persistence)
@@ -102,18 +104,17 @@
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let animationFrameId = null;
     let width = 0;
     let height = 0;
     let dpr = 1;
 
-    // Career Guide Rails (positioned outside headline text bounding boxes)
+    // Career Guide Rails
     const rails = [
-      { yRatio: 0.04, speed: 0.35, pips: [0.15, 0.45, 0.75], label: 'STAGE_01 :: APPLIED_VELOCITY' },
-      { yRatio: 0.48, speed: 0.45, pips: [0.25, 0.65], label: 'STAGE_02 :: SCREENING_THROUGHPUT' },
-      { yRatio: 0.74, speed: 0.3, pips: [0.1, 0.5, 0.85], label: 'STAGE_03 :: INTERVIEW_MILESTONES' },
-      { yRatio: 0.94, speed: 0.4, pips: [0.35, 0.8], label: 'STAGE_04 :: OFFER_EVALUATION' }
+      { yRatio: 0.06, speed: 0.35, pips: [0.15, 0.45, 0.78], label: 'STAGE_01 :: APPLIED_VELOCITY' },
+      { yRatio: 0.45, speed: 0.42, pips: [0.22, 0.65], label: 'STAGE_02 :: SCREENING_THROUGHPUT' },
+      { yRatio: 0.72, speed: 0.3, pips: [0.12, 0.52, 0.88], label: 'STAGE_03 :: INTERVIEW_MILESTONES' },
+      { yRatio: 0.94, speed: 0.38, pips: [0.35, 0.8], label: 'STAGE_04 :: OFFER_EVALUATION' }
     ];
 
     function resize() {
@@ -145,12 +146,11 @@
     function drawStaticGrid() {
       ctx.clearRect(0, 0, width, height);
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      ctx.strokeStyle = isDark ? 'rgba(180, 196, 190, 0.06)' : 'rgba(22, 23, 26, 0.04)';
+      ctx.strokeStyle = isDark ? 'rgba(180, 196, 190, 0.08)' : 'rgba(20, 24, 22, 0.05)';
       ctx.lineWidth = 1;
 
-      // Draw horizontal static ledger lines
       rails.forEach((rail) => {
-        const y = height * rail.yRatio;
+        const y = Math.round(height * rail.yRatio);
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(width, y);
@@ -167,16 +167,14 @@
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       ctx.clearRect(0, 0, width, height);
 
-      // Architectural ledger rule & tactile bead colors
-      const lineColor = isDark ? 'rgba(180, 196, 190, 0.06)' : 'rgba(22, 23, 26, 0.04)';
-      const pipColor = isDark ? 'rgba(212, 175, 55, 0.8)' : 'rgba(19, 78, 67, 0.5)';
-      const crossColor = isDark ? 'rgba(212, 175, 55, 0.35)' : 'rgba(184, 115, 51, 0.25)';
+      const lineColor = isDark ? 'rgba(180, 196, 190, 0.07)' : 'rgba(20, 24, 22, 0.04)';
+      const pipColor = isDark ? 'rgba(212, 175, 55, 0.85)' : 'rgba(15, 77, 63, 0.65)';
+      const crossColor = isDark ? 'rgba(212, 175, 55, 0.4)' : 'rgba(184, 134, 11, 0.3)';
 
-      // Render milestone guide rails
       rails.forEach((rail, idx) => {
         const y = Math.round(height * rail.yRatio);
 
-        // Draw Guide Rail
+        // Guide Rail
         ctx.strokeStyle = lineColor;
         ctx.lineWidth = 1;
         ctx.setLineDash([4, 6]);
@@ -186,15 +184,10 @@
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Advance and draw pips
+        // Advance and render pips
         rail.pips.forEach((pos, pIdx) => {
           rail.pips[pIdx] = (pos + rail.speed * 0.05 * dt) % 1.0;
           const px = rail.pips[pIdx] * width;
-
-          // Guard: never render decorative pips over hero text area
-          if (y >= 60 && y <= 440 && px >= width * 0.04 && px <= width * 0.96) {
-            return;
-          }
 
           // Milestone Pip
           ctx.fillStyle = pipColor;
@@ -202,31 +195,28 @@
           ctx.arc(px, y, 2.5, 0, Math.PI * 2);
           ctx.fill();
 
-          // Subtle coordinate tick mark
+          // Coordinate tick
           ctx.strokeStyle = lineColor;
           ctx.beginPath();
-          ctx.moveTo(px, y - 6);
-          ctx.lineTo(px, y + 6);
+          ctx.moveTo(px, y - 5);
+          ctx.lineTo(px, y + 5);
           ctx.stroke();
         });
 
         // Architectural registration cross at rail edges
-        const crossX = (width * (0.05 + idx * 0.25)) % width;
-        if (y < 60 || y > 440 || crossX < width * 0.04 || crossX > width * 0.96) {
-          ctx.strokeStyle = crossColor;
-          ctx.beginPath();
-          ctx.moveTo(crossX - 5, y);
-          ctx.lineTo(crossX + 5, y);
-          ctx.moveTo(crossX, y - 5);
-          ctx.lineTo(crossX + 5, y);
-          ctx.stroke();
-        }
+        const crossX = (width * (0.08 + idx * 0.28)) % width;
+        ctx.strokeStyle = crossColor;
+        ctx.beginPath();
+        ctx.moveTo(crossX - 5, y);
+        ctx.lineTo(crossX + 5, y);
+        ctx.moveTo(crossX, y - 5);
+        ctx.lineTo(crossX, y + 5);
+        ctx.stroke();
       });
 
       animationFrameId = requestAnimationFrame(render);
     }
 
-    // Visibility and Intersection observer pausing
     let isVisible = true;
     document.addEventListener('visibilitychange', () => {
       isVisible = !document.hidden;
@@ -245,7 +235,7 @@
   // 4. Hero Milestone Scrubber & Interactive Dossier
   // ---------------------------------------------------------------------------
   function initHeroDossier() {
-    const heroDossier = document.getElementById('hero-dossier');
+    const heroDossier = document.getElementById('hero-dossier-card');
     if (!heroDossier) return;
 
     const stages = [
@@ -255,7 +245,7 @@
         color: 'var(--stage-saved)',
         bg: 'var(--stage-saved-bg)',
         nextAction: 'Research team stack & request referral',
-        log: 'Stage updated: Saved [Opportunity logged in discovery queue]'
+        log: 'Stage: Saved [Opportunity logged in discovery queue]'
       },
       {
         name: 'Applied',
@@ -263,7 +253,7 @@
         color: 'var(--stage-applied)',
         bg: 'var(--stage-applied-bg)',
         nextAction: 'Application submitted via portal; follow up Nov 2',
-        log: 'Stage updated: Applied [Application submitted with referral]'
+        log: 'Stage: Applied [Application submitted with referral]'
       },
       {
         name: 'Screening',
@@ -271,7 +261,7 @@
         color: 'var(--stage-screening)',
         bg: 'var(--stage-screening-bg)',
         nextAction: 'Recruiter Chat with Engineering Lead (Oct 28)',
-        log: 'Stage updated: Screening [Initial technical sizing passed]'
+        log: 'Stage: Screening [Initial technical sizing passed]'
       },
       {
         name: 'Interview',
@@ -279,7 +269,7 @@
         color: 'var(--stage-interview)',
         bg: 'var(--stage-interview-bg)',
         nextAction: 'Systems Architecture Loop & Live Coding (Nov 5)',
-        log: 'Stage updated: Technical Interview [Saved to local Activity History]'
+        log: 'Stage: Technical Interview [Saved to local Activity History]'
       },
       {
         name: 'Offer',
@@ -287,7 +277,7 @@
         color: 'var(--stage-offer)',
         bg: 'var(--stage-offer-bg)',
         nextAction: 'Evaluate equity package & negotiate base by Nov 12',
-        log: 'Stage updated: Offer Extended [Written offer details recorded]'
+        log: 'Stage: Offer Extended [Written offer details recorded]'
       },
       {
         name: 'Rejected',
@@ -295,112 +285,104 @@
         color: 'var(--stage-concluded)',
         bg: 'var(--stage-concluded-bg)',
         nextAction: 'Application concluded; debrief lessons saved',
-        log: 'Stage updated: Rejected [Concluded application debrief saved]'
+        log: 'Stage: Rejected [Concluded application debrief saved]'
       }
     ];
 
-    const candidateProfiles = [
+    const candidates = [
       {
         company: 'STRIPE // INFRASTRUCTURE',
         role: 'Staff Distributed Systems Engineer',
-        meta: ['📍 San Francisco / Remote', '💼 $210k - $240k + Equity', '📅 Next: Systems Architecture Loop (Nov 5)'],
+        stageIndex: 3,
+        location: '📍 San Francisco / Remote',
+        comp: '💼 $210k - $240k + Equity',
+        next: '📅 Next: Architecture Loop (Nov 5)',
         evidenceTitle: 'High-Throughput Ingestion Engine Optimization',
         evidenceResult: '"Engineered distributed Kafka event pipeline handling 22,000 req/s with under 18ms p99 latency during peak load, cutting cluster hosting costs by 32%."'
       },
       {
-        company: 'FIGMA // CORE ENGINE',
-        role: 'Senior C++ Graphics & Systems Architect',
-        meta: ['📍 New York / Hybrid', '💼 $195k - $225k + Equity', '📅 Next: Canvas Performance Review'],
+        company: 'FIGMA // RENDERING ENGINE',
+        role: 'Principal Graphics Runtime Architect',
+        stageIndex: 2,
+        location: '📍 San Francisco / Hybrid',
+        comp: '💼 $230k - $260k + Equity',
+        next: '📅 Next: Graphics Pipeline Deep Dive (Nov 8)',
         evidenceTitle: 'Zero-Copy Canvas Serialization Layer',
-        evidenceResult: '"Architected custom memory-mapped binary scene buffer reducing complex file load times from 3.8s to 420ms across large collaborative documents."'
+        evidenceResult: '"Designed Wasm memory-mapped scene serialization reducing large document import latency from 3.8s to 420ms across complex vector files."'
       },
       {
-        company: 'LINEAR // PLATFORM',
-        role: 'Lead Cloud Reliability Engineer',
-        meta: ['📍 Remote (US / EU)', '💼 $185k - $215k + Equity', '📅 Next: Distributed Consensus Deep Dive'],
-        evidenceTitle: 'Zero-Downtime Database Migration Protocol',
-        evidenceResult: '"Designed dual-write shadow verification system migrating 80M records with zero downtime and sub-millisecond rollback safety."'
+        company: 'DATADOG // METRICS PLATFORM',
+        role: 'Senior Core Telemetry Engineer',
+        stageIndex: 4,
+        location: '📍 New York / Remote',
+        comp: '💼 $200k - $230k + Equity',
+        next: '📅 Next: Offer Review & Package Decision (Nov 10)',
+        evidenceTitle: 'Adaptive Metric Aggregator Kernel',
+        evidenceResult: '"Implemented lock-free ring buffer aggregation processing 850k datapoints/sec per core with zero thread contention under heavy burst traffic."'
       }
     ];
 
-    let currentStageIndex = 3; // Start at Interview
-    let currentProfileIndex = 0;
+    let currentCandidateIndex = 0;
+    let currentStageIndex = 3;
 
-    const railFill = document.getElementById('dossier-rail-fill');
+    const compEl = document.getElementById('dossier-company');
+    const roleEl = document.getElementById('dossier-role');
+    const stagePillEl = document.getElementById('dossier-stage-pill');
+    const railFillEl = document.getElementById('dossier-rail-fill');
+    const nextActionEl = document.getElementById('dossier-next-action');
+    const evTitleEl = document.getElementById('dossier-evidence-title');
+    const evResultEl = document.getElementById('dossier-evidence-result');
+    const auditLogEl = document.getElementById('dossier-audit-log');
     const stations = heroDossier.querySelectorAll('.station-item');
-    const stagePill = document.getElementById('dossier-stage-pill');
-    const nextActionLabel = document.getElementById('dossier-next-action');
-    const auditLog = document.getElementById('dossier-audit-log');
-    const companyLabel = document.getElementById('dossier-company');
-    const roleLabel = document.getElementById('dossier-role');
-    const evidenceTitle = document.getElementById('dossier-evidence-title');
-    const evidenceResult = document.getElementById('dossier-evidence-result');
 
     const btnPrev = document.getElementById('btn-prev-stage');
     const btnNext = document.getElementById('btn-next-stage');
-    const btnCycleProfile = document.getElementById('btn-cycle-candidate');
+    const btnCycle = document.getElementById('btn-cycle-candidate');
 
-    function updateDossierView() {
+    function updateDossierUI() {
       const stage = stages[currentStageIndex];
+      const cand = candidates[currentCandidateIndex];
 
-      // Update Rail Fill Bar
-      if (railFill) {
-        railFill.style.width = stage.fillWidth;
+      if (compEl) compEl.textContent = cand.company;
+      if (roleEl) roleEl.textContent = cand.role;
+      if (nextActionEl) nextActionEl.textContent = cand.next;
+      if (evTitleEl) evTitleEl.textContent = cand.evidenceTitle;
+      if (evResultEl) evResultEl.textContent = cand.evidenceResult;
+
+      if (stagePillEl) {
+        stagePillEl.textContent = 'Stage: ' + stage.name;
+        stagePillEl.style.color = stage.color;
+        stagePillEl.style.backgroundColor = stage.bg;
       }
 
-      // Update Station Node states
-      stations.forEach((st, idx) => {
-        st.classList.remove('completed', 'active');
-        st.setAttribute('aria-selected', 'false');
+      if (railFillEl) {
+        railFillEl.style.width = stage.fillWidth;
+      }
+
+      if (auditLogEl) {
+        auditLogEl.textContent = stage.log;
+      }
+
+      stations.forEach((stn, idx) => {
+        stn.classList.remove('completed', 'active');
+        stn.setAttribute('aria-selected', 'false');
         if (idx < currentStageIndex) {
-          st.classList.add('completed');
+          stn.classList.add('completed');
         } else if (idx === currentStageIndex) {
-          st.classList.add('active');
-          st.setAttribute('aria-selected', 'true');
+          stn.classList.add('active');
+          stn.setAttribute('aria-selected', 'true');
         }
       });
 
-      // Update Stage Badge
-      if (stagePill) {
-        stagePill.textContent = 'Stage: ' + stage.name;
-        stagePill.style.color = stage.color;
-        stagePill.style.backgroundColor = stage.bg;
-      }
-
-      // Update Audit Log Line
-      if (auditLog) {
-        auditLog.textContent = stage.log;
-      }
-
-      // Update Prev / Next button states
-      if (btnPrev) btnPrev.disabled = currentStageIndex === 0;
-      if (btnNext) btnNext.disabled = currentStageIndex === stages.length - 1;
+      if (btnPrev) btnPrev.disabled = currentStageIndex <= 0;
+      if (btnNext) btnNext.disabled = currentStageIndex >= stages.length - 1;
     }
-
-    function updateProfileView() {
-      const profile = candidateProfiles[currentProfileIndex];
-      if (companyLabel) companyLabel.textContent = profile.company;
-      if (roleLabel) roleLabel.textContent = profile.role;
-      if (evidenceTitle) evidenceTitle.textContent = profile.evidenceTitle;
-      if (evidenceResult) evidenceResult.textContent = profile.evidenceResult;
-    }
-
-    // Click station nodes
-    stations.forEach((st) => {
-      st.addEventListener('click', () => {
-        const stageIdx = parseInt(st.getAttribute('data-stage'), 10);
-        if (!isNaN(stageIdx)) {
-          currentStageIndex = stageIdx;
-          updateDossierView();
-        }
-      });
-    });
 
     if (btnPrev) {
       btnPrev.addEventListener('click', () => {
         if (currentStageIndex > 0) {
           currentStageIndex--;
-          updateDossierView();
+          updateDossierUI();
         }
       });
     }
@@ -409,23 +391,43 @@
       btnNext.addEventListener('click', () => {
         if (currentStageIndex < stages.length - 1) {
           currentStageIndex++;
-          updateDossierView();
+          updateDossierUI();
         }
       });
     }
 
-    if (btnCycleProfile) {
-      btnCycleProfile.addEventListener('click', () => {
-        currentProfileIndex = (currentProfileIndex + 1) % candidateProfiles.length;
-        updateProfileView();
+    if (btnCycle) {
+      btnCycle.addEventListener('click', () => {
+        currentCandidateIndex = (currentCandidateIndex + 1) % candidates.length;
+        currentStageIndex = candidates[currentCandidateIndex].stageIndex;
+        updateDossierUI();
       });
     }
 
-    updateDossierView();
+    stations.forEach((stn) => {
+      stn.addEventListener('click', () => {
+        const targetStage = parseInt(stn.getAttribute('data-stage'), 10);
+        if (!isNaN(targetStage)) {
+          currentStageIndex = targetStage;
+          updateDossierUI();
+        }
+      });
+    });
+
+    // Dossier Tabs
+    const tabs = heroDossier.querySelectorAll('.dossier-tab');
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((t) => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+
+    updateDossierUI();
   }
 
   // ---------------------------------------------------------------------------
-  // 5. Chapter 2: STAR Evidence Matrix Controller
+  // 5. STAR Evidence Matrix (Filter Tabs & Simulation)
   // ---------------------------------------------------------------------------
   function initStarMatrix() {
     const starSection = document.getElementById('star-matrix');
@@ -442,11 +444,11 @@
         summary: 'Use during systems architecture and concurrency rounds to demonstrate measured performance engineering under real production load.'
       },
       perf: {
-        situation: 'Core web application bundle grew to 4.2MB, resulting in a 4.8s Time-to-Interactive on mobile devices and 22% bounce rate during onboarding.',
-        task: 'Reduce initial JavaScript execution time to under 800ms and cut payload size by over 60% across mobile devices.',
-        action: 'Executed automated AST route-splitting, replaced heavyweight libraries with zero-dependency native utilities, and configured brotli compression at edge CDNs.',
-        result: 'Reduced compressed bundle to 380KB; cut mobile TTI to 640ms and boosted signup funnel completion by 18.5%.',
-        title: 'Zero-Allocation Frontend Asset Pipeline',
+        situation: 'Core web portal experienced 4.2s First Contentful Paint and high layout thrashing across complex nested data tables on lower-tier laptops.',
+        task: 'Optimize client runtime bundle size and render pipeline to achieve sub-1.2s FCP and 0 Cumulative Layout Shift.',
+        action: 'Extracted critical CSS into inline style packets, virtualized table rows with intersection observers, and tree-shook 140kB of unreferenced vendor dependencies.',
+        result: 'Reduced FCP to 820ms; increased client Core Web Vitals score from 58 to 99; reduced edge bandwidth consumption by 38%.',
+        title: 'Zero-Jank Virtualized Render Engine',
         tags: 'TAGS: TypeScript, Tree-Shaking, Edge-CDN, WebVitals',
         summary: 'Highlight during frontend architecture and client performance loops to prove rigorous engineering discipline.'
       },
@@ -506,9 +508,7 @@
       btnSimulate.addEventListener('click', () => {
         feedbackEl.style.display = 'block';
         feedbackEl.textContent = '✓ Citation attached to active candidate briefing!';
-        setTimeout(() => {
-          feedbackEl.style.opacity = '1';
-        }, 10);
+        feedbackEl.style.opacity = '1';
       });
     }
   }
@@ -541,21 +541,6 @@
               { id: 't-4', stage: 'interview', timestamp: new Date(Date.now() - 86400000 * 2).toISOString() }
             ],
             evidenceIds: ['ev-telemetry-01']
-          },
-          {
-            id: 'opp-figma-002',
-            company: 'Figma',
-            role: 'Senior Core Engine Architect',
-            stage: 'screening',
-            salaryNote: '$195k - $225k + Equity',
-            nextActionDate: new Date(Date.now() + 86400000 * 4).toISOString(),
-            privateNotes: 'Initial conversation with graphics runtime manager.',
-            timeline: [
-              { id: 't-5', stage: 'saved', timestamp: new Date(Date.now() - 86400000 * 6).toISOString() },
-              { id: 't-6', stage: 'applied', timestamp: new Date(Date.now() - 86400000 * 3).toISOString() },
-              { id: 't-7', stage: 'screening', timestamp: new Date().toISOString() }
-            ],
-            evidenceIds: ['ev-canvas-02']
           }
         ],
         evidence: [
@@ -564,21 +549,6 @@
             title: 'High-Throughput Ingestion Engine Optimization',
             tags: ['Go', 'Kafka', 'Prometheus', 'Distributed-Storage'],
             result: 'Engineered distributed Kafka event pipeline handling 22k events/sec with 18ms p99 latency.'
-          },
-          {
-            id: 'ev-canvas-02',
-            title: 'Zero-Copy Canvas Serialization Layer',
-            tags: ['C++', 'Wasm', 'Graphics-Engine', 'SIMD'],
-            result: 'Reduced complex design file load times from 3.8s to 420ms across large documents.'
-          }
-        ],
-        tasks: [
-          {
-            id: 'tsk-001',
-            opportunityId: 'opp-stripe-001',
-            title: 'Review distributed consensus paper before loop',
-            dueDate: new Date(Date.now() + 86400000).toISOString(),
-            completed: false
           }
         ]
       };
@@ -596,7 +566,242 @@
   }
 
   // ---------------------------------------------------------------------------
-  // 7. Initialization Lifecycle
+  // 7. Scroll-Driven Narrative Chapters Controller (Core Cinematic Motion)
+  // ---------------------------------------------------------------------------
+  function initScrollNarrativeChapters() {
+    if (isReducedMotion) {
+      // In reduced motion, ensure all elements settle in full static readability
+      const scrollBar = document.getElementById('pipeline-scroll-bar');
+      const carriage = document.getElementById('pipeline-rail-carriage');
+      const seal = document.getElementById('star-assembly-seal');
+      const flap = document.getElementById('vault-envelope-flap');
+      const waxSeal = document.getElementById('vault-wax-seal');
+      const drawer = document.getElementById('vault-code-drawer');
+
+      if (scrollBar) scrollBar.style.transform = 'scaleX(1)';
+      if (carriage) carriage.style.transform = 'translateX(0px)';
+      if (seal) { seal.style.transform = 'scale(1)'; seal.style.opacity = '1'; }
+      if (flap) { flap.style.transform = 'none'; flap.style.opacity = '1'; }
+      if (waxSeal) { waxSeal.style.transform = 'none'; waxSeal.style.opacity = '1'; }
+      if (drawer) { drawer.style.transform = 'none'; drawer.style.opacity = '1'; }
+
+      document.querySelectorAll('.star-fragment').forEach((el) => {
+        el.style.transform = 'none';
+        el.style.opacity = '1';
+      });
+      return;
+    }
+
+    const heroDossier = document.getElementById('hero-dossier-card');
+    const draftingOverlay = document.getElementById('drafting-overlay');
+
+    // Chapter 1 Elements
+    const chapter1 = document.getElementById('milestones');
+    const scrollBar = document.getElementById('pipeline-scroll-bar');
+    const carriage = document.getElementById('pipeline-rail-carriage');
+    const trackWrapper = document.getElementById('pipeline-rail-track-wrapper');
+    const telemetryText = document.getElementById('pipeline-telemetry-text');
+    const runwayCards = document.querySelectorAll('.pipeline-runway-card');
+
+    // Chapter 2 Elements
+    const chapter2 = document.getElementById('star-matrix');
+    const fragS = document.getElementById('star-frag-situation');
+    const fragT = document.getElementById('star-frag-task');
+    const fragA = document.getElementById('star-frag-action');
+    const fragR = document.getElementById('star-frag-result');
+    const assemblySeal = document.getElementById('star-assembly-seal');
+
+    // Chapter 3 Elements
+    const chapter3 = document.getElementById('privacy-vault');
+    const flap = document.getElementById('vault-envelope-flap');
+    const waxSeal = document.getElementById('vault-wax-seal');
+    const codeDrawer = document.getElementById('vault-code-drawer');
+
+    const stageNames = [
+      '01 // SAVED DISCOVERY',
+      '02 // APPLIED TRACKING',
+      '03 // SCREENING SIZING',
+      '04 // TECHNICAL INTERVIEW',
+      '05 // WRITTEN OFFER',
+      '06 // ARCHIVAL DEBRIEF'
+    ];
+
+    let ticking = false;
+
+    function getSectionProgress(el) {
+      if (!el) return 0;
+      const rect = el.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      // Start progressing as the top of element approaches center of screen
+      const start = windowHeight * 0.85;
+      const total = rect.height + windowHeight * 0.5;
+      const current = start - rect.top;
+      return Math.max(0, Math.min(1, current / total));
+    }
+
+    function updateScrollAnimations() {
+      const scrollY = window.scrollY;
+
+      // 1. Hero 3D Perspective Parallax
+      if (heroDossier) {
+        if (scrollY < window.innerHeight) {
+          const heroProgress = scrollY / window.innerHeight;
+          const rotY = -7 + heroProgress * 12;
+          const rotX = 3 - heroProgress * 6;
+          const transY = scrollY * 0.12;
+          const scale = Math.max(0.92, 1 - heroProgress * 0.08);
+          heroDossier.style.transform = `perspective(1200px) rotateY(${rotY.toFixed(2)}deg) rotateX(${rotX.toFixed(2)}deg) translateY(${transY.toFixed(1)}px) scale(${scale.toFixed(3)})`;
+        }
+      }
+
+      // Parallax Drafting Grid Overlay
+      if (draftingOverlay) {
+        draftingOverlay.style.transform = `translateY(${(scrollY * 0.1).toFixed(1)}px)`;
+      }
+
+      // 2. Chapter 1: The Six-Stage Career Pipeline Runway
+      if (chapter1 && scrollBar && carriage && trackWrapper) {
+        const p1 = getSectionProgress(chapter1);
+        scrollBar.style.transform = `scaleX(${p1.toFixed(3)})`;
+
+        const trackWidth = trackWrapper.clientWidth - 28; // minus carriage width
+        const carriageX = Math.round(p1 * trackWidth);
+        carriage.style.transform = `translateX(${carriageX}px)`;
+
+        // Sequential active stage card
+        const activeStage = Math.min(5, Math.floor(p1 * 6));
+        runwayCards.forEach((card, idx) => {
+          card.classList.remove('active', 'completed');
+          if (idx < activeStage) {
+            card.classList.add('completed');
+          } else if (idx === activeStage) {
+            card.classList.add('active');
+          }
+        });
+
+        if (telemetryText) {
+          telemetryText.textContent = `ACTIVE: ${stageNames[activeStage]}`;
+        }
+      }
+
+      // 3. Chapter 2: The STAR Evidence Assembly Deck
+      if (chapter2 && fragS && fragT && fragA && fragR && assemblySeal) {
+        const p2 = getSectionProgress(chapter2);
+        // Normalized assembly curve (completes between 0.2 and 0.8)
+        const assembleFactor = Math.max(0, Math.min(1, (p2 - 0.15) / 0.65));
+        const invertFactor = 1 - assembleFactor;
+
+        // Situation Fragment
+        const sX = Math.round(-50 * invertFactor);
+        const sY = Math.round(25 * invertFactor);
+        const sRot = (-5 * invertFactor).toFixed(1);
+        const sOp = (0.55 + 0.45 * assembleFactor).toFixed(2);
+        fragS.style.transform = `translate3d(${sX}px, ${sY}px, 0) rotate(${sRot}deg)`;
+        fragS.style.opacity = sOp;
+
+        // Task Fragment
+        const tX = Math.round(45 * invertFactor);
+        const tY = Math.round(20 * invertFactor);
+        const tRot = (4 * invertFactor).toFixed(1);
+        const tOp = (0.55 + 0.45 * assembleFactor).toFixed(2);
+        fragT.style.transform = `translate3d(${tX}px, ${tY}px, 0) rotate(${tRot}deg)`;
+        fragT.style.opacity = tOp;
+
+        // Action Fragment
+        const aX = Math.round(-35 * invertFactor);
+        const aY = Math.round(-20 * invertFactor);
+        const aRot = (3 * invertFactor).toFixed(1);
+        const aOp = (0.55 + 0.45 * assembleFactor).toFixed(2);
+        fragA.style.transform = `translate3d(${aX}px, ${aY}px, 0) rotate(${aRot}deg)`;
+        fragA.style.opacity = aOp;
+
+        // Result Fragment
+        const rX = Math.round(40 * invertFactor);
+        const rY = Math.round(-30 * invertFactor);
+        const rRot = (-4 * invertFactor).toFixed(1);
+        const rOp = (0.55 + 0.45 * assembleFactor).toFixed(2);
+        fragR.style.transform = `translate3d(${rX}px, ${rY}px, 0) rotate(${rRot}deg)`;
+        fragR.style.opacity = rOp;
+
+        // Verification Seal Stamp
+        const sealScale = (0.4 + 0.6 * assembleFactor).toFixed(2);
+        const sealRot = Math.round(-30 * invertFactor);
+        const sealOp = Math.max(0, (assembleFactor - 0.25) / 0.75).toFixed(2);
+        assemblySeal.style.transform = `scale(${sealScale}) rotate(${sealRot}deg)`;
+        assemblySeal.style.opacity = sealOp;
+      }
+
+      // 4. Chapter 3: Sovereign Dossier Vault & Backup Sealing
+      if (chapter3 && flap && waxSeal && codeDrawer) {
+        const p3 = getSectionProgress(chapter3);
+        const sealFactor = Math.max(0, Math.min(1, (p3 - 0.15) / 0.65));
+        const invertSeal = 1 - sealFactor;
+
+        // Flap Folds Down: -75deg -> 0deg
+        const flapRotX = Math.round(-75 * invertSeal);
+        const flapOp = (0.7 + 0.3 * sealFactor).toFixed(2);
+        flap.style.transform = `perspective(1000px) rotateX(${flapRotX}deg)`;
+        flap.style.opacity = flapOp;
+
+        // Wax Seal Stamps Down: translateY(-45px) -> 0px, scale(0.6) -> scale(1)
+        const sealY = Math.round(-45 * invertSeal);
+        const sealScale = (0.6 + 0.4 * sealFactor).toFixed(2);
+        waxSeal.style.transform = `translateY(${sealY}px) scale(${sealScale})`;
+        waxSeal.style.opacity = sealFactor.toFixed(2);
+
+        // JSON Code Drawer Slides Forward: translateY(45px) -> 0px
+        const drawerY = Math.round(45 * invertSeal);
+        const drawerOp = (0.35 + 0.65 * sealFactor).toFixed(2);
+        codeDrawer.style.transform = `translateY(${drawerY}px)`;
+        codeDrawer.style.opacity = drawerOp;
+      }
+
+      ticking = false;
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(updateScrollAnimations);
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    // Initial run to calculate starting positions
+    updateScrollAnimations();
+  }
+
+  // ---------------------------------------------------------------------------
+  // 8. Active Nav Link Intersection Observer
+  // ---------------------------------------------------------------------------
+  function initNavObserver() {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.main-nav .nav-link[href^="#"]');
+    if (!sections.length || !navLinks.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            navLinks.forEach((link) => {
+              if (link.getAttribute('href') === `#${id}`) {
+                link.classList.add('active');
+              } else {
+                link.classList.remove('active');
+              }
+            });
+          }
+        });
+      },
+      { rootMargin: '-20% 0px -70% 0px' }
+    );
+
+    sections.forEach((s) => observer.observe(s));
+  }
+
+  // ---------------------------------------------------------------------------
+  // 9. Initialization Lifecycle
   // ---------------------------------------------------------------------------
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
@@ -605,5 +810,7 @@
     initHeroDossier();
     initStarMatrix();
     initJsonDownload();
+    initScrollNarrativeChapters();
+    initNavObserver();
   });
 })();

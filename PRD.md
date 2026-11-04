@@ -16,7 +16,7 @@ Build a polished, genuinely usable job-application command center for students a
 
 - Flutter SDK: `C:\Users\Sayantan Sinha\.codex\flutter-sdk\bin\flutter.bat` (Flutter 3.47.7); it is not on PATH. Android SDK: `C:\Users\Sayantan Sinha\AppData\Local\Android\sdk`. Chrome and Android emulator tooling are installed. The Android SDK path contains spaces and Flutter Doctor warns about NDK tools; investigate only if a build actually fails. Do not move or delete the SDK.
 - Wrangler is authenticated as `srimantasutapa123@gmail.com`. GitHub CLI is authenticated for `Sayantan-Sinha-GIT`. Reuse these sessions; do not ask the owner for credentials unless a real account step blocks progress.
-- Read the installed Antigravity-Kit `PLAYBOOK.txt` completely through `END OF PLAYBOOK.TXT`. The PRD wins if any kit instruction conflicts. Use the kit's four UI/UX review-and-fix rounds and three test-case rounds; record real evidence, rerun the same CORE suite, and continue without phase-review prompts.
+- Read the installed Antigravity-Kit `PLAYBOOK.txt` completely through `END OF PLAYBOOK.TXT`. The PRD wins if any kit instruction conflicts. The owner requirement mandates six website visual/motion review-and-fix rounds (and four app visual review rounds) and three test-case rounds; record real evidence, rerun the same CORE suite, and continue without phase-review prompts.
 
 ## Users and data
 
@@ -46,7 +46,7 @@ Build a polished, genuinely usable job-application command center for students a
 
 Pathfolio should feel like a considered personal workspace, not a generic SaaS dashboard. Use an editorial but energetic visual language: warm paper or porcelain surfaces, deep ink, one confident accent, high-quality typography, tactile interaction details, carefully structured data, and useful illustration or imagery only where it improves understanding. Avoid a wall of identical cards, oversized vanity metrics, emoji icons, gradients as decoration, and empty stock imagery. The app must be pleasant during daily use; the public site must look portfolio-worthy. The PRD's audience and tasks determine the design. The owner's CodeSense, Grepless, and Haan sites are craft benchmarks, not templates to copy.
 
-Inspect actual rendered desktop (1440×900), small laptop (1024×768), and mobile (390×844 and a narrow 320 px case) screens, plus a real Android emulator when available. The kit's **four visual rounds** must repeat the same anchor journeys (onboarding → add opportunity → move stage → add task → export/import), add new states, fix observed defects, and record screenshots and results in `UI_REVIEW.md`. The website and Flutter app both count as user-facing surfaces. Do not ask the owner to review each round.
+Inspect actual rendered desktop (1440×900), small laptop (1024×768), and mobile (390×844 and a narrow 320 px case) screens, plus a real Android emulator when available. The kit's visual loop requires **six website visual/motion review-and-fix rounds** (and four app visual review rounds) that repeat the same anchor journeys (onboarding → add opportunity → move stage → add task → export/import), add new states, fix observed defects, and record screenshots and results in `UI_REVIEW.md` and `MOTION_REVIEW.md`. The website and Flutter app both count as user-facing surfaces. Do not ask the owner to review each round.
 
 ## Architecture and safety
 
