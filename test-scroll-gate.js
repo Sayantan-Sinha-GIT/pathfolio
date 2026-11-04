@@ -739,6 +739,46 @@ async function runGateForBaseUrl(baseUrl, label) {
     }
     await ctx320.close();
 
+    // Seal vs text/control geometric nonintersection across scroll progress states (390 & 320)
+    for (const vw of [390, 320]) {
+      const ctxS = await browser.newContext({ viewport: { width: vw, height: 800 } });
+      const pS = await ctxS.newPage();
+      await pS.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+      const top = await pS.evaluate(() => document.getElementById('star-matrix').getBoundingClientRect().top + window.scrollY);
+      let worst = Infinity;
+      let hit = null;
+      for (const off of [-200, 0, 150, 300, 450, 600, 800, 1000]) {
+        await pS.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), top + off);
+        await pS.waitForTimeout(200);
+        const r = await pS.evaluate(() => {
+          const seal = document.getElementById('star-assembly-seal').getBoundingClientRect();
+          const sel = '#star-assembly-deck .star-fragment-title, #star-assembly-deck .star-fragment-body, .star-assembly-deck .star-fragment-title, .star-assembly-deck .star-fragment-body, .star-assembly-deck .star-fragment-badge, .star-assembly-deck .star-citation-panel h3, .star-assembly-deck .star-citation-panel p, .star-assembly-deck .star-citation-panel button, .star-assembly-deck .matrix-filter-btn';
+          const out = [];
+          document.querySelectorAll(sel).forEach((el) => {
+            const b = el.getBoundingClientRect();
+            if (!b.width || !b.height) return;
+            const gapX = Math.max(b.left - seal.right, seal.left - b.right);
+            const gapY = Math.max(b.top - seal.bottom, seal.top - b.bottom);
+            out.push({ id: el.id || el.className, gap: Math.max(gapX, gapY) });
+          });
+          return out;
+        });
+        for (const e of r) {
+          if (e.gap < worst) worst = e.gap;
+          if (e.gap < 0 && !hit) hit = `${e.id} overlaps seal by ${(-e.gap).toFixed(1)}px at scroll offset ${off}`;
+        }
+      }
+      console.log(`  Seal geometry @${vw}px: min clearance ${worst.toFixed(1)}px across 8 scroll states`);
+      if (hit) {
+        results.passed = false;
+        results.errors.push(`Seal intersects text/control @${vw}px: ${hit}`);
+      } else {
+        console.log(`  ✓ Seal @${vw}px never intersects any text block or control.`);
+      }
+      await pS.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-seal-${vw}.png`) });
+      await ctxS.close();
+    }
+
     // -------------------------------------------------------------------------
     // 4. Linked Pages (/guide.html, /privacy.html, /app/) & Flutter App Integrity
     // -------------------------------------------------------------------------

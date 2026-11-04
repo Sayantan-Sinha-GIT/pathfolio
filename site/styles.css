@@ -1386,6 +1386,18 @@ code, pre {
   border: 3px solid var(--surface);
 }
 
+/* Phone: seal sits in normal flow above the stacked fragments (never overlaps text) */
+@media (max-width: 767px) {
+  .star-assembly-seal {
+    position: relative;
+    top: auto;
+    left: auto;
+    margin: 0.5rem auto 1.5rem;
+    flex: none;
+    justify-self: center;
+  }
+}
+
 /* Right Side: Active Interview Citation Preview */
 .star-citation-panel {
   background-color: var(--bg-subdued);
