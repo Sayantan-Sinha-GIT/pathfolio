@@ -63,12 +63,12 @@ class GuideDialog extends StatelessWidget {
                     const SizedBox(height: 18),
                     _GuideSection(
                       title: '4. Local Storage & Backups',
-                      body: 'Your data is 100% offline and stays on your device. To transfer your data between your laptop and mobile device, visit Settings and click "Export JSON Backup", then import the JSON file on your other device.',
+                      body: 'Your data stays on your device using local client storage (browser local storage on web, sandboxed app storage on Android). Note that clearing browser site data clears web storage, so use "Export JSON Backup" in Settings to keep versioned backups and transfer between devices.',
                     ),
                     const SizedBox(height: 18),
                     _GuideSection(
                       title: '5. Keyboard Navigation & Accessibility',
-                      body: 'On the web and desktop, you can navigate using standard Tab, Shift+Tab, and Enter keys. Dialogs can be dismissed cleanly with Escape or Cancel buttons. Contrast meets WCAG AA standards, and reduced motion settings can be toggled in Settings.',
+                      body: 'On the web and desktop, you can navigate using standard Tab, Shift+Tab, and Enter keys. Dialogs can be dismissed cleanly with Escape or Cancel buttons. The palette is designed for high visual contrast, and reduced motion settings can be toggled in Settings.',
                     ),
                   ],
                 ),

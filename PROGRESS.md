@@ -2,7 +2,7 @@
 
 ## Selected Stack & Architecture
 - **App Platform**: Flutter 3.47.7 (Android release APK + Web at `/app/`).
-- **Marketing Site**: Web-native semantic HTML5, CSS3, vanilla JS (Kinetic Career Dossier & Milestone Rail, self-hosted Fraunces/Jakarta/Mono typography, 6-stage milestone runway, STAR matrix, privacy vault, live schema v1 JSON export, dark/light aware, WCAG AA).
+- **Marketing Site**: Web-native semantic HTML5, CSS3, vanilla JS (Kinetic Career Dossier & Milestone Rail, self-hosted Fraunces/Jakarta/Mono typography, 6-stage milestone runway, STAR matrix, privacy vault, live schema v1 JSON export, dark/light aware, tested for accessible contrast).
 - **Storage**: Local-only client persistence (`shared_preferences` + structured repository abstraction with atomic commits and schema validation). Zero cloud database, zero telemetry, full offline capability.
 - **Hosting & Deployment**: Cloudflare Pages Direct Upload via authenticated Wrangler (`srimantasutapa123@gmail.com`). Marketing site at root `/`, Flutter web app at `/app/` with SPA routing redirect fallback.
 - **VCS & Release**: GitHub repository under `Sayantan-Sinha-GIT`, GitHub Actions CI workflow, signed/release Android APK, GitHub Release with attached APK.

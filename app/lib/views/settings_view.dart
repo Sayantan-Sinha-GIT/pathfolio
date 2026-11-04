@@ -329,7 +329,7 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                     const SizedBox(height: 12),
                     const Text(
-                      'Pathfolio operates 100% offline on your device. All opportunities, private notes, follow-up tasks, and career evidence items are stored solely in your local browser or Android app sandbox.',
+                      'Pathfolio operates offline on your device. All opportunities, private notes, follow-up tasks, and career evidence items are stored locally in your browser storage or Android app sandbox. Browser data can be cleared by browser profile settings, so regular JSON backup exports are recommended.',
                       style: TextStyle(fontSize: 13.5, height: 1.5),
                     ),
                     const SizedBox(height: 10),

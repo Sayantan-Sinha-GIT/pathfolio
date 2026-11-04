@@ -479,11 +479,11 @@
               <ul class="comparison-list">
                 <li>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  <span><strong>100% Local Device Storage:</strong> Opportunities, notes, and milestones are saved strictly in browser <code>localStorage</code> or Android app storage via <code>shared_preferences</code>.</span>
+                  <span><strong>Local Client-Side Storage:</strong> Opportunities, notes, and milestones are stored on your device using Flutter's <code>shared_preferences</code> (browser local storage on web, sandboxed app storage on Android). Note that browser data can be cleared by user action or browser profile settings.</span>
                 </li>
                 <li>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                  <span><strong>Zero Network Telemetry & Offline Ready:</strong> Works completely offline with zero latency, zero tracking pixels, zero analytics cookies, and zero external database calls.</span>
+                  <span><strong>No External Telemetry & Offline Capability:</strong> Runs offline without network round-trips for core tracking; contains no analytics tracking pixels, beacons, or cloud databases.</span>
                 </li>
                 <li>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -641,7 +641,7 @@
         <div class="footer-bottom-row">
           <div>© 2026 Pathfolio. Crafted with sovereign privacy. Open source under MIT License.</div>
           <div style="font-family: var(--font-mono); font-size: 0.78rem;">
-            100% CLIENT STORAGE • ZERO TRACKERS • OFFLINE READY
+            LOCAL CLIENT STORAGE • ZERO ANALYTICS TRACKERS • OFFLINE CAPABLE
           </div>
         </div>
       </div>

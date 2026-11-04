@@ -118,11 +118,11 @@
   - Stops canvas animation loop immediately.
   - Renders a clean, high-contrast static architectural grid.
   - Replaces CSS keyframe transitions with instant opacity changes.
-  - Preserves 100% of interactive controls and content availability.
+  - Preserves all interactive controls and content availability.
 - **Keyboard & Screen Reader Support**:
   - Visible 2px high-contrast focus rings (`outline: 2px solid var(--accent); outline-offset: 2px`).
   - Semantic HTML (`<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<footer>`).
   - Proper ARIA attributes (`aria-expanded`, `aria-controls`, `aria-label`, `role="region"`).
 - **Color Contrast**:
-  - All body text meets WCAG AAA standards (>7:1 ratio).
-  - All headings, badges, and controls meet WCAG AA standards (>4.5:1 ratio).
+  - Body text tested for high contrast readability against deep-forest background.
+  - Headings, badges, and controls tested for visual clarity and accessible contrast ratios.
