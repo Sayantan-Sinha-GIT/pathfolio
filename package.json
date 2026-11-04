@@ -1,0 +1,17 @@
+{
+  "name": "pathfolio",
+  "version": "1.0.1",
+  "description": "Private, offline-first career workspace for software engineers",
+  "private": true,
+  "scripts": {
+    "test:gate": "node test-scroll-gate.js",
+    "test:gate:local": "node test-scroll-gate.js --target=local",
+    "test:gate:remote": "node test-scroll-gate.js --target=remote"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.50.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

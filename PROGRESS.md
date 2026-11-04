@@ -18,11 +18,15 @@
   - Warm Architectural Porcelain (`#F8F7F4` light default, `#0A1210` deep-forest slate dark)
   - Signature Alpine Verdigris (`#0F4D3F` light, `#2DD4BF` dark) & Architectural Brass (`#B87333`)
   - Self-hosted typography: `Fraunces` (600, 700), `Plus Jakarta Sans` (400, 500, 600, 700), `JetBrains Mono` (400, 500)
-  - Asymmetric 12-column hero composition (`1.15fr 0.85fr`) pairing an executive briefing with a 3D Layered Career Dossier object with underlay sheets and scroll-tilt parallax.
+  - Dramatic editorial headline in `Fraunces` with italic display contrast (*"Track every loop. Own the evidence."*)
+  - Living product-specific background: 5 dual-track architectural guide rails with active brass milestone velocity packets and luminous tracer tails, paired with breathing radial ambient illumination (`.architect-ambient-glow`)
+  - Asymmetric 12-column hero composition (`1.15fr 0.85fr`) pairing an executive command briefing with a 3D Layered Career Dossier object with architectural folder tab (`DOSSIER // 2026-ENG-SYSTEMS`), underlay sheets, and scroll-tilt parallax
+  - Staged entrance choreography: rendered milestone rail fill expands $247.9\text{px} \rightarrow 256.7\text{px}$, 3D card perspective settles, 99.3% byte delta between t0 and t1.5 frames
+  - Audited all security absolutes: replaced `LOCAL_SANDBOX :: SECURED` with technically accurate `STORAGE :: CLIENT SANDBOX (v1 SCHEMA)`, and aligned all storage claims with device-only `shared_preferences` persistence
   - Three physical scroll-driven narrative chapters with automated Playwright browser gate verification:
-    - Chapter 1: The Milestone Pipeline Runway (`#chapter-pipeline` / `#milestones`), carriage advances $x = 258\text{px} \rightarrow 787\text{px}$, progress bar scales $\text{scaleX } 0.243 \rightarrow 0.741$.
-    - Chapter 2: The STAR Evidence Assembly Deck (`#chapter-evidence` / `#star-matrix`), fragments converge from detached float into aligned proof sheet, brass verification seal stamps down ($\text{scale } 0.388 \rightarrow 0.908$, $\text{opacity } 0.00 \rightarrow 0.80$).
-    - Chapter 3: Sovereign Dossier Folding & Sealing (`#chapter-vault` / `#privacy-vault`), dimensional envelope flap 3D folds shut ($\text{rotateX } -74^\circ \rightarrow -23^\circ$, opacity $0.71 \rightarrow 0.91$), hot brass wax seal presses down ($\text{translateY } -44\text{px} \rightarrow -14\text{px}$, $\text{scale } 0.61 \rightarrow 0.88$), schema code drawer slides open ($\text{translateY } 44\text{px} \rightarrow 14\text{px}$).
+    - Chapter 1: The Milestone Pipeline Runway (`#chapter-pipeline` / `#milestones`), carriage advances $x = 258\text{px} \rightarrow 858\text{px}$, progress bar scales $\text{scaleX } 0.243 \rightarrow 0.808$
+    - Chapter 2: The STAR Evidence Assembly Deck (`#chapter-evidence` / `#star-matrix`), fragments converge from detached float into aligned proof sheet, brass verification seal stamps down ($\text{scale } 0.388 \rightarrow 0.949$, $\text{opacity } 0.00 \rightarrow 0.89$)
+    - Chapter 3: Sovereign Dossier Folding & Sealing (`#chapter-vault` / `#privacy-vault`), dimensional envelope flap 3D folds shut ($\text{rotateX } -74^\circ \rightarrow -23^\circ$, opacity $0.71 \rightarrow 0.91$), hot brass wax seal presses down ($\text{translateY } -44\text{px} \rightarrow -14\text{px}$, $\text{scale } 0.61 \rightarrow 0.88$), schema code drawer slides open ($\text{translateY } 44\text{px} \rightarrow 14\text{px}$)
   - Unified design system across `/`, `/guide.html`, `/privacy.html`, and `/app/`
 
 ## Project Phases
@@ -33,10 +37,11 @@
 5. **Section 4A — Visual & Motion Review Loops**:
    - App Visual Loop (4 Iterations): Composition, Interaction, Craft, Release & Breakpoints. [COMPLETE]
    - Website Cinematic Motion Loop (6 Rounds): Visual World Audit (CodeSense motifs removed), Self-Hosted Typography, Chapter 1 Pipeline Runway, Chapter 2 STAR Assembly Deck, Chapter 3 Sovereign Vault Folding & Sealing, Responsive Breakpoints & Ergonomics. [COMPLETE]
-6. **Automated Playwright Scroll Gate**:
-   - Built and executed `test-scroll-gate.js` with installed Chrome.
+6. **Automated Playwright Scroll Gate (Clean-Clone Ready)**:
+   - Created root `package.json` declaring `playwright-core` dependency; implemented cross-platform browser discovery in `test-scroll-gate.js` without machine-specific hardcoded paths.
+   - Enforced strict failures on 1024px/320px horizontal overflow and linked-route loading defects (HTTP 200 and title matching).
    - Tested local (`http://127.0.0.1:8085`) and remote production (`https://pathfolio.pages.dev`).
-   - Verified non-zero computed deltas for all 3 chapters, 1440/1024/768/390/320 viewports with zero horizontal overflow, sticky heading clearance, reduced-motion fallback, theme toggle, and linked pages. [COMPLETE]
+   - Verified non-zero computed deltas for all 3 chapters, entrance choreography delta ($t_0 \rightarrow t_{1.5}$), 1440/1024/768/390/320 viewports with zero horizontal overflow, sticky heading clearance, reduced-motion fallback, theme toggle, and linked pages. [COMPLETE]
 7. **Section 5 — Bounded Test Loop (3 Iterations + Regression)**:
    - Automated unit/widget test suite (39 automated tests passing). [COMPLETE]
    - Iteration 1: 15 distinct cases + frozen CORE suite (11 cases). [COMPLETE]
