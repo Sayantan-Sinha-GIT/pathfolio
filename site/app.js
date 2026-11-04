@@ -145,7 +145,7 @@
     function drawStaticGrid() {
       ctx.clearRect(0, 0, width, height);
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(22, 23, 26, 0.04)';
+      ctx.strokeStyle = isDark ? 'rgba(180, 196, 190, 0.06)' : 'rgba(22, 23, 26, 0.04)';
       ctx.lineWidth = 1;
 
       // Draw horizontal static ledger lines
@@ -167,10 +167,10 @@
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       ctx.clearRect(0, 0, width, height);
 
-      // Architectural line color
-      const lineColor = isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(22, 23, 26, 0.04)';
-      const pipColor = isDark ? 'rgba(45, 212, 191, 0.6)' : 'rgba(19, 78, 67, 0.5)';
-      const crossColor = isDark ? 'rgba(251, 191, 36, 0.35)' : 'rgba(184, 115, 51, 0.25)';
+      // Architectural ledger rule & tactile bead colors
+      const lineColor = isDark ? 'rgba(180, 196, 190, 0.06)' : 'rgba(22, 23, 26, 0.04)';
+      const pipColor = isDark ? 'rgba(212, 175, 55, 0.8)' : 'rgba(19, 78, 67, 0.5)';
+      const crossColor = isDark ? 'rgba(212, 175, 55, 0.35)' : 'rgba(184, 115, 51, 0.25)';
 
       // Render milestone guide rails
       rails.forEach((rail, idx) => {

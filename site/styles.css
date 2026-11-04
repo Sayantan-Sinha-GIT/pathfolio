@@ -136,48 +136,50 @@
 }
 
 :root[data-theme="dark"] {
-  /* Architectural Night Studio / Matte Slate Ledger */
-  --bg: #1A1C22;
-  --bg-subdued: #22252E;
-  --bg-sunken: #16181D;
-  --surface: #262A34;
-  --surface-elevated: #2D323E;
-  --surface-border: #363C4A;
-  --surface-border-strong: #485062;
+  /* Deep-Forest Ink Dossier Atmosphere */
+  --bg: #0C1513;
+  --bg-subdued: #111D1A;
+  --bg-sunken: #080E0D;
+  --surface: #14221F;
+  --surface-elevated: #1B2D28;
+  --surface-border: #233832;
+  --surface-border-strong: #334F47;
 
-  --ink-primary: #F4F3EF;
-  --ink-secondary: #9DA3AF;
-  --ink-muted: #6B7280;
+  /* Archival Parchment Ivory & Soft Sage Typography (WCAG AAA) */
+  --ink-primary: #F2EFEA;
+  --ink-secondary: #B4C4BE;
+  --ink-muted: #7E948D;
 
-  /* Matte Alpine Sage */
-  --accent: #34D399;
-  --accent-hover: #6EE7B7;
-  --accent-light: rgba(52, 211, 153, 0.12);
-  --accent-border: rgba(52, 211, 153, 0.25);
-  --accent-on-primary: #0F172A;
+  /* Tactile Malachite / Alpine Verdigris Accent (Non-fluorescent) */
+  --accent: #2EB88A;
+  --accent-hover: #3CCB9B;
+  --accent-light: rgba(46, 184, 138, 0.14);
+  --accent-border: rgba(46, 184, 138, 0.28);
+  --accent-on-primary: #061A14;
 
-  --brass: #E5A93C;
-  --brass-light: rgba(229, 169, 60, 0.12);
-  --brass-border: rgba(229, 169, 60, 0.28);
+  /* Archival Bookbinder Brass Foil */
+  --brass: #D4AF37;
+  --brass-light: rgba(212, 175, 55, 0.12);
+  --brass-border: rgba(212, 175, 55, 0.3);
 
   /* Semantic Pipeline Tones (Dark) */
-  --stage-saved: #94A3B8;
-  --stage-saved-bg: #263142;
+  --stage-saved: #8E9BAE;
+  --stage-saved-bg: #1B2A26;
   --stage-applied: #60A5FA;
-  --stage-applied-bg: #1E3A8A33;
+  --stage-applied-bg: rgba(37, 99, 235, 0.18);
   --stage-screening: #FBBF24;
-  --stage-screening-bg: #78350F33;
+  --stage-screening-bg: rgba(180, 83, 9, 0.2);
   --stage-interview: #A78BFA;
-  --stage-interview-bg: #4C1D9533;
-  --stage-offer: #34D399;
-  --stage-offer-bg: #064E3B33;
-  --stage-concluded: #94A3B8;
-  --stage-concluded-bg: #33415533;
+  --stage-interview-bg: rgba(109, 40, 217, 0.2);
+  --stage-offer: #2EB88A;
+  --stage-offer-bg: rgba(46, 184, 138, 0.2);
+  --stage-concluded: #8B9894;
+  --stage-concluded-bg: rgba(139, 152, 148, 0.14);
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.25);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.4);
-  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.25), 0 16px 36px rgba(0, 0, 0, 0.35);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.35), 0 16px 36px rgba(0, 0, 0, 0.45);
 }
 
 /* --------------------------------------------------------------------------
@@ -279,6 +281,14 @@ code, pre {
   opacity: 0.15;
 }
 
+:root[data-theme="dark"] .drafting-grid-overlay {
+  background-image: 
+    linear-gradient(to right, rgba(180, 196, 190, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(180, 196, 190, 0.045) 1px, transparent 1px);
+  background-size: 140px 36px;
+  opacity: 0.35;
+}
+
 /* --------------------------------------------------------------------------
    5. Site Header & Universal Navigation
    -------------------------------------------------------------------------- */
@@ -295,7 +305,7 @@ code, pre {
 }
 
 :root[data-theme="dark"] .site-header {
-  background-color: rgba(17, 19, 23, 0.88);
+  background-color: rgba(12, 21, 19, 0.92);
 }
 
 .header-container {

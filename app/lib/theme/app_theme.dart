@@ -26,17 +26,17 @@ class AppColors {
   static const Color crimson = Color(0xFFC52828);
   static const Color crimsonBg = Color(0xFFFDF1F1);
 
-  // Dark Palette - Deep slate ink & crisp warm ink
-  static const Color darkBg = Color(0xFF121316);
-  static const Color darkSurface = Color(0xFF1A1C21);
-  static const Color darkSurfaceSubdued = Color(0xFF22242B);
-  static const Color darkBorder = Color(0xFF2C2F38);
-  static const Color darkBorderStrong = Color(0xFF3F4450);
-  static const Color darkInkPrimary = Color(0xFFF3F1EC);
-  static const Color darkInkSecondary = Color(0xFFA0A5B2);
-  static const Color darkInkMuted = Color(0xFF6B7180);
-  static const Color darkAccent = Color(0xFF2DD4BF);
-  static const Color darkAccentBg = Color(0xFF0A2B24);
+  // Dark Palette - Deep forest ink dossier & warm ivory
+  static const Color darkBg = Color(0xFF0C1513);
+  static const Color darkSurface = Color(0xFF152420);
+  static const Color darkSurfaceSubdued = Color(0xFF1B2D28);
+  static const Color darkBorder = Color(0xFF233832);
+  static const Color darkBorderStrong = Color(0xFF334F47);
+  static const Color darkInkPrimary = Color(0xFFF2EFEA);
+  static const Color darkInkSecondary = Color(0xFFB4C4BE);
+  static const Color darkInkMuted = Color(0xFF7E948D);
+  static const Color darkAccent = Color(0xFF2EB88A);
+  static const Color darkAccentBg = Color(0xFF0F2B22);
 }
 
 class AppBreakpoints {

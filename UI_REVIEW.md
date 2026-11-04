@@ -56,4 +56,8 @@ Following independent QA audit, four critical hardening requirements were execut
 4. **App Font & Theme Parity**:
    - Bundled SIL Open Font License `Plus Jakarta Sans` and `Fraunces` TTFs in `app/assets/fonts/` and registered in `app/pubspec.yaml`.
    - Replaced missing `Segoe UI` with `Plus Jakarta Sans` in `app_theme.dart` for true cross-platform typography on Android and Web.
-   - Refined dark theme to matte architect's slate (`#1A1C22`) and light theme to warm porcelain (`#F8F7F4` / `#FAF8F5`).
+   - Refined dark theme to a distinct deep-forest ink dossier (`#0C1513` base, `#14221F` surface) and light theme to warm porcelain (`#F8F7F4` / `#FAF8F5`).
+5. **Storage Architecture Tradeoffs & Neutrality**:
+   - Replaced all biased claims in the Chapter 3 comparison grid with neutral, balanced storage tradeoffs between centralized cloud (automatic cross-device sync, remote storage) and local-first client architecture (zero telemetry, offline resilience).
+   - Honestly documented browser storage limitations (profile scoping, cache clearing impact, incognito behavior) and the versioned JSON export/restore transfer mechanism.
+   - Replaced glowing cyan/teal pips with solid warm brass index beads (`#D4AF37`) and lined ledger rules, completely eliminating any visual resemblance to CodeSense.

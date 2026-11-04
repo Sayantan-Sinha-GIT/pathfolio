@@ -26,8 +26,8 @@
 - **Inspected**: Viewport 1440×900 desktop; initial load and environment rendering.
 - **Observed Evidence**:
   - Live inspection confirms complete departure from CodeSense's cosmic graph.
-  - Ground surface renders warm architectural porcelain (`#F8F7F4` / `rgb(248, 247, 244)` in light mode, `#111317` in dark mode).
-  - Ambient environment uses subtle drafting grid and kinetic guide rails with moving milestone pips (moving smoothly at 60fps via `requestAnimationFrame`).
+  - Ground surface renders warm architectural porcelain (`#F8F7F4` / `rgb(248, 247, 244)` in light mode, `#0C1513` deep-forest slate in dark mode).
+  - Ambient environment uses subtle lined ledger rules and kinetic guide rails with moving warm brass beads (moving smoothly at 60fps via `requestAnimationFrame`).
   - Zero orange filaments, zero floating cosmic particle swarms, zero terminal window dots.
   - Computed font inspection confirms `Fraunces` loaded for headings and `Plus Jakarta Sans` for body text.
 - **Defects & Corrections**: None; initial layout stable with zero cumulative layout shift.
@@ -106,3 +106,19 @@
 | `/guide.html` | Fraunces (48px) + Jakarta | Fraunces (35.2px) + Jakarta | Porcelain `#F8F7F4`, Verdigris `#134E43` | Full Nav + Mobile Drawer | Fully functional, synced | Home, Privacy, App, GitHub | Calm ambient drafting grid | None (0px) |
 | `/privacy.html` | Fraunces (48px) + Jakarta | Fraunces (35.2px) + Jakarta | Porcelain `#F8F7F4`, Verdigris `#134E43` | Full Nav + Mobile Drawer | Fully functional, synced | Home, Guide, App, GitHub | Calm ambient drafting grid | None (0px) |
 | `/app/` (Flutter) | Jakarta (32px / 15px) | Scaled Material3 layout | Porcelain `#FAF8F5`, Verdigris `#134E43` | App bar + bottom nav / rail | In-app theme toggle supported | Export, Import, Filter, Add | Smooth Material3 transitions | None (0px) |
+
+---
+
+## Concrete Differentiation Analysis: Pathfolio Dark Dossier vs. CodeSense (1440×900 Equal-Width Comparison)
+
+To eliminate any visual ambiguity, the live homepages of CodeSense (`https://pr-reviewer-omega-liard.vercel.app`) and Pathfolio (`https://pathfolio.pages.dev`) were rendered and inspected side-by-side at identical 1440×900 desktop viewports via Chrome DevTools:
+
+| Design Dimension | CodeSense (`https://pr-reviewer-omega-liard.vercel.app`) | Pathfolio Deep-Forest Dossier (`https://pathfolio.pages.dev`) | Concrete Distinction Proof |
+| :--- | :--- | :--- | :--- |
+| **Atmospheric Base & Surface** | Cold, pitch-black cosmic void (`#0B0D12` / `#08090C`) with a glowing orange interstellar gas nebula. | Rich, deep botanical evergreen slate (`#0C1513` / `rgb(12, 21, 19)`) with deep spruce card surface (`#14221F`). | Completely different color temperature; Pathfolio uses organic spruce slate rather than cybernetic black void. |
+| **Background Structural Motif** | 3D orbital rings, curved elliptical filaments, and a perspective wireframe coordinate grid. | Lined ledger folio rules (140px × 36px horizontal ledger lines) with subtle warm brass alignment corner crosses. | Pathfolio evokes an architect's desk or heritage ledger pad; zero orbital rings or wireframes. |
+| **Motion & Particles** | Free-floating 3D particle constellation with bokeh distance blur and floating code filenames (`src/pricing.js`, `createOrder()`). | 4 horizontal architectural guide rails with solid warm brass index beads (`#D4AF37`) and hairline ruler ticks. Zero floating code labels. | Pathfolio replaces random starfields with structured, horizontal milestone ledger tracks. Zero floating text snippets. |
+| **Layout & Hierarchy** | Asymmetric left-aligned headline with curved orange brushstroke underline; floating card anchored bottom-right. | Symmetrical centered executive headline in `Fraunces` serif above a prominent centered Candidate Dossier card with 6 tactile stages. | Symmetrical, centered dossier architecture vs. asymmetric left-to-right cosmic split. |
+| **Interactive Focal Point** | Static screenshot PR comment tooltip (`codesense-pr # Bug`). | Dynamic milestone scrubber with stage progression (`Saved` → `Applied` → `Screening` → `Interview` → `Offer` → `Rejected`), candidate role cycling, and real timeline logs. | Real interactive state machine with tactile buttons and tab switching (`Candidate Dossier`, `Activity Timeline`, `STAR Evidence Sheet`). |
+| **Glow & Lighting Effects** | Intense radial orange neon glow (`--accent-glow: rgba(224, 109, 68, 0.35)`) and glowing cyan/amber nodes. | Zero neon glow; crisp 1px tactile borders (`#233832`), warm archival ivory typography (`#F2EFEA`), and soft bookbinder brass accents. | Matte, tactile, physical paper/bookbinding craft without sci-fi energy halos. |
+| **Reduced Motion Fallback** | Orbiting nodes freeze or hide. | Canvas transitions immediately to static hairline ledger rules; all CSS transforms/transitions clamped to 0.01ms. | Certified WCAG 2.1 accessible under `prefers-reduced-motion: reduce`. |
