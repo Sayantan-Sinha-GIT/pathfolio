@@ -26,7 +26,7 @@ The automated browser gate (`test-scroll-gate.js`) was executed across both loca
 
 | Test Parameter | Local Measurement (`127.0.0.1:8085`) | Remote Measurement (`pathfolio.pages.dev`) | Target Requirement | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **Hero Staged Entrance ($t_0 \rightarrow t_{1.5}$)** | Rendered Fill: $247.9\text{px} \rightarrow 256.7\text{px}$, 99.3% byte delta | Rendered Fill: $254.3\text{px} \rightarrow 256.7\text{px}$, 99.3% byte delta | Measurable entrance choreography & packet transit | **PASSED** |
+| **Hero Staged Entrance ($t_0 \rightarrow t_{1.5}$)** | Rendered Fill: $247.9\text{px} \rightarrow 256.7\text{px}$, Decoded Pixel Diff: 32.7% (423,450 px) | Rendered Fill: $254.3\text{px} \rightarrow 256.7\text{px}$, Decoded Pixel Diff: 15.7% (204,067 px) | Measurable entrance choreography & packet transit | **PASSED** |
 | **Hero Dossier Tilt (Initial $\rightarrow$ Scrolled)** | `matrix3d(0.992, 0, 0.121, ...)` $\rightarrow$ `matrix3d(0.971, 0, 0.051, ...)` | `matrix3d(0.992, 0, 0.121, ...)` $\rightarrow$ `matrix3d(0.971, 0, 0.051, ...)` | Non-zero parallax 3D transform delta | **PASSED** |
 | **Chapter 1: Carriage Transform** | $x = 258\text{px} \rightarrow 858\text{px}$ ($\Delta = +600\text{px}$) | $x = 258\text{px} \rightarrow 858\text{px}$ ($\Delta = +600\text{px}$) | Physical horizontal track advance | **PASSED** |
 | **Chapter 1: Runway Progress Bar** | $\text{scaleX}: 0.243 \rightarrow 0.808$ ($\Delta = +0.565$) | $\text{scaleX}: 0.243 \rightarrow 0.808$ ($\Delta = +0.565$) | Physical progress bar expansion | **PASSED** |
@@ -69,7 +69,7 @@ The automated browser gate (`test-scroll-gate.js`) was executed across both loca
 - **Observed Evidence**:
   - `document.fonts` confirms 8 local woff2 files loaded (`Fraunces` 600/700, `Plus Jakarta Sans` 400/500/600/700, `JetBrains Mono` 400/500).
   - At $t_0$, the hero dossier card enters with soft elevation and rotation; the milestone rail fill begins at 0px and animates to active stage ($256.7\text{px}$) over 1.2s.
-  - Comparing frame $t_0$ and $t_{1.5}$ shows 99.3% byte difference and visible packet transit.
+  - Comparing frame $t_0$ and $t_{1.5}$ yields a decoded visual difference of 32.7% of viewport pixels (423,450 differing pixels locally; 15.7% / 204,067 pixels remotely), confirming continuous background packet transit, ambient breathing glow, and physical milestone fill expansion.
   - Monospace metadata accurately states `STORAGE :: CLIENT SANDBOX (v1 SCHEMA)`, eliminating all exaggerated military tropes.
 - **Status**: PASSED.
 

@@ -21,7 +21,7 @@
   - Dramatic editorial headline in `Fraunces` with italic display contrast (*"Track every loop. Own the evidence."*)
   - Living product-specific background: 5 dual-track architectural guide rails with active brass milestone velocity packets and luminous tracer tails, paired with breathing radial ambient illumination (`.architect-ambient-glow`)
   - Asymmetric 12-column hero composition (`1.15fr 0.85fr`) pairing an executive command briefing with a 3D Layered Career Dossier object with architectural folder tab (`DOSSIER // 2026-ENG-SYSTEMS`), underlay sheets, and scroll-tilt parallax
-  - Staged entrance choreography: rendered milestone rail fill expands $247.9\text{px} \rightarrow 256.7\text{px}$, 3D card perspective settles, 99.3% byte delta between t0 and t1.5 frames
+  - Staged entrance choreography: rendered milestone rail fill expands $247.9\text{px} \rightarrow 256.7\text{px}$, 3D card perspective settles, with 32.7% decoded pixel visual difference (423,450 differing pixels across the 1440x900 viewport)
   - Clarified user benefits & labeled illustrative sample data: replaced residual technical jargon with clear user benefits ("PRIVATE CAREER WORKSPACE • STORED SAFELY ON YOUR DEVICE", "Local Device Storage • JSON Backup", "Storage: Private On-Device"), and explicitly labeled the hero card illustrative ("SAMPLE DOSSIER // ILLUSTRATIVE PREVIEW", "PRIVATE LOCAL STORAGE • ILLUSTRATIVE DEMO", "Sample Dossier", "💡 Illustrative Example")
   - Three physical scroll-driven narrative chapters with automated Playwright browser gate verification:
     - Chapter 1: The Milestone Pipeline Runway (`#chapter-pipeline` / `#milestones`), carriage advances $x = 258\text{px} \rightarrow 858\text{px}$, progress bar scales $\text{scaleX } 0.243 \rightarrow 0.808$
