@@ -6,7 +6,7 @@
     <title>Privacy Policy & Storage Architecture — Pathfolio</title>
     <meta
       name="description"
-      content="Pathfolio's local-first privacy policy and storage architecture. No cloud databases, no analytics, and client sandboxed device storage."
+      content="Pathfolio's local-first privacy policy and storage architecture. No cloud databases, no analytics, and private on-device storage."
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -136,7 +136,7 @@
         <section class="reading-section">
           <h2>1. Zero Remote Storage & Zero Telemetry</h2>
           <p>
-            Pathfolio does not operate a user database, auth server, or analytics backend. When you use the web application or install the Android APK, all data is written directly to your client sandbox:
+            Pathfolio does not operate a user database, auth server, or analytics backend. When you use the web application or install the Android APK, all data is written directly to your device's local application storage:
           </p>
           <ul>
             <li><strong>Web:</strong> Records are saved locally in browser storage via <code>shared_preferences</code> (backed by browser <code>localStorage</code>), scoped solely to your current browser profile.</li>
@@ -148,7 +148,7 @@
         <section class="reading-section">
           <h2>2. Browser Storage Limitations & Best Practices</h2>
           <p>
-            Because your browser manages the local storage sandbox, certain user actions or browser maintenance tasks can impact your data:
+            Because your browser manages local site storage, certain user actions or browser maintenance tasks can impact your data:
           </p>
           <ul>
             <li>Clearing your browser's "Site Data and Cookies" will remove locally stored opportunities and tasks.</li>

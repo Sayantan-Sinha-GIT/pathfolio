@@ -22,7 +22,7 @@
   - Living product-specific background: 5 dual-track architectural guide rails with active brass milestone velocity packets and luminous tracer tails, paired with breathing radial ambient illumination (`.architect-ambient-glow`)
   - Asymmetric 12-column hero composition (`1.15fr 0.85fr`) pairing an executive command briefing with a 3D Layered Career Dossier object with architectural folder tab (`DOSSIER // 2026-ENG-SYSTEMS`), underlay sheets, and scroll-tilt parallax
   - Staged entrance choreography: rendered milestone rail fill expands $247.9\text{px} \rightarrow 256.7\text{px}$, 3D card perspective settles, 99.3% byte delta between t0 and t1.5 frames
-  - Audited all security absolutes: replaced `LOCAL_SANDBOX :: SECURED` with technically accurate `STORAGE :: CLIENT SANDBOX (v1 SCHEMA)`, and aligned all storage claims with device-only `shared_preferences` persistence
+  - Clarified user benefits & labeled illustrative sample data: replaced residual technical jargon with clear user benefits ("PRIVATE CAREER WORKSPACE • STORED SAFELY ON YOUR DEVICE", "Local Device Storage • JSON Backup", "Storage: Private On-Device"), and explicitly labeled the hero card illustrative ("SAMPLE DOSSIER // ILLUSTRATIVE PREVIEW", "PRIVATE LOCAL STORAGE • ILLUSTRATIVE DEMO", "Sample Dossier", "💡 Illustrative Example")
   - Three physical scroll-driven narrative chapters with automated Playwright browser gate verification:
     - Chapter 1: The Milestone Pipeline Runway (`#chapter-pipeline` / `#milestones`), carriage advances $x = 258\text{px} \rightarrow 858\text{px}$, progress bar scales $\text{scaleX } 0.243 \rightarrow 0.808$
     - Chapter 2: The STAR Evidence Assembly Deck (`#chapter-evidence` / `#star-matrix`), fragments converge from detached float into aligned proof sheet, brass verification seal stamps down ($\text{scale } 0.388 \rightarrow 0.949$, $\text{opacity } 0.00 \rightarrow 0.89$)
@@ -38,10 +38,13 @@
    - App Visual Loop (4 Iterations): Composition, Interaction, Craft, Release & Breakpoints. [COMPLETE]
    - Website Cinematic Motion Loop (6 Rounds): Visual World Audit (CodeSense motifs removed), Self-Hosted Typography, Chapter 1 Pipeline Runway, Chapter 2 STAR Assembly Deck, Chapter 3 Sovereign Vault Folding & Sealing, Responsive Breakpoints & Ergonomics. [COMPLETE]
 6. **Automated Playwright Scroll Gate (Clean-Clone Ready)**:
-   - Created root `package.json` declaring `playwright-core` dependency; implemented cross-platform browser discovery in `test-scroll-gate.js` without machine-specific hardcoded paths.
-   - Enforced strict failures on 1024px/320px horizontal overflow and linked-route loading defects (HTTP 200 and title matching).
+   - Created root `package.json` declaring `playwright-core` and tracked `package-lock.json` for deterministic `npm ci` installs; implemented cross-platform browser discovery in `test-scroll-gate.js` without machine-specific hardcoded paths.
+   - Enforced strict failures on 1024px/320px horizontal overflow, linked-route loading defects (HTTP 200 and title matching), and absence of computed chapter motion deltas.
    - Tested local (`http://127.0.0.1:8085`) and remote production (`https://pathfolio.pages.dev`).
-   - Verified non-zero computed deltas for all 3 chapters, entrance choreography delta ($t_0 \rightarrow t_{1.5}$), 1440/1024/768/390/320 viewports with zero horizontal overflow, sticky heading clearance, reduced-motion fallback, theme toggle, and linked pages. [COMPLETE]
+   - Verified non-zero computed deltas for all 3 chapters on Desktop (1440x900) AND Phone (390x844) with screenshot pairs (C1: carriage transit $45\text{px} \rightarrow 164\text{px}$; C2: fragment opacity $0.56 \rightarrow 0.86$, seal $0 \rightarrow 0.59$; C3: flap fold, seal $0 \rightarrow 0.58$).
+   - Asserted reduced-motion visibility & readability across all 12 key selectors on both desktop and mobile (0 hidden fragments, opacity 1, display/visibility valid).
+   - Asserted mounted Flutter web view, glass pane, and active canvas (>211 KB rendered UI data) on `/app/` with 0 unhandled page errors and 0 failed bundle network requests.
+   - Verified 1440/1024/768/390/320 viewports with zero horizontal overflow, sticky heading clearance, theme toggle, and linked pages. [COMPLETE]
 7. **Section 5 — Bounded Test Loop (3 Iterations + Regression)**:
    - Automated unit/widget test suite (39 automated tests passing). [COMPLETE]
    - Iteration 1: 15 distinct cases + frozen CORE suite (11 cases). [COMPLETE]

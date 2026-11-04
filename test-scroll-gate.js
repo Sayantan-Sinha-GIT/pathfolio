@@ -85,6 +85,56 @@ async function launchBrowser() {
   }
 }
 
+/**
+ * Assert that all chapter content is visible, readable, and has no hidden fragments in reduced motion
+ */
+async function assertReducedMotionReadability(page, viewportLabel) {
+  return await page.evaluate((label) => {
+    const selectors = [
+      '#pipeline-rail-carriage',
+      '#pipeline-scroll-bar',
+      '.pipeline-runway-card',
+      '#star-frag-situation',
+      '#star-frag-task',
+      '#star-frag-action',
+      '#star-frag-result',
+      '#star-assembly-seal',
+      '#vault-envelope-flap',
+      '#vault-wax-seal',
+      '#vault-code-drawer',
+      '#hero-dossier-card'
+    ];
+    const errors = [];
+    for (const sel of selectors) {
+      const els = Array.from(document.querySelectorAll(sel));
+      if (els.length === 0) {
+        errors.push(`[${label}] Missing required element for selector: ${sel}`);
+        continue;
+      }
+      for (const el of els) {
+        const style = window.getComputedStyle(el);
+        const rect = el.getBoundingClientRect();
+        if (style.display === 'none') {
+          errors.push(`[${label}] ${sel} has display: none`);
+        }
+        if (style.visibility === 'hidden') {
+          errors.push(`[${label}] ${sel} has visibility: hidden`);
+        }
+        if (parseFloat(style.opacity) < 0.95) {
+          errors.push(`[${label}] ${sel} has reduced-motion opacity < 1 (${style.opacity})`);
+        }
+        if (rect.width <= 0 || rect.height <= 0) {
+          errors.push(`[${label}] ${sel} has zero rendered dimensions (${rect.width}x${rect.height})`);
+        }
+        if (style.clipPath && (style.clipPath.includes('circle(0%') || style.clipPath.includes('inset(100%') || style.clipPath === 'polygon(0px 0px, 0px 0px, 0px 0px)')) {
+          errors.push(`[${label}] ${sel} has hiding clip-path (${style.clipPath})`);
+        }
+      }
+    }
+    return errors;
+  }, viewportLabel);
+}
+
 async function runGateForBaseUrl(baseUrl, label) {
   console.log(`\n===============================================================`);
   console.log(`RUNNING PLAYWRIGHT SCROLL GATE FOR: [${label}] -> ${baseUrl}`);
@@ -96,9 +146,10 @@ async function runGateForBaseUrl(baseUrl, label) {
     label,
     baseUrl,
     passed: true,
-    chapters: {},
-    viewports: {},
-    stickyHeadings: {},
+    chaptersDesktop: {},
+    chaptersMobile: {},
+    reducedMotion: { desktopErrors: [], mobileErrors: [] },
+    flutterApp: {},
     errors: []
   };
 
@@ -163,9 +214,9 @@ async function runGateForBaseUrl(baseUrl, label) {
     console.log(`  Hero Dossier Transform scrolled: ${heroScrolledTransform}`);
 
     // -------------------------------------------------------------------------
-    // Chapter 1: The Six-Stage Career Pipeline Runway (#milestones)
+    // Desktop Chapter 1: The Six-Stage Career Pipeline Runway (#milestones)
     // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Chapter 1: Pipeline Runway (#milestones) ---`);
+    console.log(`\n--- Testing Desktop Chapter 1: Pipeline Runway (#milestones) ---`);
     const c1Pos = await page1440.evaluate(() => {
       const el = document.getElementById('milestones');
       return el ? el.getBoundingClientRect().top + window.scrollY : 0;
@@ -203,25 +254,23 @@ async function runGateForBaseUrl(baseUrl, label) {
     });
     await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter1-after.png`) });
 
-    console.log(`  Chapter 1 Carriage Before: ${c1Before.carriageTransform}`);
-    console.log(`  Chapter 1 Carriage After:  ${c1After.carriageTransform}`);
-    console.log(`  Chapter 1 Bar Before:      ${c1Before.barTransform}`);
-    console.log(`  Chapter 1 Bar After:       ${c1After.barTransform}`);
-    console.log(`  Chapter 1 Telemetry:       ${c1Before.text} -> ${c1After.text}`);
+    console.log(`  Desktop C1 Carriage: ${c1Before.carriageTransform} -> ${c1After.carriageTransform}`);
+    console.log(`  Desktop C1 Bar:      ${c1Before.barTransform} -> ${c1After.barTransform}`);
+    console.log(`  Desktop C1 Text:     ${c1Before.text} -> ${c1After.text}`);
 
     const c1Delta = c1Before.carriageTransform !== c1After.carriageTransform;
-    results.chapters.chapter1 = { before: c1Before, after: c1After, delta: c1Delta };
+    results.chaptersDesktop.chapter1 = { before: c1Before, after: c1After, delta: c1Delta };
     if (!c1Delta) {
       results.passed = false;
-      results.errors.push(`Chapter 1 failed: No computed transform delta on carriage!`);
+      results.errors.push(`Desktop Chapter 1 failed: No computed transform delta on carriage!`);
     } else {
-      console.log(`  ✓ Chapter 1 PASSED: Measurable carriage transform delta confirmed.`);
+      console.log(`  ✓ Desktop Chapter 1 PASSED: Measurable carriage transform delta confirmed.`);
     }
 
     // -------------------------------------------------------------------------
-    // Chapter 2: STAR Evidence Matrix Physically Assembling (#star-matrix)
+    // Desktop Chapter 2: STAR Evidence Matrix Physically Assembling (#star-matrix)
     // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Chapter 2: STAR Evidence Assembly Deck (#star-matrix) ---`);
+    console.log(`\n--- Testing Desktop Chapter 2: STAR Evidence Assembly Deck (#star-matrix) ---`);
     const c2Pos = await page1440.evaluate(() => {
       const el = document.getElementById('star-matrix');
       return el ? el.getBoundingClientRect().top + window.scrollY : 0;
@@ -233,7 +282,6 @@ async function runGateForBaseUrl(baseUrl, label) {
 
     const c2Before = await page1440.evaluate(() => {
       const fragS = document.getElementById('star-frag-situation');
-      const fragT = document.getElementById('star-frag-task');
       const seal = document.getElementById('star-assembly-seal');
       return {
         fragSTransform: fragS ? window.getComputedStyle(fragS).transform : '',
@@ -250,7 +298,6 @@ async function runGateForBaseUrl(baseUrl, label) {
 
     const c2After = await page1440.evaluate(() => {
       const fragS = document.getElementById('star-frag-situation');
-      const fragT = document.getElementById('star-frag-task');
       const seal = document.getElementById('star-assembly-seal');
       return {
         fragSTransform: fragS ? window.getComputedStyle(fragS).transform : '',
@@ -261,24 +308,22 @@ async function runGateForBaseUrl(baseUrl, label) {
     });
     await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter2-after.png`) });
 
-    console.log(`  Chapter 2 FragS Before: transform=${c2Before.fragSTransform}, opacity=${c2Before.fragSOpacity}`);
-    console.log(`  Chapter 2 FragS After:  transform=${c2After.fragSTransform}, opacity=${c2After.fragSOpacity}`);
-    console.log(`  Chapter 2 Seal Before:  transform=${c2Before.sealTransform}, opacity=${c2Before.sealOpacity}`);
-    console.log(`  Chapter 2 Seal After:   transform=${c2After.sealTransform}, opacity=${c2After.sealOpacity}`);
+    console.log(`  Desktop C2 FragS: transform=${c2Before.fragSTransform} -> ${c2After.fragSTransform}, opacity=${c2Before.fragSOpacity} -> ${c2After.fragSOpacity}`);
+    console.log(`  Desktop C2 Seal:  transform=${c2Before.sealTransform} -> ${c2After.sealTransform}, opacity=${c2Before.sealOpacity} -> ${c2After.sealOpacity}`);
 
     const c2Delta = c2Before.fragSTransform !== c2After.fragSTransform && c2Before.fragSOpacity !== c2After.fragSOpacity;
-    results.chapters.chapter2 = { before: c2Before, after: c2After, delta: c2Delta };
+    results.chaptersDesktop.chapter2 = { before: c2Before, after: c2After, delta: c2Delta };
     if (!c2Delta) {
       results.passed = false;
-      results.errors.push(`Chapter 2 failed: No computed transform/opacity delta on STAR fragments!`);
+      results.errors.push(`Desktop Chapter 2 failed: No computed transform/opacity delta on STAR fragments!`);
     } else {
-      console.log(`  ✓ Chapter 2 PASSED: Measurable fragment assembly delta confirmed.`);
+      console.log(`  ✓ Desktop Chapter 2 PASSED: Measurable fragment assembly delta confirmed.`);
     }
 
     // -------------------------------------------------------------------------
-    // Chapter 3: Sovereign Dossier Folding & Sealing (#privacy-vault)
+    // Desktop Chapter 3: Sovereign Dossier Folding & Sealing (#privacy-vault)
     // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Chapter 3: Sovereign Dossier Vault (#privacy-vault) ---`);
+    console.log(`\n--- Testing Desktop Chapter 3: Sovereign Dossier Vault (#privacy-vault) ---`);
     const c3Pos = await page1440.evaluate(() => {
       const el = document.getElementById('privacy-vault');
       return el ? el.getBoundingClientRect().top + window.scrollY : 0;
@@ -297,8 +342,7 @@ async function runGateForBaseUrl(baseUrl, label) {
         flapOpacity: flap ? window.getComputedStyle(flap).opacity : '',
         sealTransform: waxSeal ? window.getComputedStyle(waxSeal).transform : '',
         sealOpacity: waxSeal ? window.getComputedStyle(waxSeal).opacity : '',
-        drawerTransform: drawer ? window.getComputedStyle(drawer).transform : '',
-        drawerOpacity: drawer ? window.getComputedStyle(drawer).opacity : ''
+        drawerTransform: drawer ? window.getComputedStyle(drawer).transform : ''
       };
     });
     await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter3-before.png`) });
@@ -316,32 +360,25 @@ async function runGateForBaseUrl(baseUrl, label) {
         flapOpacity: flap ? window.getComputedStyle(flap).opacity : '',
         sealTransform: waxSeal ? window.getComputedStyle(waxSeal).transform : '',
         sealOpacity: waxSeal ? window.getComputedStyle(waxSeal).opacity : '',
-        drawerTransform: drawer ? window.getComputedStyle(drawer).transform : '',
-        drawerOpacity: drawer ? window.getComputedStyle(drawer).opacity : ''
+        drawerTransform: drawer ? window.getComputedStyle(drawer).transform : ''
       };
     });
     await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter3-after.png`) });
 
-    console.log(`  Chapter 3 Flap Before:   transform=${c3Before.flapTransform}, opacity=${c3Before.flapOpacity}`);
-    console.log(`  Chapter 3 Flap After:    transform=${c3After.flapTransform}, opacity=${c3After.flapOpacity}`);
-    console.log(`  Chapter 3 Seal Before:   transform=${c3Before.sealTransform}, opacity=${c3Before.sealOpacity}`);
-    console.log(`  Chapter 3 Seal After:    transform=${c3After.sealTransform}, opacity=${c3After.sealOpacity}`);
-    console.log(`  Chapter 3 Drawer Before: transform=${c3Before.drawerTransform}`);
-    console.log(`  Chapter 3 Drawer After:  transform=${c3After.drawerTransform}`);
+    console.log(`  Desktop C3 Flap: transform=${c3Before.flapTransform} -> ${c3After.flapTransform}, opacity=${c3Before.flapOpacity} -> ${c3After.flapOpacity}`);
+    console.log(`  Desktop C3 Seal: transform=${c3Before.sealTransform} -> ${c3After.sealTransform}, opacity=${c3Before.sealOpacity} -> ${c3After.sealOpacity}`);
 
     const c3Delta = c3Before.flapTransform !== c3After.flapTransform && c3Before.sealOpacity !== c3After.sealOpacity;
-    results.chapters.chapter3 = { before: c3Before, after: c3After, delta: c3Delta };
+    results.chaptersDesktop.chapter3 = { before: c3Before, after: c3After, delta: c3Delta };
     if (!c3Delta) {
       results.passed = false;
-      results.errors.push(`Chapter 3 failed: No computed transform/opacity delta on vault envelope/seal!`);
+      results.errors.push(`Desktop Chapter 3 failed: No computed transform/opacity delta on vault envelope/seal!`);
     } else {
-      console.log(`  ✓ Chapter 3 PASSED: Measurable envelope fold and wax seal delta confirmed.`);
+      console.log(`  ✓ Desktop Chapter 3 PASSED: Measurable envelope fold and wax seal delta confirmed.`);
     }
 
-    // -------------------------------------------------------------------------
     // Capture 25%, 50%, 75% Scroll States
-    // -------------------------------------------------------------------------
-    console.log(`\n--- Capturing 25%, 50%, 75% scroll states ---`);
+    console.log(`\n--- Capturing Desktop 25%, 50%, 75% scroll states ---`);
     const totalHeight = await page1440.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
 
     await page1440.evaluate((h) => window.scrollTo({ top: Math.round(h * 0.25), behavior: 'instant' }), totalHeight);
@@ -357,9 +394,7 @@ async function runGateForBaseUrl(baseUrl, label) {
     await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-desktop-1440-scroll75.png`) });
     console.log(`  ✓ Captured 25%, 50%, 75% scroll states.`);
 
-    // -------------------------------------------------------------------------
     // Sticky Heading Clearance
-    // -------------------------------------------------------------------------
     console.log(`\n--- Checking Sticky Heading Clearance for all anchor links ---`);
     const anchors = ['#hero', '#milestones', '#star-matrix', '#privacy-vault', '#app-tour'];
     for (const anchor of anchors) {
@@ -383,32 +418,7 @@ async function runGateForBaseUrl(baseUrl, label) {
     }
     console.log(`  ✓ Sticky heading clearance verified.`);
 
-    // -------------------------------------------------------------------------
-    // Reduced Motion Fallback
-    // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Reduced Motion Fallback ---`);
-    await page1440.emulateMedia({ reducedMotion: 'reduce' });
-    await page1440.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
-    await page1440.waitForTimeout(300);
-
-    const reducedMotionState = await page1440.evaluate(() => {
-      const bar = document.getElementById('pipeline-scroll-bar');
-      const fragS = document.getElementById('star-frag-situation');
-      return {
-        barTransform: bar ? window.getComputedStyle(bar).transform : '',
-        fragSOpacity: fragS ? window.getComputedStyle(fragS).opacity : ''
-      };
-    });
-    console.log(`  Reduced Motion State: barTransform=${reducedMotionState.barTransform}, fragSOpacity=${reducedMotionState.fragSOpacity}`);
-    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-desktop-reduced-motion.png`) });
-    console.log(`  ✓ Saved ${label}-desktop-reduced-motion.png`);
-
-    // Reset media
-    await page1440.emulateMedia({ reducedMotion: 'no-preference' });
-
-    // -------------------------------------------------------------------------
     // Theme Toggle
-    // -------------------------------------------------------------------------
     console.log(`\n--- Testing Theme Toggle ---`);
     await page1440.click('#theme-toggle');
     await page1440.waitForTimeout(300);
@@ -416,16 +426,34 @@ async function runGateForBaseUrl(baseUrl, label) {
     console.log(`  Toggled theme. Current data-theme: ${currentTheme}`);
     await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-desktop-theme-toggle.png`) });
 
-    // Toggle back to default
     await page1440.click('#theme-toggle');
     await page1440.waitForTimeout(200);
 
+    // Desktop Reduced Motion Assertions
+    console.log(`\n--- Testing Desktop Reduced Motion Visibility & Readability ---`);
+    await page1440.emulateMedia({ reducedMotion: 'reduce' });
+    await page1440.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+    await page1440.waitForTimeout(350);
+
+    const desktopReducedErrors = await assertReducedMotionReadability(page1440, 'desktop-1440');
+    results.reducedMotion.desktopErrors = desktopReducedErrors;
+    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-desktop-reduced-motion.png`) });
+
+    if (desktopReducedErrors.length > 0) {
+      results.passed = false;
+      results.errors.push(...desktopReducedErrors);
+      console.error(`  ✗ Desktop Reduced Motion FAILED with ${desktopReducedErrors.length} errors:`, desktopReducedErrors);
+    } else {
+      console.log(`  ✓ Desktop Reduced Motion PASSED: All chapter content visible and readable with zero hidden fragments.`);
+    }
+
+    await page1440.emulateMedia({ reducedMotion: 'no-preference' });
     await context1440.close();
 
     // -------------------------------------------------------------------------
-    // 2. Mobile Viewport (390x844)
+    // 2. Mobile Viewport (390x844) & Phone Chapter Motion Assertions
     // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Mobile 390x844 Viewport ---`);
+    console.log(`\n--- Testing Mobile 390x844 Viewport & Chapter Motion ---`);
     const context390 = await browser.newContext({
       viewport: { width: 390, height: 844 },
       isMobile: true,
@@ -443,7 +471,7 @@ async function runGateForBaseUrl(baseUrl, label) {
       };
     });
     console.log(`  Mobile 390 Metrics: innerWidth=${mobileMetrics.innerWidth}, scrollWidth=${mobileMetrics.scrollWidth}, hasOverflow=${mobileMetrics.hasOverflow}`);
-    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-mobile-390-hero.png`) });
+    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-hero.png`) });
 
     if (mobileMetrics.hasOverflow) {
       results.passed = false;
@@ -453,6 +481,7 @@ async function runGateForBaseUrl(baseUrl, label) {
     }
 
     // Open Mobile Drawer and inspect
+    console.log(`\n--- Testing Mobile Menu Drawer ---`);
     await page390.click('#mobile-menu-toggle');
     await page390.waitForTimeout(350);
 
@@ -477,7 +506,7 @@ async function runGateForBaseUrl(baseUrl, label) {
     });
 
     console.log(`  Drawer Open: ${drawerMetrics.isOpen}, height: ${drawerMetrics.rectHeight}px, links: ${drawerMetrics.linksCount}, allVisible: ${drawerMetrics.allVisible}`);
-    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-mobile-390-menu-open.png`) });
+    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-menu-open.png`) });
 
     if (!drawerMetrics.isOpen || !drawerMetrics.allVisible || drawerMetrics.linksCount < 8) {
       results.passed = false;
@@ -490,6 +519,189 @@ async function runGateForBaseUrl(baseUrl, label) {
     await page390.click('#mobile-menu-toggle');
     await page390.waitForTimeout(200);
 
+    // -------------------------------------------------------------------------
+    // Phone Chapter 1: Runway Motion on 390 Viewport (#milestones)
+    // -------------------------------------------------------------------------
+    console.log(`\n--- Testing Phone Chapter 1: Pipeline Runway on 390 Viewport ---`);
+    const c1PosPhone = await page390.evaluate(() => {
+      const el = document.getElementById('milestones');
+      return el ? el.getBoundingClientRect().top + window.scrollY : 0;
+    });
+
+    // Scroll to Chapter 1 Entry on phone
+    await page390.evaluate((top) => window.scrollTo({ top: top - 300, behavior: 'instant' }), c1PosPhone);
+    await page390.waitForTimeout(250);
+
+    const c1PhoneBefore = await page390.evaluate(() => {
+      const carriage = document.getElementById('pipeline-rail-carriage');
+      const bar = document.getElementById('pipeline-scroll-bar');
+      const text = document.getElementById('pipeline-telemetry-text')?.textContent || '';
+      return {
+        carriageTransform: carriage ? window.getComputedStyle(carriage).transform : '',
+        barTransform: bar ? window.getComputedStyle(bar).transform : '',
+        text
+      };
+    });
+    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-chapter1-before.png`) });
+
+    // Scroll forward through Chapter 1
+    await page390.evaluate((top) => window.scrollTo({ top: top + 800, behavior: 'instant' }), c1PosPhone);
+    await page390.waitForTimeout(250);
+
+    const c1PhoneAfter = await page390.evaluate(() => {
+      const carriage = document.getElementById('pipeline-rail-carriage');
+      const bar = document.getElementById('pipeline-scroll-bar');
+      const text = document.getElementById('pipeline-telemetry-text')?.textContent || '';
+      return {
+        carriageTransform: carriage ? window.getComputedStyle(carriage).transform : '',
+        barTransform: bar ? window.getComputedStyle(bar).transform : '',
+        text
+      };
+    });
+    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-chapter1-after.png`) });
+
+    console.log(`  Phone C1 Carriage: ${c1PhoneBefore.carriageTransform} -> ${c1PhoneAfter.carriageTransform}`);
+    console.log(`  Phone C1 Bar:      ${c1PhoneBefore.barTransform} -> ${c1PhoneAfter.barTransform}`);
+    console.log(`  Phone C1 Text:     ${c1PhoneBefore.text} -> ${c1PhoneAfter.text}`);
+
+    const c1PhoneDelta = c1PhoneBefore.carriageTransform !== c1PhoneAfter.carriageTransform && c1PhoneBefore.barTransform !== c1PhoneAfter.barTransform;
+    results.chaptersMobile.chapter1 = { before: c1PhoneBefore, after: c1PhoneAfter, delta: c1PhoneDelta };
+    if (!c1PhoneDelta) {
+      results.passed = false;
+      results.errors.push(`Phone 390 Chapter 1 failed: No transform delta on carriage or scroll bar!`);
+    } else {
+      console.log(`  ✓ Phone 390 Chapter 1 PASSED: Measurable carriage/bar delta confirmed.`);
+    }
+
+    // -------------------------------------------------------------------------
+    // Phone Chapter 2: STAR Evidence Assembly on 390 Viewport (#star-matrix)
+    // -------------------------------------------------------------------------
+    console.log(`\n--- Testing Phone Chapter 2: STAR Evidence Assembly on 390 Viewport ---`);
+    const c2PosPhone = await page390.evaluate(() => {
+      const el = document.getElementById('star-matrix');
+      return el ? el.getBoundingClientRect().top + window.scrollY : 0;
+    });
+
+    // Scroll to Chapter 2 Entry on phone
+    await page390.evaluate((top) => window.scrollTo({ top: top - 300, behavior: 'instant' }), c2PosPhone);
+    await page390.waitForTimeout(250);
+
+    const c2PhoneBefore = await page390.evaluate(() => {
+      const fragS = document.getElementById('star-frag-situation');
+      const seal = document.getElementById('star-assembly-seal');
+      return {
+        fragSTransform: fragS ? window.getComputedStyle(fragS).transform : '',
+        fragSOpacity: fragS ? window.getComputedStyle(fragS).opacity : '',
+        sealTransform: seal ? window.getComputedStyle(seal).transform : '',
+        sealOpacity: seal ? window.getComputedStyle(seal).opacity : ''
+      };
+    });
+    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-chapter2-before.png`) });
+
+    // Scroll forward through Chapter 2
+    await page390.evaluate((top) => window.scrollTo({ top: top + 800, behavior: 'instant' }), c2PosPhone);
+    await page390.waitForTimeout(250);
+
+    const c2PhoneAfter = await page390.evaluate(() => {
+      const fragS = document.getElementById('star-frag-situation');
+      const seal = document.getElementById('star-assembly-seal');
+      return {
+        fragSTransform: fragS ? window.getComputedStyle(fragS).transform : '',
+        fragSOpacity: fragS ? window.getComputedStyle(fragS).opacity : '',
+        sealTransform: seal ? window.getComputedStyle(seal).transform : '',
+        sealOpacity: seal ? window.getComputedStyle(seal).opacity : ''
+      };
+    });
+    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-chapter2-after.png`) });
+
+    console.log(`  Phone C2 FragS: transform=${c2PhoneBefore.fragSTransform} -> ${c2PhoneAfter.fragSTransform}, opacity=${c2PhoneBefore.fragSOpacity} -> ${c2PhoneAfter.fragSOpacity}`);
+    console.log(`  Phone C2 Seal:  transform=${c2PhoneBefore.sealTransform} -> ${c2PhoneAfter.sealTransform}, opacity=${c2PhoneBefore.sealOpacity} -> ${c2PhoneAfter.sealOpacity}`);
+
+    const c2PhoneDelta = c2PhoneBefore.fragSTransform !== c2PhoneAfter.fragSTransform && c2PhoneBefore.fragSOpacity !== c2PhoneAfter.fragSOpacity;
+    results.chaptersMobile.chapter2 = { before: c2PhoneBefore, after: c2PhoneAfter, delta: c2PhoneDelta };
+    if (!c2PhoneDelta) {
+      results.passed = false;
+      results.errors.push(`Phone 390 Chapter 2 failed: No transform/opacity delta on STAR fragments!`);
+    } else {
+      console.log(`  ✓ Phone 390 Chapter 2 PASSED: Measurable fragment assembly delta confirmed.`);
+    }
+
+    // -------------------------------------------------------------------------
+    // Phone Chapter 3: Sovereign Dossier Vault on 390 Viewport (#privacy-vault)
+    // -------------------------------------------------------------------------
+    console.log(`\n--- Testing Phone Chapter 3: Sovereign Vault on 390 Viewport ---`);
+    const c3PosPhone = await page390.evaluate(() => {
+      const el = document.getElementById('privacy-vault');
+      return el ? el.getBoundingClientRect().top + window.scrollY : 0;
+    });
+
+    // Scroll to Chapter 3 Entry on phone
+    await page390.evaluate((top) => window.scrollTo({ top: top - 300, behavior: 'instant' }), c3PosPhone);
+    await page390.waitForTimeout(250);
+
+    const c3PhoneBefore = await page390.evaluate(() => {
+      const flap = document.getElementById('vault-envelope-flap');
+      const waxSeal = document.getElementById('vault-wax-seal');
+      const drawer = document.getElementById('vault-code-drawer');
+      return {
+        flapTransform: flap ? window.getComputedStyle(flap).transform : '',
+        flapOpacity: flap ? window.getComputedStyle(flap).opacity : '',
+        sealTransform: waxSeal ? window.getComputedStyle(waxSeal).transform : '',
+        sealOpacity: waxSeal ? window.getComputedStyle(waxSeal).opacity : '',
+        drawerTransform: drawer ? window.getComputedStyle(drawer).transform : ''
+      };
+    });
+    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-chapter3-before.png`) });
+
+    // Scroll forward through Chapter 3
+    await page390.evaluate((top) => window.scrollTo({ top: top + 800, behavior: 'instant' }), c3PosPhone);
+    await page390.waitForTimeout(250);
+
+    const c3PhoneAfter = await page390.evaluate(() => {
+      const flap = document.getElementById('vault-envelope-flap');
+      const waxSeal = document.getElementById('vault-wax-seal');
+      const drawer = document.getElementById('vault-code-drawer');
+      return {
+        flapTransform: flap ? window.getComputedStyle(flap).transform : '',
+        flapOpacity: flap ? window.getComputedStyle(flap).opacity : '',
+        sealTransform: waxSeal ? window.getComputedStyle(waxSeal).transform : '',
+        sealOpacity: waxSeal ? window.getComputedStyle(waxSeal).opacity : '',
+        drawerTransform: drawer ? window.getComputedStyle(drawer).transform : ''
+      };
+    });
+    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-chapter3-after.png`) });
+
+    console.log(`  Phone C3 Flap: transform=${c3PhoneBefore.flapTransform} -> ${c3PhoneAfter.flapTransform}, opacity=${c3PhoneBefore.flapOpacity} -> ${c3PhoneAfter.flapOpacity}`);
+    console.log(`  Phone C3 Seal: transform=${c3PhoneBefore.sealTransform} -> ${c3PhoneAfter.sealTransform}, opacity=${c3PhoneBefore.sealOpacity} -> ${c3PhoneAfter.sealOpacity}`);
+
+    const c3PhoneDelta = c3PhoneBefore.flapTransform !== c3PhoneAfter.flapTransform && c3PhoneBefore.sealOpacity !== c3PhoneAfter.sealOpacity;
+    results.chaptersMobile.chapter3 = { before: c3PhoneBefore, after: c3PhoneAfter, delta: c3PhoneDelta };
+    if (!c3PhoneDelta) {
+      results.passed = false;
+      results.errors.push(`Phone 390 Chapter 3 failed: No transform/opacity delta on vault envelope/seal!`);
+    } else {
+      console.log(`  ✓ Phone 390 Chapter 3 PASSED: Measurable envelope fold and wax seal delta confirmed.`);
+    }
+
+    // Phone Reduced Motion Assertions
+    console.log(`\n--- Testing Phone Reduced Motion Visibility & Readability ---`);
+    await page390.emulateMedia({ reducedMotion: 'reduce' });
+    await page390.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+    await page390.waitForTimeout(350);
+
+    const mobileReducedErrors = await assertReducedMotionReadability(page390, 'phone-390');
+    results.reducedMotion.mobileErrors = mobileReducedErrors;
+    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-reduced-motion.png`) });
+
+    if (mobileReducedErrors.length > 0) {
+      results.passed = false;
+      results.errors.push(...mobileReducedErrors);
+      console.error(`  ✗ Phone Reduced Motion FAILED with ${mobileReducedErrors.length} errors:`, mobileReducedErrors);
+    } else {
+      console.log(`  ✓ Phone Reduced Motion PASSED: All chapter content visible and readable with zero hidden fragments.`);
+    }
+
+    await page390.emulateMedia({ reducedMotion: 'no-preference' });
     await context390.close();
 
     // -------------------------------------------------------------------------
@@ -528,11 +740,38 @@ async function runGateForBaseUrl(baseUrl, label) {
     await ctx320.close();
 
     // -------------------------------------------------------------------------
-    // 4. Linked Pages (/guide.html, /privacy.html, /app/)
+    // 4. Linked Pages (/guide.html, /privacy.html, /app/) & Flutter App Integrity
     // -------------------------------------------------------------------------
     console.log(`\n--- Testing Linked Pages (/guide.html, /privacy.html, /app/) ---`);
     const auxContext = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const auxPage = await auxContext.newPage();
+
+    // Track unhandled JS errors and failed network requests
+    const pageErrors = [];
+    const failedNetworkRequests = [];
+
+    auxPage.on('pageerror', (err) => {
+      console.error(`  [Browser Page Error] ${err.message}`);
+      pageErrors.push(err.message);
+    });
+
+    auxPage.on('requestfailed', (req) => {
+      const url = req.url();
+      const failure = req.failure() ? req.failure().errorText : 'failed';
+      console.warn(`  [Network Request Failed] ${url}: ${failure}`);
+      // Flag failed requests for same-origin app bundles
+      if (url.includes('/app/') || url.endsWith('.js') || url.endsWith('.wasm')) {
+        failedNetworkRequests.push({ url, failure });
+      }
+    });
+
+    auxPage.on('response', (res) => {
+      const url = res.url();
+      if (res.status() >= 400 && (url.includes('/app/') || url.endsWith('.js') || url.endsWith('.wasm'))) {
+        console.warn(`  [Network Bad Response] ${url}: HTTP ${res.status()}`);
+        failedNetworkRequests.push({ url, status: res.status() });
+      }
+    });
 
     // Guide
     const guideRes = await auxPage.goto(`${baseUrl}/guide.html`, { waitUntil: 'networkidle' });
@@ -560,20 +799,90 @@ async function runGateForBaseUrl(baseUrl, label) {
     }
     await auxPage.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-page-privacy.png`) });
 
-    // App
+    // App — Thorough Mounted View & Canvas Integrity Verification
+    console.log(`\n--- Testing /app/ Flutter Web View Integrity ---`);
     const appRes = await auxPage.goto(`${baseUrl}/app/`, { waitUntil: 'networkidle' });
-    await auxPage.waitForTimeout(2500); // Flutter web boot
     const appStatus = appRes ? appRes.status() : 0;
     const appTitle = await auxPage.title();
-    console.log(`  /app/ title: "${appTitle}", status: ${appStatus}`);
+
+    // Wait for Flutter Web View element to mount in DOM
+    try {
+      await auxPage.waitForSelector('flutter-view', { timeout: 15000 });
+    } catch (errWait) {
+      console.warn(`  Warning waiting for flutter-view selector: ${errWait.message}`);
+    }
+
+    // Allow Flutter canvas rendering loop to execute
+    await auxPage.waitForTimeout(2500);
+
+    const flutterHealth = await auxPage.evaluate(() => {
+      const fltView = document.querySelector('flutter-view');
+      const fltGlass = document.querySelector('flt-glass-pane') || (fltView && fltView.querySelector('flt-glass-pane'));
+      const root = fltGlass ? (fltGlass.shadowRoot || fltGlass) : (fltView ? (fltView.shadowRoot || fltView) : null);
+      const canvas = root ? root.querySelector('canvas') : document.querySelector('canvas');
+
+      let dataUrlLength = 0;
+      if (canvas) {
+        try {
+          dataUrlLength = canvas.toDataURL().length;
+        } catch (e) {
+          dataUrlLength = -1;
+        }
+      }
+
+      return {
+        hasFlutterView: !!fltView,
+        hasGlassPane: !!fltGlass,
+        hasCanvas: !!canvas,
+        canvasWidth: canvas ? canvas.width : 0,
+        canvasHeight: canvas ? canvas.height : 0,
+        dataUrlLength
+      };
+    });
+
+    results.flutterApp = {
+      appStatus,
+      appTitle,
+      flutterHealth,
+      pageErrorsCount: pageErrors.length,
+      failedNetworkCount: failedNetworkRequests.length
+    };
+
+    console.log(`  /app/ HTTP Status: ${appStatus}, Title: "${appTitle}"`);
+    console.log(`  Flutter View Mounted: ${flutterHealth.hasFlutterView}, GlassPane: ${flutterHealth.hasGlassPane}, Canvas: ${flutterHealth.hasCanvas} (${flutterHealth.canvasWidth}x${flutterHealth.canvasHeight})`);
+    console.log(`  Rendered Canvas Data Length: ${flutterHealth.dataUrlLength} bytes (empty blank canvas is typically < 2000 bytes)`);
+
+    // Assertions
     if (appStatus !== 200 || !appTitle.includes('Pathfolio')) {
       results.passed = false;
-      results.errors.push(`/app/ failed to load properly! Status: ${appStatus}, title: "${appTitle}"`);
-    } else {
-      console.log(`  ✓ /app/ PASSED.`);
+      results.errors.push(`/app/ returned invalid status or title! Status: ${appStatus}, title: "${appTitle}"`);
     }
-    await auxPage.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-page-app.png`) });
 
+    if (!flutterHealth.hasFlutterView || !flutterHealth.hasGlassPane || !flutterHealth.hasCanvas) {
+      results.passed = false;
+      results.errors.push(`/app/ failed to mount Flutter view, glass pane, or rendering canvas!`);
+    }
+
+    if (flutterHealth.canvasWidth <= 0 || flutterHealth.canvasHeight <= 0 || flutterHealth.dataUrlLength < 10000) {
+      results.passed = false;
+      results.errors.push(`/app/ canvas is empty or blank! dataUrlLength=${flutterHealth.dataUrlLength}`);
+    }
+
+    if (pageErrors.length > 0) {
+      results.passed = false;
+      results.errors.push(`/app/ threw ${pageErrors.length} unhandled page error(s): ${pageErrors.join('; ')}`);
+    }
+
+    if (failedNetworkRequests.length > 0) {
+      results.passed = false;
+      results.errors.push(`/app/ had ${failedNetworkRequests.length} failed app bundle network request(s)!`);
+    }
+
+    if (results.passed) {
+      console.log(`  ✓ /app/ Flutter Web View PASSED: Mounted view, rendered canvas (${flutterHealth.dataUrlLength} bytes), 0 errors.`);
+    }
+
+    await auxPage.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-page-app.png`) });
     await auxContext.close();
 
   } catch (err) {

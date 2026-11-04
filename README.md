@@ -98,7 +98,38 @@ Pathfolio adheres to the Antigravity-Kit testing protocol:
   - Verified non-zero computed deltas for Chapter 1 (runway carriage advance $x = 258\text{px} \rightarrow 858\text{px}$, bar scale $0.243 \rightarrow 0.808$).
   - Verified non-zero computed deltas for Chapter 2 (STAR fragment assembly convergence, verification seal stamp scale $0.388 \rightarrow 0.949$, opacity $0 \rightarrow 0.89$).
   - Verified non-zero computed deltas for Chapter 3 (envelope flap 3D fold $\text{rotateX } -74^\circ \rightarrow -23^\circ$, hot brass wax seal press $y: -44\text{px} \rightarrow -14\text{px}$, drawer slide).
+  - Verified phone 390 before/after scroll transform/opacity deltas for ALL 3 chapters with screenshot pairs.
+  - Verified reduced-motion readability assertions across desktop and phone 390 with zero hidden fragments.
+  - Verified mounted Flutter web view, glass pane, and active canvas rendering (>210 KB pixel data) on `/app/` with pageerror and network request tracking.
   - Verified exact mobile containment (`scrollWidth === innerWidth === 390px` and `320px`, zero overflow), full mobile drawer visibility, sticky header clearance, reduced-motion static fallback, and HTTP 200 verification for all linked routes (`/guide.html`, `/privacy.html`, `/app/`).
+
+---
+
+## Clean-Clone Reproduction & Automated Motion Gate
+
+To deterministically install dependencies and execute the visual motion gate on a clean clone:
+
+```bash
+# 1. Deterministic dependency install
+npm ci
+
+# 2. Run automated visual & scroll motion gate locally (against port 8085)
+npm run test:gate:local
+
+# 3. Run automated visual & scroll motion gate against live production
+npm run test:gate:remote
+```
+
+### Browser Discovery & Environment Options
+- The test runner portably discovers system **Google Chrome** (`channel: 'chrome'`) or **Microsoft Edge** (`channel: 'msedge'`) on Windows, macOS, and Linux without hardcoded machine paths.
+- To specify a custom browser executable, set the `CHROME_PATH` environment variable:
+  ```bash
+  export CHROME_PATH="/path/to/chrome"
+  ```
+- In headless CI environments without preinstalled system browsers, install Playwright's browser binary:
+  ```bash
+  npx playwright install chromium
+  ```
 
 ---
 

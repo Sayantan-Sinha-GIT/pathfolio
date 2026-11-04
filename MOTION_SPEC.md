@@ -159,3 +159,24 @@ Pathfolio features THREE large, distinct scroll-driven narrative chapters using 
 - **Responsive Overflow Guard**:
   - Evaluated and verified across 1440px desktop, 1024px tablet, 768px small tablet, 390px mobile, and 320px narrow mobile.
   - Exact `scrollWidth === innerWidth` on all viewports (`hasHorizontalOverflow: false`).
+
+---
+
+## 7. Automated Motion & Visual Verification Gate (`test-scroll-gate.js`)
+
+The project includes an automated Playwright verification gate running portably from a clean clone:
+
+1. **Dual-Viewport Scroll Motion Assertions**:
+   - **Desktop (1440x900)**: Measures computed transforms and opacities across Chapter 1 (runway carriage & bar), Chapter 2 (STAR fragment assembly & seal), and Chapter 3 (envelope flap 3D fold & wax seal stamp).
+   - **Phone (390x844)**: Measures the exact same three chapters with before/after scroll pairs, asserting non-zero physical transform deltas and opacities (e.g. carriage transit $45\text{px} \rightarrow 164\text{px}$, fragment opacity $0.56 \rightarrow 0.86$, wax seal press). Captures screenshot pairs for each chapter.
+   - Any absent or static delta strictly fails the test with non-zero exit code.
+2. **Reduced-Motion Static Readability Assertion**:
+   - Evaluated at both desktop (1440px) and phone (390px) viewports under `prefers-reduced-motion: reduce`.
+   - Asserts all chapter elements have `opacity >= 0.95`, `display !== 'none'`, `visibility !== 'hidden'`, rendered bounding box dimensions $> 0$, and no collapsing clip-paths.
+3. **Flutter Web View & Canvas Integrity Assertion**:
+   - Navigates to `/app/` with active `pageerror` and failed network request monitors.
+   - Asserts mounted `<flutter-view>`, `<flt-glass-pane>`, and active `<canvas>`.
+   - Asserts rendered canvas pixel data $> 200\text{ KB}$ (`dataUrlLength`), confirming that Flutter has painted the complete interactive UI rather than an empty blank canvas.
+4. **Deterministic Clean-Clone Execution**:
+   - Configured with `package.json` and tracked `package-lock.json`.
+   - Installable via `npm ci` with automated cross-platform browser discovery (`channel: 'chrome'` / `channel: 'msedge'`).

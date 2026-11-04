@@ -121,6 +121,35 @@ The automated browser gate (`test-scroll-gate.js`) was executed across both loca
 
 ---
 
+### Round 7: Phone 390 Chapters 1-3 Delta Gate, Reduced-Motion Assertion & Flutter View Integrity
+
+- **Objective**: Expand the automated verification gate to assert before/after physical scroll transforms and opacities for Chapters 1-3 on mobile phone (390px), assert reduced-motion visibility and readability with zero hidden fragments on both phone and desktop, and verify mounted Flutter web view, canvas render, and 0 errors.
+- **Observed Metrics & Evidence**:
+  - **Phone 390 Chapter 1 (Runway)**:
+    - Before: `carriageTransform = matrix(1, 0, 0, 1, 45, 0)`, `barTransform = matrix(0.153, 0, 0, 1, 0, 0)`
+    - After: `carriageTransform = matrix(1, 0, 0, 1, 164, 0)`, `barTransform = matrix(0.556, 0, 0, 1, 0, 0)`
+    - Active Stage text: `01 // SAVED DISCOVERY` $\rightarrow$ `04 // TECHNICAL INTERVIEW`
+    - Delta: $119\text{px}$ physical carriage transit along mobile runway track.
+  - **Phone 390 Chapter 2 (STAR Assembly)**:
+    - Before: `fragSTransform = matrix(0.996, -0.085, 0.085, 0.996, -49, 24)`, `fragSOpacity = 0.56`, `sealOpacity = 0`
+    - After: `fragSTransform = matrix(0.999, -0.026, 0.026, 0.999, -15, 8)`, `fragSOpacity = 0.86`, `sealOpacity = 0.59`
+    - Delta: Fragment physical slide ($34\text{px}$ along $X$, $16\text{px}$ along $Y$), opacity increase $+0.30$, seal appearance.
+  - **Phone 390 Chapter 3 (Sovereign Vault)**:
+    - Before: `flapTransform = matrix3d(..., 0.258, -0.965, ...)`, `flapOpacity = 0.70`, `sealOpacity = 0`
+    - After: `flapTransform = matrix3d(..., 0.848, -0.529, ...)`, `flapOpacity = 0.87`, `sealOpacity = 0.58`, `sealTransform = matrix(0.83, 0, 0, 0.83, 0, -19)`
+    - Delta: Flap folds down into sealed posture; wax seal stamps into position.
+  - **Reduced Motion Readability (Desktop & Phone)**:
+    - All 12 critical selectors evaluated: `#pipeline-rail-carriage`, `#pipeline-scroll-bar`, `.pipeline-runway-card`, `#star-frag-situation`, `#star-frag-task`, `#star-frag-action`, `#star-frag-result`, `#star-assembly-seal`, `#vault-envelope-flap`, `#vault-wax-seal`, `#vault-code-drawer`, `#hero-dossier-card`.
+    - 0 hidden fragments: `opacity === '1'`, `display !== 'none'`, `visibility === 'visible'`, dimensions $> 0$.
+  - **Flutter Web App (`/app/`) Integrity**:
+    - HTTP Status: `200`, Title: `Pathfolio — Job Search Command Center`
+    - Mounted elements: `<flutter-view>`, `<flt-glass-pane>`, `<canvas>`
+    - Canvas dimensions: `1440x900`, `dataUrlLength: 211546 bytes` (rich vector/widget rendering confirmed)
+    - Unhandled Page Errors: `0`, Failed Network Requests: `0`.
+- **Status**: PASSED.
+
+---
+
 ## Concrete Differentiation Analysis: Pathfolio Dark Dossier vs. CodeSense (1440×900 Equal-Width Comparison)
 
 | Design Dimension | CodeSense (`https://pr-reviewer-omega-liard.vercel.app`) | Pathfolio Deep-Forest Dossier (`https://pathfolio.pages.dev`) | Concrete Distinction Proof |
