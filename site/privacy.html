@@ -139,7 +139,7 @@
           <ul>
             <li><strong>Web:</strong> Records are saved locally in browser storage via <code>shared_preferences</code> (backed by browser <code>localStorage</code>), scoped solely to your current browser profile.</li>
             <li><strong>Android:</strong> Records are saved locally in sandboxed application storage via <code>shared_preferences</code>.</li>
-            <li><strong>Network Calls:</strong> The only outbound network requests made are when you explicitly click an external link to visit a company's job posting or GitHub repository.</li>
+            <li><strong>Network Requests & Same-Origin Asset Delivery:</strong> Loading the website or web application performs standard same-origin HTTP requests solely to fetch application assets (HTML documents, JavaScript bundles, CSS stylesheets, and self-hosted fonts) from the hosting origin. Pathfolio never transmits user records, analytics events, telemetry payloads, or tracking beacons over the network. The only third-party outbound network requests occur when you explicitly click an external link to visit a company's job posting or GitHub repository.</li>
           </ul>
         </section>
 
