@@ -109,12 +109,13 @@
     let height = 0;
     let dpr = 1;
 
-    // Career Guide Rails
+    // Architectural Milestone Rails across Viewport
     const rails = [
-      { yRatio: 0.06, speed: 0.35, pips: [0.15, 0.45, 0.78], label: 'STAGE_01 :: APPLIED_VELOCITY' },
-      { yRatio: 0.45, speed: 0.42, pips: [0.22, 0.65], label: 'STAGE_02 :: SCREENING_THROUGHPUT' },
-      { yRatio: 0.72, speed: 0.3, pips: [0.12, 0.52, 0.88], label: 'STAGE_03 :: INTERVIEW_MILESTONES' },
-      { yRatio: 0.94, speed: 0.38, pips: [0.35, 0.8], label: 'STAGE_04 :: OFFER_EVALUATION' }
+      { yRatio: 0.08, speed: 0.16, pips: [0.12, 0.62], label: '01 // APPLIED_VELOCITY' },
+      { yRatio: 0.28, speed: 0.22, pips: [0.35, 0.85], label: '02 // SCREENING_RUNWAY' },
+      { yRatio: 0.52, speed: 0.18, pips: [0.18, 0.58], label: '03 // ARCHITECTURE_LOOP' },
+      { yRatio: 0.74, speed: 0.24, pips: [0.28, 0.76], label: '04 // EXECUTIVE_OFFER' },
+      { yRatio: 0.92, speed: 0.16, pips: [0.42, 0.90], label: '05 // FINAL_CLOSING' }
     ];
 
     function resize() {
@@ -146,7 +147,7 @@
     function drawStaticGrid() {
       ctx.clearRect(0, 0, width, height);
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      ctx.strokeStyle = isDark ? 'rgba(180, 196, 190, 0.08)' : 'rgba(20, 24, 22, 0.05)';
+      ctx.strokeStyle = isDark ? 'rgba(180, 196, 190, 0.14)' : 'rgba(20, 24, 22, 0.08)';
       ctx.lineWidth = 1;
 
       rails.forEach((rail) => {
@@ -155,6 +156,13 @@
         ctx.moveTo(0, y);
         ctx.lineTo(width, y);
         ctx.stroke();
+
+        for (let tx = 40; tx < width; tx += 120) {
+          ctx.beginPath();
+          ctx.moveTo(tx, y - 4);
+          ctx.lineTo(tx, y + 4);
+          ctx.stroke();
+        }
       });
     }
 
@@ -167,51 +175,73 @@
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       ctx.clearRect(0, 0, width, height);
 
-      const lineColor = isDark ? 'rgba(180, 196, 190, 0.07)' : 'rgba(20, 24, 22, 0.04)';
-      const pipColor = isDark ? 'rgba(212, 175, 55, 0.85)' : 'rgba(15, 77, 63, 0.65)';
-      const crossColor = isDark ? 'rgba(212, 175, 55, 0.4)' : 'rgba(184, 134, 11, 0.3)';
+      const railLineColor = isDark ? 'rgba(180, 196, 190, 0.12)' : 'rgba(20, 24, 22, 0.08)';
+      const beadHalo = isDark ? 'rgba(212, 175, 55, 0.28)' : 'rgba(184, 115, 51, 0.22)';
+      const beadCore = isDark ? '#D4AF37' : '#B87333';
+      const labelColor = isDark ? 'rgba(180, 196, 190, 0.45)' : 'rgba(20, 24, 22, 0.38)';
 
-      rails.forEach((rail, idx) => {
+      rails.forEach((rail) => {
         const y = Math.round(height * rail.yRatio);
 
-        // Guide Rail
-        ctx.strokeStyle = lineColor;
+        // Dual Hairline Architectural Guide Rails
+        ctx.strokeStyle = railLineColor;
         ctx.lineWidth = 1;
-        ctx.setLineDash([4, 6]);
+        ctx.setLineDash([6, 8]);
         ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
+        ctx.moveTo(0, y - 2);
+        ctx.lineTo(width, y - 2);
+        ctx.moveTo(0, y + 2);
+        ctx.lineTo(width, y + 2);
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Advance and render pips
+        // Vertical Caliper Ticks
+        for (let tx = 60; tx < width; tx += 160) {
+          ctx.strokeStyle = railLineColor;
+          ctx.beginPath();
+          ctx.moveTo(tx, y - 6);
+          ctx.lineTo(tx, y + 6);
+          ctx.stroke();
+        }
+
+        // Active Kinetic Milestone Transport Packets
         rail.pips.forEach((pos, pIdx) => {
-          rail.pips[pIdx] = (pos + rail.speed * 0.05 * dt) % 1.0;
+          rail.pips[pIdx] = (pos + rail.speed * dt) % 1.0;
           const px = rail.pips[pIdx] * width;
 
-          // Milestone Pip
-          ctx.fillStyle = pipColor;
+          // Luminous Tracer Tail
+          const trailLength = 110;
+          const grad = ctx.createLinearGradient(px - trailLength, y, px, y);
+          grad.addColorStop(0, 'transparent');
+          grad.addColorStop(0.65, isDark ? 'rgba(45, 212, 191, 0.12)' : 'rgba(15, 77, 63, 0.10)');
+          grad.addColorStop(1, isDark ? 'rgba(212, 175, 55, 0.65)' : 'rgba(184, 115, 51, 0.60)');
+
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 2.5;
           ctx.beginPath();
-          ctx.arc(px, y, 2.5, 0, Math.PI * 2);
+          ctx.moveTo(px - trailLength, y);
+          ctx.lineTo(px, y);
+          ctx.stroke();
+
+          // Outer Illuminated Glow Halo
+          ctx.fillStyle = beadHalo;
+          ctx.beginPath();
+          ctx.arc(px, y, 7, 0, Math.PI * 2);
           ctx.fill();
 
-          // Coordinate tick
-          ctx.strokeStyle = lineColor;
+          // Inner Solid Brass Bead Core
+          ctx.fillStyle = beadCore;
           ctx.beginPath();
-          ctx.moveTo(px, y - 5);
-          ctx.lineTo(px, y + 5);
-          ctx.stroke();
-        });
+          ctx.arc(px, y, 3.2, 0, Math.PI * 2);
+          ctx.fill();
 
-        // Architectural registration cross at rail edges
-        const crossX = (width * (0.08 + idx * 0.28)) % width;
-        ctx.strokeStyle = crossColor;
-        ctx.beginPath();
-        ctx.moveTo(crossX - 5, y);
-        ctx.lineTo(crossX + 5, y);
-        ctx.moveTo(crossX, y - 5);
-        ctx.lineTo(crossX, y + 5);
-        ctx.stroke();
+          // Monospace Milestone Caliper Tag (shown on desktop/tablet, hidden on mobile behind text)
+          if (width >= 768) {
+            ctx.font = '500 9px "JetBrains Mono", monospace';
+            ctx.fillStyle = labelColor;
+            ctx.fillText(rail.label, px + 12, y - 6);
+          }
+        });
       });
 
       animationFrameId = requestAnimationFrame(render);
@@ -334,6 +364,24 @@
     const evResultEl = document.getElementById('dossier-evidence-result');
     const auditLogEl = document.getElementById('dossier-audit-log');
     const stations = heroDossier.querySelectorAll('.station-item');
+
+    // Staged entrance choreography: animate rail fill from 0% to stage value over 1.2s
+    if (!isReducedMotion && railFillEl) {
+      railFillEl.style.width = '0%';
+      railFillEl.style.transition = 'width 1.1s cubic-bezier(0.16, 1, 0.3, 1)';
+      setTimeout(() => {
+        railFillEl.style.width = stages[currentStageIndex].fillWidth;
+      }, 180);
+    } else if (railFillEl) {
+      railFillEl.style.width = stages[currentStageIndex].fillWidth;
+    }
+
+    const colWrapper = document.getElementById('hero-dossier-col-wrapper');
+    if (colWrapper) {
+      setTimeout(() => {
+        colWrapper.classList.remove('animating');
+      }, 1300);
+    }
 
     const btnPrev = document.getElementById('btn-prev-stage');
     const btnNext = document.getElementById('btn-next-stage');
