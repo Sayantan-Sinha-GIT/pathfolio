@@ -31,15 +31,22 @@ The automated browser gate (`test-scroll-gate.js`) was executed across both loca
 | **Chapter 1: Carriage Transform** | $x = 258\text{px} \rightarrow 858\text{px}$ ($\Delta = +600\text{px}$) | $x = 258\text{px} \rightarrow 858\text{px}$ ($\Delta = +600\text{px}$) | Physical horizontal track advance | **PASSED** |
 | **Chapter 1: Runway Progress Bar** | $\text{scaleX}: 0.243 \rightarrow 0.808$ ($\Delta = +0.565$) | $\text{scaleX}: 0.243 \rightarrow 0.808$ ($\Delta = +0.565$) | Physical progress bar expansion | **PASSED** |
 | **Chapter 1: Live Telemetry** | `02 // APPLIED TRACKING` $\rightarrow$ `05 // WRITTEN OFFER` | `02 // APPLIED TRACKING` $\rightarrow$ `05 // WRITTEN OFFER` | Active stage telemetry sync | **PASSED** |
-| **Chapter 2: Fragment S Transform** | `matrix(0.996, -0.080, ...)` $\rightarrow$ `matrix(0.999, -0.007, ...)` | `matrix(0.996, -0.080, ...)` $\rightarrow$ `matrix(0.999, -0.007, ...)` | Physical fragment assembly convergence | **PASSED** |
-| **Chapter 2: Fragment S Opacity** | $0.58 \rightarrow 0.96$ ($\Delta = +0.38$) | $0.58 \rightarrow 0.96$ ($\Delta = +0.38$) | Fade-in during assembly | **PASSED** |
-| **Chapter 2: Verification Seal Scale** | $0.388 \rightarrow 0.949$ ($\Delta = +0.561$) | $0.388 \rightarrow 0.949$ ($\Delta = +0.561$) | Stamping physical seal delta | **PASSED** |
-| **Chapter 2: Verification Seal Opacity** | $0.00 \rightarrow 0.89$ ($\Delta = +0.89$) | $0.00 \rightarrow 0.89$ ($\Delta = +0.89$) | Stamping opacity delta | **PASSED** |
-| **Chapter 3: Envelope Flap 3D Angle** | $\text{rotateX}: -74.0^\circ \rightarrow -23.0^\circ$ ($\Delta = +51.0^\circ$) | $\text{rotateX}: -74.0^\circ \rightarrow -23.0^\circ$ ($\Delta = +51.0^\circ$) | 3D envelope fold shut | **PASSED** |
-| **Chapter 3: Envelope Flap Opacity** | $0.71 \rightarrow 0.91$ ($\Delta = +0.20$) | $0.71 \rightarrow 0.91$ ($\Delta = +0.20$) | Flap opacity delta | **PASSED** |
-| **Chapter 3: Wax Seal Transform** | $\text{scale}: 0.61, y: -44\text{px} \rightarrow \text{scale}: 0.88, y: -14\text{px}$ | $\text{scale}: 0.61, y: -44\text{px} \rightarrow \text{scale}: 0.88, y: -14\text{px}$ | Wax seal stamping down | **PASSED** |
-| **Chapter 3: Wax Seal Opacity** | $0.02 \rightarrow 0.69$ ($\Delta = +0.67$) | $0.02 \rightarrow 0.69$ ($\Delta = +0.67$) | Wax seal appearance | **PASSED** |
-| **Chapter 3: Code Drawer Transform** | $y = 44\text{px} \rightarrow 14\text{px}$ ($\Delta = -30\text{px}$) | $y = 44\text{px} \rightarrow 14\text{px}$ ($\Delta = -30\text{px}$) | Drawer sliding open | **PASSED** |
+| **Chapter 2: Fragment S Transform** | `matrix(0.992, -0.121, ...)` $\rightarrow$ `matrix(0.997, -0.076, ...)` | `matrix(0.992, -0.121, ...)` $\rightarrow$ `matrix(0.997, -0.076, ...)` | Physical fragment assembly convergence on 220vh stage | **PASSED** |
+| **Chapter 2: Fragment S Opacity** | $0.50 \rightarrow 0.68$ ($\Delta = +0.18$) | $0.50 \rightarrow 0.68$ ($\Delta = +0.18$) | Fade-in during assembly | **PASSED** |
+| **Chapter 2: Verification Seal Scale** | $0.286 \rightarrow 0.547$ ($\Delta = +0.261$) | $0.286 \rightarrow 0.547$ ($\Delta = +0.261$) | Stamping physical seal delta | **PASSED** |
+| **Chapter 2: Verification Seal Opacity** | $0.00 \rightarrow 0.21$ ($\Delta = +0.21$) | $0.00 \rightarrow 0.21$ ($\Delta = +0.21$) | Stamping opacity delta | **PASSED** |
+| **Chapter 2: Dynamic SVG Drawn Links** | Verified dynamic stroke geometry & path | Verified dynamic stroke geometry & path | SVG connector lines draw between fragments | **PASSED** |
+| **Chapter 2: Citation Telemetry & Feedback** | Dynamic stage pill & link text, tactile badge | Dynamic stage pill & link text, tactile badge | Synchronized citation feedback on click | **PASSED** |
+| **Chapter 2: Skill Domain Switching** | Active pill + content update (Performance tuning) | Active pill + content update (Performance tuning) | Tab switching updates 4 fragment contents | **PASSED** |
+| **Chapter 3: Document Collection Sequence** | 3 collectable sheets glide into packet base | 3 collectable sheets glide into packet base | 3D sheets collect before folding | **PASSED** |
+| **Chapter 3: Envelope Flap 3D Angle** | $\text{rotateX}: -74.0^\circ \rightarrow -35.0^\circ$ ($\Delta = +39.0^\circ$) | $\text{rotateX}: -74.0^\circ \rightarrow -35.0^\circ$ ($\Delta = +39.0^\circ$) | 3D envelope fold shut | **PASSED** |
+| **Chapter 3: Envelope Flap Opacity** | $0.70 \rightarrow 0.86$ ($\Delta = +0.16$) | $0.70 \rightarrow 0.86$ ($\Delta = +0.16$) | Flap opacity delta | **PASSED** |
+| **Chapter 3: Wax Seal Transform** | $\text{scale}: 0.60, y: -45\text{px} \rightarrow \text{scale}: 0.81, y: -21\text{px}$ | $\text{scale}: 0.60, y: -45\text{px} \rightarrow \text{scale}: 0.81, y: -21\text{px}$ | Wax seal stamping down | **PASSED** |
+| **Chapter 3: Wax Seal Opacity** | $0.00 \rightarrow 0.54$ ($\Delta = +0.54$) | $0.00 \rightarrow 0.54$ ($\Delta = +0.54$) | Wax seal appearance | **PASSED** |
+| **Chapter 3: Sample JSON Schema Inspector**| Valid `<details>` inspector with schemaVersion & opportunities | Valid `<details>` inspector with schemaVersion & opportunities | Collapsible disclosure without unverified claims | **PASSED** |
+| **Chapter 5: Monumental Lit Typography** | Lit words $4/8 \rightarrow 8/8$ across scroll | Lit words $4/8 \rightarrow 8/8$ across scroll | Word-by-word scroll lighting | **PASSED** |
+| **Chapter 5: 3D Dossier Carrier Leaves** | Left and right leaves rotate $12^\circ \rightarrow 0^\circ$ | Left and right leaves rotate $12^\circ \rightarrow 0^\circ$ | Physical 3D paper spread | **PASSED** |
+| **Chapter 5: Closing CTA & Footers Revealed** | `is-revealed=true` for CTA and all 4 footer cols | `is-revealed=true` for CTA and all 4 footer cols | Full narrative completion | **PASSED** |
 | **Sticky Heading Clearance** | Target rect tops cleared $> 72\text{px}$ header | Target rect tops cleared $> 72\text{px}$ header | No sticky header overlap | **PASSED** |
 | **Reduced Motion Fallback** | `scaleX(1)`, fragments static, opacity 1 | `scaleX(1)`, fragments static, opacity 1 | High-contrast static state | **PASSED** |
 | **Theme Toggle** | `data-theme="dark"` (Deep Spruce Slate) | `data-theme="dark"` (Deep Spruce Slate) | Distinctive deep-forest palette | **PASSED** |

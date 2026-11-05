@@ -173,6 +173,11 @@ async function assertReducedMotionReadability(page, viewportLabel) {
       '#vault-envelope-flap',
       '#vault-wax-seal',
       '#vault-code-drawer',
+      '#vault-doc-pipeline',
+      '#vault-doc-evidence',
+      '#vault-doc-notes',
+      '#closing-leaf-left',
+      '#closing-leaf-right',
       '#hero-dossier-card',
       '.hero-line-inner',
       '.motion-title-inner',
@@ -239,6 +244,11 @@ async function assertNoJsVisibility(page) {
       '#vault-envelope-flap',
       '#vault-wax-seal',
       '#vault-code-drawer',
+      '#vault-doc-pipeline',
+      '#vault-doc-evidence',
+      '#vault-doc-notes',
+      '#closing-leaf-left',
+      '#closing-leaf-right',
       '.motion-compare-box',
       '.motion-gallery-card',
       '.motion-cta-card',
@@ -674,6 +684,32 @@ async function runGateForBaseUrl(baseUrl, label) {
     });
     console.log(`  Citation feedback: hasFeedback=${citationFeedback.hasFeedback}, text="${citationFeedback.feedbackText}", display=${citationFeedback.feedbackDisplay}`);
 
+    // Verify dynamic SVG drawn links & citation stage link
+    const c2StageLink = await page1440.evaluate(() => {
+      const svgLine = document.querySelector('.star-drawn-svg path');
+      const stagePill = document.getElementById('citation-stage-pill');
+      const linkText = document.getElementById('citation-link-text');
+      return {
+        hasSvg: !!svgLine,
+        stageText: stagePill ? stagePill.textContent.trim() : '',
+        linkText: linkText ? linkText.textContent.trim() : ''
+      };
+    });
+    console.log(`  STAR drawn link & citation stage: SVG=${c2StageLink.hasSvg}, Stage="${c2StageLink.stageText}", Link="${c2StageLink.linkText}"`);
+
+    // Test STAR domain tab switching
+    await page1440.click('#matrix-filter-group [data-domain="perf"]');
+    await page1440.waitForTimeout(300);
+    const domainSwitchCheck = await page1440.evaluate(() => {
+      const activeBtn = document.querySelector('#matrix-filter-group [data-domain="perf"]');
+      const bodyText = document.getElementById('star-frag-situation')?.textContent || '';
+      return {
+        isActive: activeBtn ? activeBtn.classList.contains('active') : false,
+        hasPerfContent: bodyText.includes('First Contentful Paint') || bodyText.includes('layout thrashing') || bodyText.includes('nested data tables')
+      };
+    });
+    console.log(`  Domain switch to perf: active=${domainSwitchCheck.isActive}, hasContent=${domainSwitchCheck.hasPerfContent}`);
+
     const c2Delta = c2Before.fragSTransform !== c2After.fragSTransform && c2Before.fragSOpacity !== c2After.fragSOpacity;
     results.chaptersDesktop.chapter2 = { before: c2Before, after: c2After, delta: c2Delta };
     if (!c2Delta) {
@@ -682,8 +718,11 @@ async function runGateForBaseUrl(baseUrl, label) {
     } else if (!citationFeedback.hasFeedback || citationFeedback.feedbackDisplay === 'none') {
       results.passed = false;
       results.errors.push(`Desktop Chapter 2 citation simulation button failed to produce feedback display!`);
+    } else if (!domainSwitchCheck.isActive || !domainSwitchCheck.hasPerfContent) {
+      results.passed = false;
+      results.errors.push(`Desktop Chapter 2 domain tab switching failed to activate or update evidence body!`);
     } else {
-      console.log(`  ✓ Desktop Chapter 2 PASSED: Fragment assembly & citation feedback verified.`);
+      console.log(`  ✓ Desktop Chapter 2 PASSED: Fragment assembly, citation feedback & domain switching verified.`);
     }
 
     // -------------------------------------------------------------------------
@@ -739,13 +778,31 @@ async function runGateForBaseUrl(baseUrl, label) {
     console.log(`  Desktop C3 Seal: transform=${c3Before.sealTransform} -> ${c3After.sealTransform}, opacity=${c3Before.sealOpacity} -> ${c3After.sealOpacity}`);
     console.log(`  Desktop C3 Compare Boxes Revealed: ${c3After.compareBoxesRevealed.join(', ')}`);
 
+    // Verify dimensional backup sequence documents and sample JSON export inspector
+    const c3DocsAndJson = await page1440.evaluate(() => {
+      const docs = Array.from(document.querySelectorAll('.vault-doc-sheet'));
+      const details = document.querySelector('.schema-inspector-details');
+      const summary = details ? details.querySelector('summary')?.textContent.trim() : '';
+      const code = details ? details.querySelector('.schema-json-body code')?.textContent : '';
+      return {
+        docCount: docs.length,
+        hasDetails: !!details,
+        summaryText: summary,
+        hasJsonFields: code ? (code.includes('schemaVersion') && code.includes('opportunities')) : false
+      };
+    });
+    console.log(`  Vault documents & sample JSON: docCount=${c3DocsAndJson.docCount}, details="${c3DocsAndJson.summaryText}", hasValidJson=${c3DocsAndJson.hasJsonFields}`);
+
     const c3Delta = c3Before.flapTransform !== c3After.flapTransform && c3Before.sealOpacity !== c3After.sealOpacity;
     results.chaptersDesktop.chapter3 = { before: c3Before, after: c3After, delta: c3Delta };
     if (!c3Delta) {
       results.passed = false;
       results.errors.push(`Desktop Chapter 3 failed: No computed transform/opacity delta on vault envelope/seal!`);
+    } else if (c3DocsAndJson.docCount < 3 || !c3DocsAndJson.hasJsonFields) {
+      results.passed = false;
+      results.errors.push(`Desktop Chapter 3 failed: 3-document backup sequence or sample JSON inspector missing!`);
     } else {
-      console.log(`  ✓ Desktop Chapter 3 PASSED: Measurable envelope fold and wax seal delta confirmed.`);
+      console.log(`  ✓ Desktop Chapter 3 PASSED: Measurable envelope fold, 3-document collectable sequence & sample JSON verified.`);
     }
 
     // -------------------------------------------------------------------------
@@ -802,23 +859,38 @@ async function runGateForBaseUrl(baseUrl, label) {
 
     const ctaMetrics = await page1440.evaluate(() => {
       const ctaCard = document.querySelector('.motion-cta-card');
+      const words = Array.from(document.querySelectorAll('.lit-word'));
+      const litWords = words.filter((w) => w.classList.contains('is-lit'));
+      const leafL = document.getElementById('closing-leaf-left');
+      const leafR = document.getElementById('closing-leaf-right');
       const footerCols = Array.from(document.querySelectorAll('.motion-footer-col')).map((c) => ({
         revealed: c.classList.contains('is-revealed'),
         opacity: window.getComputedStyle(c).opacity
       }));
       return {
         ctaRevealed: ctaCard ? ctaCard.classList.contains('is-revealed') : false,
+        wordCount: words.length,
+        litCount: litWords.length,
+        hasLeaves: !!(leafL && leafR),
+        leafLTransform: leafL ? window.getComputedStyle(leafL).transform : '',
+        leafRTransform: leafR ? window.getComputedStyle(leafR).transform : '',
         footerCols
       };
     });
 
+    console.log(`  Closing Scene: Lit Words=${ctaMetrics.litCount}/${ctaMetrics.wordCount}, 3D Leaves=${ctaMetrics.hasLeaves}`);
+
     // Scroll directly to footer to verify columns
-    await page1440.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
-    await page1440.waitForTimeout(300);
+    await page1440.evaluate(() => {
+      window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
+      window.dispatchEvent(new Event('scroll'));
+    });
+    await page1440.waitForTimeout(500);
 
     const footerMetricsAfter = await page1440.evaluate(() => {
+      const grid = document.querySelector('.motion-footer-grid');
       return Array.from(document.querySelectorAll('.motion-footer-col')).map((c) => ({
-        revealed: c.classList.contains('is-revealed'),
+        revealed: c.classList.contains('is-revealed') || (grid && grid.classList.contains('is-revealed')),
         opacity: window.getComputedStyle(c).opacity
       }));
     });

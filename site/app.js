@@ -476,8 +476,11 @@
   }
 
   // ---------------------------------------------------------------------------
-  // 5. STAR Evidence Matrix (Filter Tabs & Simulation)
+  // 5. STAR Evidence Matrix (Filter Tabs, Stage Citation Linking & Simulation)
   // ---------------------------------------------------------------------------
+  let currentActiveDomain = 'systems';
+  let evidenceDataGlobal = null;
+
   function initStarMatrix() {
     const starSection = document.getElementById('star-matrix');
     if (!starSection) return;
@@ -490,7 +493,13 @@
         result: 'Processed 22,000 events/sec with 18ms p99 latency; reduced memory footprint by 45% and cloud infrastructure bill by $14,000/month.',
         title: 'Distributed Telemetry Engine',
         tags: 'TAGS: Go, Kafka, Prometheus, Zero-Allocation',
-        summary: 'Use during systems architecture and concurrency rounds to demonstrate measured performance engineering under real production load.'
+        summary: 'Use during systems architecture and concurrency rounds to demonstrate measured performance engineering under real production load.',
+        stageLinks: [
+          'Linked: <strong>SITUATION</strong> → Incident Record #804 (1,800ms tail latency spike under load)',
+          'Linked: <strong>TASK</strong> → Service Level Objective: 20k events/sec with sub-50ms p99',
+          'Linked: <strong>ACTION</strong> → Go memory-mapped buffer pooling & Kafka partition re-indexing',
+          'Linked: <strong>RESULT</strong> → 22k events/sec verified @ 18ms p99; $14k/mo cloud savings'
+        ]
       },
       perf: {
         situation: 'Core web portal experienced 4.2s First Contentful Paint and high layout thrashing across complex nested data tables on lower-tier laptops.',
@@ -499,7 +508,13 @@
         result: 'Reduced FCP to 820ms; increased client Core Web Vitals score from 58 to 99; reduced edge bandwidth consumption by 38%.',
         title: 'Zero-Jank Virtualized Render Engine',
         tags: 'TAGS: TypeScript, Tree-Shaking, Edge-CDN, WebVitals',
-        summary: 'Highlight during frontend architecture and client performance loops to prove rigorous engineering discipline.'
+        summary: 'Highlight during frontend architecture and client performance loops to prove rigorous engineering discipline.',
+        stageLinks: [
+          'Linked: <strong>SITUATION</strong> → Core Web Vitals Audit (4.2s FCP, 0.42 CLS layout shift)',
+          'Linked: <strong>TASK</strong> → Performance Target: sub-1.2s FCP, 0 CLS, 60fps frame rate',
+          'Linked: <strong>ACTION</strong> → Virtualized DOM intersection observers & CSS inline packets',
+          'Linked: <strong>RESULT</strong> → 820ms FCP, 99 Lighthouse performance score verified'
+        ]
       },
       security: {
         situation: 'Previous team stored raw API client credentials directly in repository environment files, creating exposure risks during team onboarding.',
@@ -508,7 +523,13 @@
         result: 'Eliminated static credential leaks; reduced credential provisioning latency by 80% with verified audit trail.',
         title: 'Scoped Credential Rotation Protocol',
         tags: 'TAGS: OAuth2, Ephemeral-Tokens, Least-Privilege, IAM',
-        summary: 'Demonstrate during systems and security discussions your understanding of least privilege, token lifecycles, and credential hygiene.'
+        summary: 'Demonstrate during systems and security discussions your understanding of least privilege, token lifecycles, and credential hygiene.',
+        stageLinks: [
+          'Linked: <strong>SITUATION</strong> → Static credential exposure risk in git environment files',
+          'Linked: <strong>TASK</strong> → Security Target: 0 plaintext tokens, automated short-lived leases',
+          'Linked: <strong>ACTION</strong> → Time-bound ephemeral token rotation & scoped grant manager',
+          'Linked: <strong>RESULT</strong> → 0 static credential leaks; 80% lower provisioning latency'
+        ]
       },
       frontend: {
         situation: 'Application state occasionally lost unsaved candidate interview notes during intermittent network drops or abrupt browser tab closures.',
@@ -517,9 +538,17 @@
         result: 'Zero state loss across 10,000 simulated offline tests; instantaneous sub-5ms screen updates across mobile and desktop clients.',
         title: 'Offline-First Client Persistence Architecture',
         tags: 'TAGS: Local-First, State-Machine, JSON-Schema, Flutter-Web',
-        summary: 'Cite during client architecture debriefs to show how offline-first resilience eliminates data loss and ensures snappy responsiveness.'
+        summary: 'Cite during client architecture debriefs to show how offline-first resilience eliminates data loss and ensures snappy responsiveness.',
+        stageLinks: [
+          'Linked: <strong>SITUATION</strong> → Unsaved interview debrief lost during sudden tab closure',
+          'Linked: <strong>TASK</strong> → Persistence Target: Zero data loss, sub-5ms atomic commits',
+          'Linked: <strong>ACTION</strong> → Local single-snapshot JSON commits with transactional rollback',
+          'Linked: <strong>RESULT</strong> → 0 data loss across 10,000 runs; sub-5ms screen updates'
+        ]
       }
     };
+
+    evidenceDataGlobal = evidenceData;
 
     const filterBtns = starSection.querySelectorAll('.matrix-filter-btn');
     const sitEl = document.getElementById('star-situation');
@@ -529,27 +558,34 @@
     const citTitleEl = document.getElementById('citation-title');
     const citTagsEl = document.getElementById('citation-tags');
     const citSummaryEl = document.getElementById('citation-summary');
+    const citLinkText = document.getElementById('citation-link-text');
 
     const btnSimulate = document.getElementById('btn-cite-simulation');
     const feedbackEl = document.getElementById('citation-feedback');
+
+    function applyDomainData(domain) {
+      currentActiveDomain = domain;
+      const data = evidenceData[domain] || evidenceData.systems;
+
+      if (sitEl) sitEl.textContent = data.situation;
+      if (taskEl) taskEl.textContent = data.task;
+      if (actEl) actEl.textContent = data.action;
+      if (resEl) resEl.textContent = data.result;
+      if (citTitleEl) citTitleEl.textContent = data.title;
+      if (citTagsEl) citTagsEl.textContent = data.tags;
+      if (citSummaryEl) citSummaryEl.textContent = data.summary;
+      if (citLinkText && data.stageLinks) {
+        citLinkText.innerHTML = data.stageLinks[0];
+      }
+      if (feedbackEl) feedbackEl.style.display = 'none';
+    }
 
     filterBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
         filterBtns.forEach((b) => b.classList.remove('active'));
         btn.classList.add('active');
-
         const domain = btn.getAttribute('data-domain');
-        const data = evidenceData[domain] || evidenceData.systems;
-
-        if (sitEl) sitEl.textContent = data.situation;
-        if (taskEl) taskEl.textContent = data.task;
-        if (actEl) actEl.textContent = data.action;
-        if (resEl) resEl.textContent = data.result;
-        if (citTitleEl) citTitleEl.textContent = data.title;
-        if (citTagsEl) citTagsEl.textContent = data.tags;
-        if (citSummaryEl) citSummaryEl.textContent = data.summary;
-
-        if (feedbackEl) feedbackEl.style.display = 'none';
+        applyDomainData(domain);
       });
     });
 
@@ -570,6 +606,8 @@
         });
       });
     }
+
+    applyDomainData('systems');
   }
 
   // ---------------------------------------------------------------------------
@@ -643,7 +681,7 @@
 
       if (scrollBar) scrollBar.style.transform = 'scaleX(1)';
       if (carriage) carriage.style.transform = 'translateX(0px)';
-      if (seal) { seal.style.transform = 'scale(1)'; seal.style.opacity = '1'; }
+      if (seal) { seal.style.transform = 'scale(1) rotate(0deg)'; seal.style.opacity = '1'; }
       if (flap) { flap.style.transform = 'none'; flap.style.opacity = '1'; }
       if (waxSeal) { waxSeal.style.transform = 'none'; waxSeal.style.opacity = '1'; }
       if (drawer) { drawer.style.transform = 'none'; drawer.style.opacity = '1'; }
@@ -652,14 +690,12 @@
       if (u2) u2.style.transform = 'none';
       if (tab) tab.style.transform = 'none';
 
-      document.querySelectorAll('.star-fragment').forEach((el) => {
+      document.querySelectorAll(
+        '.star-fragment, .vault-doc-sheet, .closing-dossier-leaf, .app-tour-card, .lit-word'
+      ).forEach((el) => {
         el.style.transform = 'none';
         el.style.opacity = '1';
-      });
-
-      document.querySelectorAll('.app-tour-card').forEach((el) => {
-        el.style.transform = 'none';
-        el.style.opacity = '1';
+        if (el.classList.contains('lit-word')) el.classList.add('is-lit');
       });
 
       return;
@@ -681,22 +717,40 @@
 
     // Chapter 2 Elements
     const chapter2 = document.getElementById('star-matrix');
+    const starTrack = document.getElementById('star-scroll-track');
     const fragS = document.getElementById('star-frag-situation');
     const fragT = document.getElementById('star-frag-task');
     const fragA = document.getElementById('star-frag-action');
     const fragR = document.getElementById('star-frag-result');
     const assemblySeal = document.getElementById('star-assembly-seal');
+    const citePill = document.getElementById('citation-stage-pill');
+    const citeLinkText = document.getElementById('citation-link-text');
+    const linkST = document.getElementById('link-s-t');
+    const linkSA = document.getElementById('link-s-a');
+    const linkTR = document.getElementById('link-t-r');
+    const linkAR = document.getElementById('link-a-r');
 
     // Chapter 3 Elements
     const chapter3 = document.getElementById('privacy-vault');
     const flap = document.getElementById('vault-envelope-flap');
     const waxSeal = document.getElementById('vault-wax-seal');
     const codeDrawer = document.getElementById('vault-code-drawer');
+    const docPipeline = document.getElementById('vault-doc-pipeline');
+    const docEvidence = document.getElementById('vault-doc-evidence');
+    const docNotes = document.getElementById('vault-doc-notes');
+    const stepPills = document.querySelectorAll('.vault-step-pill');
 
     // Chapter 4 Elements
     const chapter4 = document.getElementById('app-tour');
     const desktopGalleryCard = document.querySelector('.app-tour-card.desktop-card');
     const mobileGalleryCard = document.querySelector('.app-tour-card.mobile-card');
+
+    // Chapter 5 Elements
+    const chapter5 = document.getElementById('closing-cta');
+    const leafLeft = document.getElementById('closing-leaf-left');
+    const leafRight = document.getElementById('closing-leaf-right');
+    const litWords = document.querySelectorAll('.closing-monumental-title .lit-word');
+    const ctaComposition = document.getElementById('closing-dossier-composition');
 
     const stageNames = [
       '01 // SAVED DISCOVERY',
@@ -705,6 +759,13 @@
       '04 // TECHNICAL INTERVIEW',
       '05 // WRITTEN OFFER',
       '06 // ARCHIVAL DEBRIEF'
+    ];
+
+    const starStageLabels = [
+      'STAGE 1/4 // SITUATION AUDIT',
+      'STAGE 2/4 // TARGET SPECIFICATION',
+      'STAGE 3/4 // ARCHITECTURAL EXECUTION',
+      'STAGE 4/4 // QUANTIFIED IMPACT CITATION'
     ];
 
     let ticking = false;
@@ -760,7 +821,7 @@
 
       // Ensure Closing CTA and Footer columns reveal when scrolling near bottom of page
       if (scrollY + window.innerHeight >= document.documentElement.scrollHeight - 250) {
-        document.querySelectorAll('.motion-cta-card, .motion-footer-col, .motion-footer-grid').forEach((el) => {
+        document.querySelectorAll('.motion-cta-card, .motion-footer-col, .motion-footer-grid, #closing-dossier-composition').forEach((el) => {
           el.classList.add('is-revealed');
         });
       }
@@ -770,11 +831,10 @@
         const p1 = getSectionProgress(chapter1);
         scrollBar.style.transform = `scaleX(${p1.toFixed(3)})`;
 
-        const trackWidth = trackWrapper.clientWidth - 28; // minus carriage width
+        const trackWidth = trackWrapper.clientWidth - 28;
         const carriageX = Math.round(p1 * trackWidth);
         carriage.style.transform = `translateX(${carriageX}px)`;
 
-        // Sequential active stage card
         const activeStage = Math.min(5, Math.floor(p1 * 6));
         runwayCards.forEach((card, idx) => {
           card.classList.remove('active', 'completed');
@@ -790,58 +850,116 @@
         }
       }
 
-      // 3. Chapter 2: The STAR Evidence Assembly Deck
+      // 3. Chapter 2: The STAR Evidence Assembly Deck & Pinned Stage
       if (chapter2 && fragS && fragT && fragA && fragR && assemblySeal) {
-        const p2 = getSectionProgress(chapter2);
-        // Normalized assembly curve (completes between 0.2 and 0.8)
+        let p2;
+        if (window.innerWidth >= 992 && starTrack) {
+          const trackRect = starTrack.getBoundingClientRect();
+          const scrollDist = trackRect.height - window.innerHeight;
+          p2 = scrollDist > 0 ? Math.max(0, Math.min(1, -trackRect.top / scrollDist)) : 0;
+        } else {
+          p2 = getSectionProgress(chapter2);
+        }
+
         const assembleFactor = Math.max(0, Math.min(1, (p2 - 0.15) / 0.65));
         const invertFactor = 1 - assembleFactor;
 
         // Situation Fragment
-        const sX = Math.round(-55 * invertFactor);
-        const sY = Math.round(28 * invertFactor);
-        const sRot = (-6 * invertFactor).toFixed(1);
-        const sOp = (0.55 + 0.45 * assembleFactor).toFixed(2);
+        const sX = Math.round(-85 * invertFactor);
+        const sY = Math.round(35 * invertFactor);
+        const sRot = (-7 * invertFactor).toFixed(1);
+        const sOp = (0.50 + 0.50 * assembleFactor).toFixed(2);
         fragS.style.transform = `translate3d(${sX}px, ${sY}px, 0) rotate(${sRot}deg)`;
         fragS.style.opacity = sOp;
 
         // Task Fragment
-        const tX = Math.round(50 * invertFactor);
-        const tY = Math.round(22 * invertFactor);
-        const tRot = (5 * invertFactor).toFixed(1);
-        const tOp = (0.55 + 0.45 * assembleFactor).toFixed(2);
+        const tX = Math.round(85 * invertFactor);
+        const tY = Math.round(30 * invertFactor);
+        const tRot = (6 * invertFactor).toFixed(1);
+        const tOp = (0.50 + 0.50 * assembleFactor).toFixed(2);
         fragT.style.transform = `translate3d(${tX}px, ${tY}px, 0) rotate(${tRot}deg)`;
         fragT.style.opacity = tOp;
 
         // Action Fragment
-        const aX = Math.round(-40 * invertFactor);
-        const aY = Math.round(-22 * invertFactor);
-        const aRot = (4 * invertFactor).toFixed(1);
-        const aOp = (0.55 + 0.45 * assembleFactor).toFixed(2);
+        const aX = Math.round(-75 * invertFactor);
+        const aY = Math.round(-30 * invertFactor);
+        const aRot = (5 * invertFactor).toFixed(1);
+        const aOp = (0.50 + 0.50 * assembleFactor).toFixed(2);
         fragA.style.transform = `translate3d(${aX}px, ${aY}px, 0) rotate(${aRot}deg)`;
         fragA.style.opacity = aOp;
 
         // Result Fragment
-        const rX = Math.round(45 * invertFactor);
-        const rY = Math.round(-32 * invertFactor);
-        const rRot = (-5 * invertFactor).toFixed(1);
-        const rOp = (0.55 + 0.45 * assembleFactor).toFixed(2);
+        const rX = Math.round(80 * invertFactor);
+        const rY = Math.round(-40 * invertFactor);
+        const rRot = (-6 * invertFactor).toFixed(1);
+        const rOp = (0.50 + 0.50 * assembleFactor).toFixed(2);
         fragR.style.transform = `translate3d(${rX}px, ${rY}px, 0) rotate(${rRot}deg)`;
         fragR.style.opacity = rOp;
 
         // Verification Seal Stamp
-        const sealScale = (0.38 + 0.62 * assembleFactor).toFixed(2);
-        const sealRot = Math.round(-30 * invertFactor);
-        const sealOp = Math.max(0, (assembleFactor - 0.22) / 0.78).toFixed(2);
+        const sealScale = (0.35 + 0.65 * assembleFactor).toFixed(2);
+        const sealRot = Math.round(-35 * invertFactor);
+        const sealOp = Math.max(0, (assembleFactor - 0.20) / 0.80).toFixed(2);
         assemblySeal.style.transform = `scale(${sealScale}) rotate(${sealRot}deg)`;
         assemblySeal.style.opacity = sealOp;
+
+        // Dynamic SVG Line stroke-dashoffset
+        const dashOffset = Math.round(100 * invertFactor);
+        if (linkST) linkST.style.strokeDashoffset = dashOffset;
+        if (linkSA) linkSA.style.strokeDashoffset = dashOffset;
+        if (linkTR) linkTR.style.strokeDashoffset = dashOffset;
+        if (linkAR) linkAR.style.strokeDashoffset = dashOffset;
+
+        // Active Stage and Live Citation Link transition alongside scroll
+        const activeStarIdx = Math.min(3, Math.floor(assembleFactor * 4));
+        [fragS, fragT, fragA, fragR].forEach((frag, idx) => {
+          if (frag) {
+            if (idx === activeStarIdx) frag.classList.add('active');
+            else frag.classList.remove('active');
+          }
+        });
+
+        if (citePill) {
+          citePill.textContent = starStageLabels[activeStarIdx];
+        }
+
+        if (citeLinkText && evidenceDataGlobal && evidenceDataGlobal[currentActiveDomain]) {
+          const domainLinks = evidenceDataGlobal[currentActiveDomain].stageLinks;
+          if (domainLinks && domainLinks[activeStarIdx]) {
+            citeLinkText.innerHTML = domainLinks[activeStarIdx];
+          }
+        }
       }
 
-      // 4. Chapter 3: Sovereign Dossier Vault & Backup Sealing
+      // 4. Chapter 3: Sovereign Dossier Vault & Dimensional Local Folding
       if (chapter3 && flap && waxSeal && codeDrawer) {
         const p3 = getSectionProgress(chapter3);
         const sealFactor = Math.max(0, Math.min(1, (p3 - 0.15) / 0.65));
         const invertSeal = 1 - sealFactor;
+
+        // Collectable Document Sheets glide into the pocket
+        const docFactor = Math.min(1, p3 / 0.45);
+        const invertDoc = 1 - docFactor;
+        if (docPipeline) {
+          const d1Y = Math.round(-45 * invertDoc);
+          const d1RotX = Math.round(10 * invertDoc);
+          docPipeline.style.transform = `perspective(1000px) rotateX(${d1RotX}deg) translateY(${d1Y}px)`;
+        }
+        if (docEvidence) {
+          const d2Y = Math.round(-25 * invertDoc);
+          const d2RotX = Math.round(6 * invertDoc);
+          docEvidence.style.transform = `perspective(1000px) rotateX(${d2RotX}deg) translateY(${d2Y}px)`;
+        }
+        if (docNotes) {
+          docNotes.style.transform = 'perspective(1000px) rotateX(0deg) translateY(0px)';
+        }
+
+        // Stepper pills coordination
+        const activeStep = p3 < 0.35 ? 0 : (p3 < 0.70 ? 1 : 2);
+        stepPills.forEach((pill, idx) => {
+          if (idx === activeStep) pill.classList.add('active');
+          else pill.classList.remove('active');
+        });
 
         // Flap Folds Down: -75deg -> 0deg
         const flapRotX = Math.round(-75 * invertSeal);
@@ -855,8 +973,8 @@
         waxSeal.style.transform = `translateY(${sealY}px) scale(${sealScale})`;
         waxSeal.style.opacity = sealFactor.toFixed(2);
 
-        // JSON Code Drawer Slides Forward: translateY(45px) -> 0px
-        const drawerY = Math.round(45 * invertSeal);
+        // JSON Code Drawer / Manifest Slides Forward: translateY(35px) -> 0px
+        const drawerY = Math.round(35 * invertSeal);
         const drawerOp = (0.35 + 0.65 * sealFactor).toFixed(2);
         codeDrawer.style.transform = `translateY(${drawerY}px)`;
         codeDrawer.style.opacity = drawerOp;
@@ -874,6 +992,42 @@
         const mobRotY = (4 - (p4 - 0.5) * 8).toFixed(2);
         const mobRotX = (2 + (p4 - 0.5) * 4).toFixed(2);
         mobileGalleryCard.style.transform = `perspective(1200px) rotateY(${mobRotY}deg) rotateX(${mobRotX}deg) translateY(${mobY}px)`;
+      }
+
+      // 6. Section 05: Closing Sovereign Command CTA (Scroll-Lit Typography & 3D Dossier Leaves)
+      if (chapter5) {
+        const p5 = getSectionProgress(chapter5);
+
+        // Word-by-word scroll lighting for monumental headline
+        if (litWords && litWords.length > 0) {
+          const litThreshold = Math.max(0, Math.min(1, (p5 - 0.10) / 0.65));
+          const wordsToLight = Math.floor(litThreshold * litWords.length);
+          litWords.forEach((word, idx) => {
+            if (idx <= wordsToLight && p5 > 0.08) {
+              word.classList.add('is-lit');
+            } else {
+              word.classList.remove('is-lit');
+            }
+          });
+        }
+
+        // 3D Dossier Spread Leaves Settling onto Carrier Deck
+        const leafFactor = Math.min(1, Math.max(0, (p5 - 0.15) / 0.65));
+        const invertLeaf = 1 - leafFactor;
+        if (leafLeft) {
+          const rotY = (-12 * invertLeaf).toFixed(1);
+          const rotX = (4 * invertLeaf).toFixed(1);
+          leafLeft.style.transform = `perspective(1400px) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+        }
+        if (leafRight) {
+          const rotY = (12 * invertLeaf).toFixed(1);
+          const rotX = (4 * invertLeaf).toFixed(1);
+          leafRight.style.transform = `perspective(1400px) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+        }
+
+        if (ctaComposition && p5 > 0.08) {
+          ctaComposition.classList.add('is-revealed');
+        }
       }
 
       ticking = false;

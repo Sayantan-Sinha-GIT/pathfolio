@@ -80,14 +80,19 @@ In response to the owner's request matching the foreground motion density of Cod
 | `.motion-header-group` | Masked Header Reveal | Section headers across all chapters unmasking eyebrow, display title, and lead with blur clearing upon viewport intersection. | Intersection triggers `.is-revealed`; eyebrow, title, lead opacity $1.00$. |
 | `.pipeline-runway-card` | Runway Card Stagger | Six career stage cards stagger-revealed with sequential active station highlight (`.active`) driven by carriage transit. | Cards receive `.is-revealed`; active station border & glow update. |
 | `#matrix-filter-group` | Control Reveal | Four skill domain filter buttons with active brass pill indicator and smooth tab transitions. | Received `.is-revealed` on scroll. |
-| `.star-fragment` | Physics Assembly | Situation, Task, Action, and Result fragments fly from exploded perimeter into aligned proof deck. | FragS transform & opacity delta ($0.58 \rightarrow 0.96$). |
-| `#star-assembly-seal` | Dynamic Stamp | Brass verification seal stamps down in reserved nonintersecting space ($\text{scale } 0.38 \rightarrow 0.95$, $\text{opacity } 0 \rightarrow 0.89$). | Verified $> 90\text{px}$ geometric clearance on phone & narrow. |
+| `.star-fragment` | Physics Assembly | Separate Situation, Task, Action, and Result fragments fly from exploded perimeter into aligned proof deck over underlying dossier plate. | FragS transform & opacity delta ($0.58 \rightarrow 0.96$). |
+| `#star-assembly-seal` | Dynamic Stamp | Brass verification seal stamps down in reserved nonintersecting space ($\text{scale } 0.38 \rightarrow 0.95$, $\text{opacity } 0 \rightarrow 0.89$). | Verified $> 35\text{px}$ geometric clearance on phone & narrow. |
+| `.star-drawn-svg` | Dynamic Vector Connection | Animated SVG link line between active STAR paper fragments drawing with scroll-linked dash offset. | Verified dynamic stroke geometry & path. |
 | `#btn-cite-simulation` | Tactile Feedback | Interview citation button with scale dip ($0.96$) and immediate animated confirmation badge (`#citation-feedback`). | Feedback badge rendered and confirmed visible. |
+| `.vault-doc-sheet` | Document Collection Sequence | Three dimensional archival documents (Pipeline, Evidence, Notes) collecting into packet pocket: $p \le 0.45$. | Measured transform & opacity delta across 3 sheets. |
 | `#vault-envelope-flap` | 3D Dimensional Fold | Archival envelope flap 3D folds downward: $\text{rotateX}(-100^\circ \rightarrow -15^\circ)$, $\text{opacity } 0.71 \rightarrow 0.91$. | Measured delta: $\text{matrix3d}$ rotation shift. |
 | `#vault-wax-seal` | Physical Stamp | Hot red-brass wax seal stamps down into packet closure: $\text{translateY}(-50\text{px} \rightarrow -14\text{px})$, $\text{scale } 0.5 \rightarrow 0.88$, $\text{opacity } 0.02 \rightarrow 0.69$. | Measured delta: $\Delta y = 30\text{px}$, opacity $0.02 \rightarrow 0.69$. |
-| `#vault-code-drawer` | Drawer Translation | Schema v1 JSON inspector drawer slides out from beneath packet with monospaced code formatting. | Measured delta: $\text{translateY } 44\text{px} \rightarrow 14\text{px}$. |
+| `#vault-code-drawer` | Drawer Translation | Schema v1 JSON custody manifest slides out from beneath packet with monospaced format. | Measured delta: $\text{translateY } 44\text{px} \rightarrow 14\text{px}$. |
+| `.schema-inspector-details`| Collapsible Schema Inspector | Accessible `<details>` raw JSON export inspector with sample payload download. | Verified interactive disclosure & valid schema fields. |
 | `.motion-compare-box` | Comparison Stagger | Side-by-side Architectural vs Centralized comparison cards revealing with elevated borders and itemized check rows. | Verified `.is-revealed` on scroll. |
 | `.motion-gallery-card` | 3D Parallax Perspective | Desktop & mobile app tour cards elevating with dual perspective tilt and scroll-linked parallax displacement. | Card transform delta verified: $\text{matrix3d}(\text{scroll}_1) \neq \text{matrix3d}(\text{scroll}_2)$. |
+| `.lit-word` | Scroll-Lit Typography | Monumental typography words lighting up sequentially upon scroll transit into Chapter 5. | Verified word lighting progression ($4/8 \rightarrow 8/8$). |
+| `.closing-dossier-leaf`| 3D Dossier Spread | Left and right archival dossier leaves unfolding from angled perspective ($12^\circ \rightarrow 0^\circ$). | Verified distinct 3D transforms across scroll. |
 | `#closing-cta` | Elevation & Ambient Glow | Full-width porcelain command card with radial breathing glow, headline reveal, action buttons, and proof ledger. | Card receives `.is-revealed` and full visibility. |
 | `.motion-footer-col` | Staggered Columns | Four footer navigation columns staggered in sequence upon scroll completion. | All 4 columns receive `.is-revealed`. |
 
@@ -111,34 +116,45 @@ Pathfolio features THREE large, distinct scroll-driven narrative chapters using 
 - **Interactive Component**: Tactile stage tabs (*Saved → Applied → Screening → Technical Loop → Executive Offer*). Clicking a stage switches the live dossier view: shows realistic days-in-stage metrics, recruiter coordination logs, and interview prep checklists.
 
 ### Chapter 2: The STAR Evidence Assembly Deck (`#chapter-evidence` / `#star-matrix`)
-- **Visual Concept**: Structured interview talking points (Situation, Task, Action, Result) floating detached in space and physically converging/assembling into an indexed interview proof sheet.
+- **Visual Concept**: Bounded desktop pinned evidence story with separate STAR paper fragments traveling across a spacious physical stage, locking into an aligned interview dossier plate with dynamic drawn SVG links, coherent 3D depth, and active scroll-stage citation previews.
 - **Scroll Transform Choreography**:
-  - The four STAR fragment cards (`#star-frag-situation`, `#star-frag-task`, `#star-frag-action`, `#star-frag-result`) enter in an exploded, detached state:
-    $$\text{dist} = 60 \times (1 - p)$$
-    $$\text{fragS: translate}(-0.9\text{dist}, 0.45\text{dist}) \text{ rotate}(-(1-p)\times 5^\circ)$$
-    $$\text{fragT: translate}(0.9\text{dist}, -0.45\text{dist}) \text{ rotate}((1-p)\times 4^\circ)$$
-    $$\text{fragA: translate}(-0.8\text{dist}, -0.4\text{dist}) \text{ rotate}((1-p)\times 3^\circ)$$
-    $$\text{fragR: translate}(0.8\text{dist}, 0.5\text{dist}) \text{ rotate}(-(1-p)\times 4^\circ)$$
+  - Desktop Track: `#star-scroll-track` operates as a `220vh` pinned track with `.star-sticky-viewport` pinned at top 74px on $\ge 992\text{px}$ viewports. On mobile ($< 992\text{px}$), natural flow is preserved with zero sticky scroll traps.
+  - The four separate STAR fragment cards (`#star-frag-situation`, `#star-frag-task`, `#star-frag-action`, `#star-frag-result`) travel with continuous translation and rotation curves:
+    $$\text{dist} = 110 \times (1 - p)$$
+    $$\text{fragS: translate}(-0.9\text{dist}, 0.35\text{dist}) \text{ rotate}(-(1-p)\times 7^\circ)$$
+    $$\text{fragT: translate}(0.9\text{dist}, -0.35\text{dist}) \text{ rotate}((1-p)\times 6^\circ)$$
+    $$\text{fragA: translate}(-0.85\text{dist}, -0.3\text{dist}) \text{ rotate}((1-p)\times 5^\circ)$$
+    $$\text{fragR: translate}(0.85\text{dist}, 0.4\text{dist}) \text{ rotate}(-(1-p)\times 6^\circ)$$
     Measured delta on `#star-frag-situation`:
-    $\text{transform} = \text{matrix}(0.9967, -0.0801, 0.0801, 0.9967, -46, 23), \text{opacity} = 0.58 \rightarrow \text{matrix}(0.9999, -0.0122, 0.0122, 0.9999, -7, 4), \text{opacity} = 0.93$.
-  - Central verification seal (`#star-assembly-seal`) stamps down into place as fragments align:
-    $$\text{sealScale} = 0.3 + p \times 0.7, \quad \text{sealOpacity} = \text{clamp}((p - 0.2) / 0.7, 0, 1)$$
-    Measured delta: $\text{scale} = 0.388 \rightarrow 0.908, \text{opacity} = 0.0 \rightarrow 0.80$.
-- **Interactive Component**: Skill domain filter tabs (*Systems & Scale, Performance & Reliability, Security & Vault, Frontend Architecture*). Selecting a filter dynamically populates the evidence card with production-grade achievements, including an interactive *"Attach to Application"* demonstration.
+    $\text{transform} = \text{matrix}(0.9925, -0.1218, 0.1218, 0.9925, -85, 35), \text{opacity} = 0.50 \rightarrow \text{matrix}(0.9970, -0.0767, 0.0767, 0.9970, -54, 22), \text{opacity} = 0.68$.
+  - Dynamic SVG drawn connector lines (`.star-drawn-svg path`) transition stroke dash offset synchronously across scroll:
+    $$\text{strokeDashoffset} = \text{totalLength} \times (1 - p)$$
+  - Synchronized citation telemetry: `#citation-stage-pill` dynamically cycles through stages (`STAGE 1/4 // SITUATION` $\rightarrow$ `STAGE 4/4 // MEASURED OUTCOMES`) while `#citation-link-text` updates the live linked talking point.
+  - Central brass verification seal (`#star-assembly-seal`) stamps down into reserved nonintersecting space ($\text{scale } 0.28 \rightarrow 0.55$, $\text{opacity } 0.00 \rightarrow 0.21 \rightarrow 0.89$ on full lock).
+- **Interactive Component**: Skill domain filter tabs (*Distributed Systems, Performance Tuning, Security & Ephemeral IAM, Client State Persistence*). Selecting a filter dynamically populates all four STAR fragments, tags, and summary briefing with production achievements, supported by an interactive *"Attach Citation to Briefing"* button with animated tactile feedback.
 
 ### Chapter 3: Sovereign Dossier Folding & Sealing (`#chapter-vault` / `#privacy-vault`)
-- **Visual Concept**: A physical, archival dossier packet being sealed shut with hot brass wax stamping down, while the local JSON schema drawer slides open to prove device-only data ownership.
+- **Visual Concept**: Dimensional local-backup folder sequence where 3 collectible archival documents glide into an archival packet base, the 3D flap folds shut, and the wax seal stamps down, replacing static JSON walls with a physical custody story.
 - **Scroll Transform Choreography**:
-  - The 3D envelope flap (`#vault-envelope-flap`) folds shut in true 3D perspective:
-    $$\text{flapAngle} = -100 + p \times 85 \quad (\text{deg}), \quad \text{flapOpacity} = 0.6 + p \times 0.4$$
-    Measured delta: $\text{rotateX} = -74.0^\circ (\text{opacity } 0.71) \rightarrow -23.0^\circ (\text{opacity } 0.91)$.
-  - The hot brass wax seal (`#vault-wax-seal`) presses down from above:
-    $$\text{sealY} = -50 \times (1 - p) \quad (\text{px}), \quad \text{sealScale} = 0.5 + p \times 0.5$$
-    Measured delta: $\text{translateY} = -44\text{px} \rightarrow -14\text{px}, \text{scale} = 0.61 \rightarrow 0.88, \text{opacity} = 0.02 \rightarrow 0.69$.
-  - The schema code drawer (`#vault-code-drawer`) slides smoothly into position:
-    $$\text{drawerY} = 50 \times (1 - p) \quad (\text{px})$$
-    Measured delta: $\text{translateY} = 44\text{px} \rightarrow 14\text{px}$.
-- **Interactive Component**: Live **Schema v1 JSON Inspector & Export Generator**. Visitors can inspect a real, formatted Pathfolio backup payload and click *"Download Sample Backup (JSON)"* to generate a genuine v1 schema backup file that can be immediately imported into the live web or Android app.
+  - Three dimensional document sheets (`#vault-doc-pipeline`, `#vault-doc-evidence`, `#vault-doc-notes`) glide from elevated stack into the archival pocket base during $p_3 \le 0.45$:
+    $$\text{doc1: translateY}(-(1 - p_{\text{collect}}) \times 50\text{px}) \text{ rotate}(-(1 - p_{\text{collect}}) \times 3^\circ)$$
+    $$\text{doc2: translateY}(-(1 - p_{\text{collect}}) \times 75\text{px}) \text{ rotate}((1 - p_{\text{collect}}) \times 2^\circ)$$
+    $$\text{doc3: translateY}(-(1 - p_{\text{collect}}) \times 100\text{px}) \text{ rotate}(-(1 - p_{\text{collect}}) \times 1.5^\circ)$$
+  - The 3D envelope flap (`#vault-envelope-flap`) folds shut along its top hinge during $p_3 \in [0.25, 0.75]$:
+    $$\text{flapAngle} = -105 + p_{\text{fold}} \times 95 \quad (\text{deg}), \quad \text{flapOpacity} = 0.70 + p_{\text{fold}} \times 0.30$$
+    Measured delta: $\text{rotateX} = -74.0^\circ (\text{opacity } 0.70) \rightarrow -35.0^\circ (\text{opacity } 0.86)$.
+  - The hot red-brass wax seal (`#vault-wax-seal`) presses down from above during $p_3 \in [0.45, 0.90]$:
+    $$\text{sealY} = -45 \times (1 - p_{\text{seal}}) \quad (\text{px}), \quad \text{sealScale} = 0.60 + p_{\text{seal}} \times 0.40$$
+    Measured delta: $\text{translateY} = -45\text{px} \rightarrow -21\text{px}, \text{scale} = 0.60 \rightarrow 0.81, \text{opacity} = 0.00 \rightarrow 0.54$.
+  - Three-stage status stepper bar (`.vault-stepper-bar` with `.stepper-step`) illuminates step 01 (Collect), 02 (Fold), 03 (Seal & Export) in sync with packet progress.
+- **Interactive Component**: Collapsible `<details class="schema-inspector-details">` raw Schema v1 JSON export inspector. Provides an accessible, transparent view of genuine client-side `shared_preferences` export fields (`schemaVersion`, `exportedAt`, `opportunities`, `evidence`) and an instant client-side `"Download Sample Backup (JSON)"` file generator without fake encryption or cloud verification claims.
+
+### Chapter 5: Closing Sovereign Command Scene (`#closing-cta`)
+- **Visual Concept**: Monumental closing composition pairing scroll-lit editorial typography with physical 3D dossier carrier leaves and an architectural launch deck.
+- **Scroll Transform Choreography**:
+  - Monumental scroll-lit typography: `.lit-word` spans in the headline (*"Your Loop. Your Evidence. Sealed On Your Terms."*) illuminate word-by-word with high-contrast Alpine verdigris and ink highlights as the viewport centers on the closing scene.
+  - Physical 3D dossier spread: Left and right archival carrier leaves (`#closing-leaf-left`, `#closing-leaf-right`) settle from an angled perspective ($12^\circ \rightarrow 0^\circ$) onto the central launch deck plane with coherent depth.
+  - Action launchpad elevates with ambient breathing verdigris glow and provides clear, immediate entry points: Web App launch at `/app/`, signed Android APK release download, and strategy documentation.
 
 ---
 

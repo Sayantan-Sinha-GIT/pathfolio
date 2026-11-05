@@ -422,87 +422,144 @@
         </div>
       </section>
 
-      <!-- Chapter 2: The STAR Evidence Assembly Deck -->
-      <section class="section-chapter" id="star-matrix">
-        <div class="container" id="chapter-evidence">
-          <div class="section-header-block motion-header-group">
-            <span class="section-eyebrow motion-eyebrow">02 // Behavioral Mastery</span>
-            <h2 class="section-title motion-title"><span class="motion-title-inner">STAR Evidence Fragments Assembling on Demand.</span></h2>
-            <p class="section-lead motion-lead">
-              Generic resume bullets evaporate during difficult systems interviews. As you scroll, separate Situation, Task, Action, and Result fragments fly together and lock into a cohesive verified proof sheet with quantifiable impact metrics.
-            </p>
-          </div>
-
-          <div class="star-assembly-workbench">
-            <div class="matrix-filter-nav motion-filter-group" role="tablist" aria-label="Evidence Domains">
-              <button type="button" class="matrix-filter-btn active" data-domain="systems" role="tab">Distributed Systems</button>
-              <button type="button" class="matrix-filter-btn" data-domain="perf" role="tab">Performance Tuning</button>
-              <button type="button" class="matrix-filter-btn" data-domain="security" role="tab">Security & Ephemeral IAM</button>
-              <button type="button" class="matrix-filter-btn" data-domain="frontend" role="tab">Client State Persistence</button>
-            </div>
-
-            <div class="star-assembly-deck" id="star-assembly-deck">
-              <!-- Central Stamped Seal (appears as fragments lock together) -->
-              <div class="star-assembly-seal" id="star-assembly-seal" aria-hidden="true">
-                VERIFIED<br />PROOF
+      <!-- Chapter 2: The STAR Evidence Assembly Deck & Pinned Stage -->
+      <section class="section-chapter star-pinned-section" id="star-matrix">
+        <div class="star-scroll-track" id="star-scroll-track">
+          <div class="star-sticky-viewport" id="star-sticky-viewport">
+            <div class="container" id="chapter-evidence">
+              <div class="section-header-block motion-header-group">
+                <span class="section-eyebrow motion-eyebrow">02 // Behavioral Mastery</span>
+                <h2 class="section-title motion-title"><span class="motion-title-inner">STAR Evidence Fragments Assembling into an Interview Dossier.</span></h2>
+                <p class="section-lead motion-lead">
+                  Generic resume bullets evaporate during difficult systems interviews. As you scroll, separate Situation, Task, Action, and Result paper fragments travel across a spacious drafting stage, follow dynamic connector links, and lock into an aligned candidate proof sheet with real-time citation linking.
+                </p>
               </div>
 
-              <!-- 4 Modular Floating Fragments -->
-              <div class="star-fragments-grid">
-                <div class="star-fragment frag-s" id="star-frag-situation">
-                  <div class="star-fragment-badge">S</div>
-                  <h4 class="star-fragment-title">Situation</h4>
-                  <p class="star-fragment-body" id="star-situation">
-                    Legacy telemetry ingestion service suffered memory exhaustion and 1,800ms tail latency during peak registration spikes, causing dropped metrics and customer alerting delays.
-                  </p>
+              <div class="star-assembly-workbench">
+                <div class="matrix-filter-nav motion-filter-group" id="matrix-filter-group" role="tablist" aria-label="Evidence Domains">
+                  <button type="button" class="matrix-filter-btn active" data-domain="systems" role="tab">Distributed Systems</button>
+                  <button type="button" class="matrix-filter-btn" data-domain="perf" role="tab">Performance Tuning</button>
+                  <button type="button" class="matrix-filter-btn" data-domain="security" role="tab">Security &amp; Ephemeral IAM</button>
+                  <button type="button" class="matrix-filter-btn" data-domain="frontend" role="tab">Client State Persistence</button>
                 </div>
 
-                <div class="star-fragment frag-t" id="star-frag-task">
-                  <div class="star-fragment-badge">T</div>
-                  <h4 class="star-fragment-title">Task</h4>
-                  <p class="star-fragment-body" id="star-task">
-                    Redesign the message ingestion pipeline to support 20,000+ events/sec with sub-50ms p99 latency without increasing server cluster budget.
-                  </p>
-                </div>
+                <div class="star-scene-stage" id="star-assembly-deck">
+                  <!-- Left/Center: Spacious Paper Fragment Arena with SVG Drawn Links & Underlying Dossier Plate -->
+                  <div class="star-assembly-arena" id="star-assembly-arena">
+                    <div class="star-dossier-plate" id="star-dossier-plate">
+                      <div class="dossier-plate-corner top-left">+</div>
+                      <div class="dossier-plate-corner top-right">+</div>
+                      <div class="dossier-plate-corner bottom-left">+</div>
+                      <div class="dossier-plate-corner bottom-right">+</div>
+                      <div class="dossier-plate-title-bar">
+                        <span>INTERVIEW_PROOF_DOSSIER // CONFIDENTIAL</span>
+                        <span>GRID_ALIGN: 2x2 ARCHIVAL</span>
+                      </div>
+                    </div>
 
-                <div class="star-fragment frag-a" id="star-frag-action">
-                  <div class="star-fragment-badge">A</div>
-                  <h4 class="star-fragment-title">Action</h4>
-                  <p class="star-fragment-body" id="star-action">
-                    Re-architected buffer pooling in Go, migrated unbounded channels to partitioned Kafka topics, and introduced memory-mapped batching with backpressure controls.
-                  </p>
-                </div>
+                    <!-- Dynamic SVG Drawn Connector Links -->
+                    <svg class="star-drawn-svg" id="star-drawn-svg" aria-hidden="true" viewBox="0 0 640 400" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id="link-grad-brass" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="var(--brass)" stop-opacity="0.85" />
+                          <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.85" />
+                        </linearGradient>
+                      </defs>
+                      <line id="link-s-t" x1="160" y1="100" x2="480" y2="100" class="star-connector-line" />
+                      <line id="link-s-a" x1="160" y1="100" x2="160" y2="300" class="star-connector-line" />
+                      <line id="link-t-r" x1="480" y1="100" x2="480" y2="300" class="star-connector-line" />
+                      <line id="link-a-r" x1="160" y1="300" x2="480" y2="300" class="star-connector-line" />
+                      <path id="link-cite-curve" d="M 480 300 C 560 300, 580 200, 640 200" class="star-connector-curve" />
+                    </svg>
 
-                <div class="star-fragment frag-r" id="star-frag-result">
-                  <div class="star-fragment-badge">R</div>
-                  <h4 class="star-fragment-title" style="color: var(--accent);">Result (Quantifiable)</h4>
-                  <p class="star-fragment-body" id="star-result" style="color: var(--ink-primary); font-weight: 600;">
-                    Processed 22,000 events/sec with 18ms p99 latency; reduced memory footprint by 45% and cloud infrastructure bill by $14,000/month.
-                  </p>
-                </div>
-              </div>
+                    <!-- Central Stamped Seal -->
+                    <div class="star-assembly-seal" id="star-assembly-seal" aria-hidden="true">
+                      VERIFIED<br />PROOF
+                    </div>
 
-              <!-- Right: Active Citation Proof Panel -->
-              <div class="star-citation-panel motion-citation-panel">
-                <div>
-                  <div class="citation-domain-pill">Active Interview Talking Point</div>
-                  <h3 id="citation-title" style="font-size: 1.18rem; margin-bottom: 0.5rem; color: var(--ink-primary);">
-                    Distributed Telemetry Engine
-                  </h3>
-                  <div id="citation-tags" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-secondary); margin-bottom: 1rem;">
-                    TAGS: Go, Kafka, Prometheus, Zero-Allocation
+                    <!-- 4 Physical Assembling Paper Fragments -->
+                    <div class="star-fragments-grid" id="star-fragments-grid">
+                      <div class="star-fragment frag-s active" id="star-frag-situation" data-stage="0">
+                        <div class="star-fragment-header">
+                          <div class="star-fragment-badge">S</div>
+                          <span class="star-phase-tag">STAGE 01 // CONTEXT</span>
+                        </div>
+                        <h4 class="star-fragment-title">Situation</h4>
+                        <p class="star-fragment-body" id="star-situation">
+                          Legacy telemetry ingestion service suffered memory exhaustion and 1,800ms tail latency during peak registration spikes, causing dropped metrics and customer alerting delays.
+                        </p>
+                      </div>
+
+                      <div class="star-fragment frag-t" id="star-frag-task" data-stage="1">
+                        <div class="star-fragment-header">
+                          <div class="star-fragment-badge">T</div>
+                          <span class="star-phase-tag">STAGE 02 // SPECIFICATION</span>
+                        </div>
+                        <h4 class="star-fragment-title">Task</h4>
+                        <p class="star-fragment-body" id="star-task">
+                          Redesign the message ingestion pipeline to support 20,000+ events/sec with sub-50ms p99 latency without increasing server cluster budget.
+                        </p>
+                      </div>
+
+                      <div class="star-fragment frag-a" id="star-frag-action" data-stage="2">
+                        <div class="star-fragment-header">
+                          <div class="star-fragment-badge">A</div>
+                          <span class="star-phase-tag">STAGE 03 // ARCHITECTURE</span>
+                        </div>
+                        <h4 class="star-fragment-title">Action</h4>
+                        <p class="star-fragment-body" id="star-action">
+                          Re-architected buffer pooling in Go, migrated unbounded channels to partitioned Kafka topics, and introduced memory-mapped batching with backpressure controls.
+                        </p>
+                      </div>
+
+                      <div class="star-fragment frag-r" id="star-frag-result" data-stage="3">
+                        <div class="star-fragment-header">
+                          <div class="star-fragment-badge">R</div>
+                          <span class="star-phase-tag result-tag">STAGE 04 // VERIFIED IMPACT</span>
+                        </div>
+                        <h4 class="star-fragment-title" style="color: var(--accent);">Result (Quantifiable)</h4>
+                        <p class="star-fragment-body" id="star-result" style="color: var(--ink-primary); font-weight: 600;">
+                          Processed 22,000 events/sec with 18ms p99 latency; reduced memory footprint by 45% and cloud infrastructure bill by $14,000/month.
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <p id="citation-summary" style="font-size: 0.9rem; line-height: 1.55; color: var(--ink-secondary);">
-                    Use during systems architecture and concurrency rounds to demonstrate measured performance engineering under real production load.
-                  </p>
-                </div>
 
-                <div class="citation-action-box">
-                  <button type="button" class="btn btn-primary" id="btn-cite-simulation" style="width: 100%;">
-                    Simulate Citing in Interview →
-                  </button>
-                  <div id="citation-feedback" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); margin-top: 0.6rem; text-align: center; display: none;">
-                    ✓ Evidence attached to active candidate briefing!
+                  <!-- Right: Dynamic Citation Proof Inspector that transitions alongside scroll stages -->
+                  <div class="star-citation-panel motion-citation-panel" id="star-citation-panel">
+                    <div class="citation-telemetry-row">
+                      <span class="citation-stage-pill" id="citation-stage-pill">STAGE 1/4 // SITUATION AUDIT</span>
+                      <span class="pulse-pip" aria-hidden="true"></span>
+                    </div>
+
+                    <div class="citation-content-wrap">
+                      <div class="citation-domain-pill">Active Interview Citation</div>
+                      <h3 id="citation-title" style="font-size: 1.18rem; margin-bottom: 0.5rem; color: var(--ink-primary);">
+                        Distributed Telemetry Engine
+                      </h3>
+                      <div id="citation-tags" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-secondary); margin-bottom: 0.85rem;">
+                        TAGS: Go, Kafka, Prometheus, Zero-Allocation
+                      </div>
+                      <p id="citation-summary" style="font-size: 0.9rem; line-height: 1.55; color: var(--ink-secondary); margin-bottom: 1rem;">
+                        Use during systems architecture and concurrency rounds to demonstrate measured performance engineering under real production load.
+                      </p>
+
+                      <div class="citation-live-link-box" id="citation-live-link-box">
+                        <div class="link-box-label">LIVE CITATION TARGET:</div>
+                        <div class="link-box-content" id="citation-link-text">
+                          Linked: <strong>SITUATION</strong> → Incident Record #804 (1,800ms tail latency spike under load)
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="citation-action-box">
+                      <button type="button" class="btn btn-primary" id="btn-cite-simulation" style="width: 100%;">
+                        Simulate Citing in Interview →
+                      </button>
+                      <div id="citation-feedback" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); margin-top: 0.6rem; text-align: center; display: none;">
+                        ✓ Evidence attached to active candidate briefing!
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -511,43 +568,117 @@
         </div>
       </section>
 
-      <!-- Chapter 3: Sovereign Dossier Vault & Backup Sealing -->
+      <!-- Chapter 3: Sovereign Dossier Vault & Dimensional Local-Backup Folding -->
       <section class="section-chapter" id="privacy-vault">
         <div class="container" id="chapter-vault">
           <div class="section-header-block motion-header-group">
-            <span class="section-eyebrow motion-eyebrow">03 // Storage Architecture & Tradeoffs</span>
-            <h2 class="section-title motion-title"><span class="motion-title-inner">A Dossier Folding & Sealing Into a Portable Packet.</span></h2>
+            <span class="section-eyebrow motion-eyebrow">03 // Storage Architecture &amp; Tradeoffs</span>
+            <h2 class="section-title motion-title"><span class="motion-title-inner">A Dimensional Dossier Folding Into a Sovereign Local Packet.</span></h2>
             <p class="section-lead motion-lead">
-              While centralized portals keep your sensitive job hunt in remote databases, Pathfolio folds and seals your records into a strictly local, schema-validated JSON packet that stays under your personal custody.
+              While centralized cloud portals retain custody of your interview logs and compensation history, Pathfolio collects your records entirely on-device, folds them into a schema-validated backup packet, and seals them under your personal custody.
             </p>
           </div>
 
-          <!-- The Dimensional Dossier Folding Envelope -->
+          <!-- Coordinated 3-Phase Stepper / Annotations -->
+          <div class="vault-stepper-bar" id="vault-stepper-bar" aria-hidden="true">
+            <div class="vault-step-pill active" data-step="0" id="vault-step-0">
+              <span class="step-num">01</span>
+              <span class="step-text">Documents Collect</span>
+            </div>
+            <div class="vault-step-arrow">→</div>
+            <div class="vault-step-pill" data-step="1" id="vault-step-1">
+              <span class="step-num">02</span>
+              <span class="step-text">Envelope Folds</span>
+            </div>
+            <div class="vault-step-arrow">→</div>
+            <div class="vault-step-pill" data-step="2" id="vault-step-2">
+              <span class="step-num">03</span>
+              <span class="step-text">Seal &amp; Export</span>
+            </div>
+          </div>
+
+          <!-- The Dimensional Dossier Folding Sequence (Focal Visual Scene) -->
           <div class="vault-presentation-block">
             <div class="vault-envelope-packet" id="vault-packet-envelope">
+              <!-- Three Collectable Physical Career Documents that glide into the pocket -->
+              <div class="vault-collectable-docs" id="vault-collectable-docs">
+                <div class="vault-doc-sheet sheet-pipeline" id="vault-doc-pipeline">
+                  <div class="doc-sheet-tag">DOC // 01 • APPLICATION LEDGER</div>
+                  <div class="doc-sheet-title">Stripe — Staff Distributed Systems Engineer</div>
+                  <div class="doc-sheet-meta">
+                    <span>Stage: Interview Loop</span>
+                    <span>Salary: $210k - $240k</span>
+                  </div>
+                </div>
+
+                <div class="vault-doc-sheet sheet-evidence" id="vault-doc-evidence">
+                  <div class="doc-sheet-tag">DOC // 02 • STAR EVIDENCE REPOSITORY</div>
+                  <div class="doc-sheet-title">High-Throughput Ingestion Engine Optimization</div>
+                  <div class="doc-sheet-meta">
+                    <span>Metrics: 22k events/sec</span>
+                    <span>Tail Latency: 18ms p99</span>
+                  </div>
+                </div>
+
+                <div class="vault-doc-sheet sheet-notes" id="vault-doc-notes">
+                  <div class="doc-sheet-tag">DOC // 03 • PRIVATE STRATEGY AUDIT</div>
+                  <div class="doc-sheet-title">Systems Architecture Debrief &amp; Compensation Log</div>
+                  <div class="doc-sheet-meta">
+                    <span>Storage: Private On-Device</span>
+                    <span>Cloud Sync: 0 Bytes Transferred</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Archival Portfolio Pocket Base -->
+              <div class="vault-pocket-base">
+                <div class="vault-pocket-label">ARCHIVAL CUSTODY POCKET // SCHEMA_V1</div>
+              </div>
+
+              <!-- Dimensional Envelope Flap that 3D-folds shut over the pocket -->
               <div class="vault-envelope-flap" id="vault-envelope-flap" aria-hidden="true"></div>
+
+              <!-- Hot Brass Wax Seal that stamps down -->
               <div class="vault-wax-seal" id="vault-wax-seal" aria-hidden="true">P</div>
 
-              <!-- Sliding Schema v1 JSON Drawer -->
+              <!-- Luminous Sovereign Backup Manifest & Drawer -->
               <div class="vault-code-drawer" id="vault-code-drawer">
-                <div class="schema-inspector-card">
-                  <div class="schema-inspector-header">
-                    <div>
-                      <span style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--ink-primary);">
-                        PATHFOLIO_BACKUP_SCHEMA_V1.JSON
-                      </span>
-                      <span style="font-size: 0.78rem; color: var(--ink-muted); margin-left: 0.5rem;">[Live Validated Schema]</span>
-                    </div>
-                    <button type="button" class="btn btn-secondary" id="btn-download-sample-json">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="7 10 12 15 17 10" />
-                        <line x1="12" y1="15" x2="12" y2="3" />
-                      </svg>
-                      <span>Download Sample Backup (JSON)</span>
-                    </button>
-                  </div>
+                <div class="vault-manifest-status" id="vault-manifest-status">
+                  <span class="pulse-pip" aria-hidden="true"></span>
+                  <span><strong>STATUS:</strong> LOCAL BACKUP SEALED // <code>pathfolio-backup-v1.json</code> • 100% PRIVATE ON-DEVICE • 0 BYTES SENT TO CLOUD</span>
+                </div>
+              </div>
+            </div>
 
+            <!-- Sample JSON Export Inspector & Download Bar (Illustrative, Accessible via Details) -->
+            <div class="schema-inspector-panel">
+              <div class="schema-inspector-bar">
+                <div class="schema-inspector-meta">
+                  <span style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--ink-primary);">
+                    PATHFOLIO_BACKUP_SCHEMA_V1.JSON
+                  </span>
+                  <span style="font-size: 0.78rem; color: var(--ink-muted); margin-left: 0.5rem;">[Sample Illustrative Backup]</span>
+                </div>
+                <button type="button" class="btn btn-secondary" id="btn-download-sample-json">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  <span>Download Sample Backup (JSON)</span>
+                </button>
+              </div>
+
+              <details class="schema-inspector-details" id="schema-inspector-details">
+                <summary class="schema-inspector-summary">
+                  <span class="summary-badge">INSPECT SCHEMA</span>
+                  <span class="summary-text">Inspect Raw Schema v1 JSON Format (Click to Expand / Collapse)</span>
+                  <span class="summary-chevron" aria-hidden="true">▾</span>
+                </summary>
+                <div class="schema-details-body">
+                  <div class="schema-caption-note">
+                    <strong>Note:</strong> Illustrative sample export format. In the Pathfolio app, all records are stored locally via <code>shared_preferences</code> (browser local storage on web, sandboxed app storage on Android).
+                  </div>
                   <pre class="schema-json-body"><code>{
   "schemaVersion": 1,
   "exportedAt": "2026-11-04T08:00:00.000Z",
@@ -579,7 +710,7 @@
   ]
 }</code></pre>
                 </div>
-              </div>
+              </details>
             </div>
           </div>
 
@@ -598,7 +729,7 @@
                 </li>
                 <li class="comparison-item">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-secondary)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                  <span><strong>Account & Service Dependency:</strong> Access requires valid user login credentials; availability depends on third-party service uptime and network connection.</span>
+                  <span><strong>Account &amp; Service Dependency:</strong> Access requires valid user login credentials; availability depends on third-party service uptime and network connection.</span>
                 </li>
                 <li class="comparison-item">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-secondary)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -616,7 +747,7 @@
                 </li>
                 <li class="comparison-item">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                  <span><strong>No External Telemetry & Offline Capability:</strong> Runs offline without network round-trips for core tracking; contains no analytics tracking pixels, beacons, or cloud databases.</span>
+                  <span><strong>No External Telemetry &amp; Offline Capability:</strong> Runs offline without network round-trips for core tracking; contains no analytics tracking pixels, beacons, or cloud databases.</span>
                 </li>
                 <li class="comparison-item">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -672,53 +803,113 @@
       </section>
 
       <!-- Closing Sovereign Command CTA Section -->
-      <section class="section-chapter cta-section" id="closing-cta">
+      <section class="section-chapter cta-section closing-scene-section" id="closing-cta">
         <div class="container">
-          <div class="cta-card motion-cta-card">
+          <!-- Part 1: Monumental Scroll-Lit Typography -->
+          <div class="closing-typography-stage motion-header-group">
+            <span class="section-eyebrow motion-eyebrow">05 // Sovereign Command</span>
+            <h2 class="closing-monumental-title">
+              <span class="scroll-lit-line line-1"><span class="lit-word">Your</span> <span class="lit-word">Loop.</span> <span class="lit-word">Your</span> <span class="lit-word">Evidence.</span></span>
+              <span class="scroll-lit-line line-2"><span class="lit-word">Sealed</span> <span class="lit-word">On</span> <span class="lit-word">Your</span> <span class="lit-word">Terms.</span></span>
+            </h2>
+            <p class="closing-editorial-lead motion-lead">
+              Take sovereign command of your engineering interview pipeline. Zero cloud databases, zero recruitment surveillance, and 100% private client-side persistence.
+            </p>
+          </div>
+
+          <!-- Part 2: 3D Archival Carrier Dossier & Launch Composition -->
+          <div class="closing-dossier-composition motion-cta-card" id="closing-dossier-composition">
             <div class="cta-ambient-glow" aria-hidden="true"></div>
-            <div class="section-header-block motion-header-group" style="margin-bottom: 2rem;">
-              <span class="section-eyebrow motion-eyebrow">05 // Sovereign Command</span>
-              <h2 class="section-title motion-title">
-                <span class="motion-title-inner">Your Career Data Belongs to You. Start Local Today.</span>
-              </h2>
-              <p class="section-lead motion-lead" style="max-width: 680px; margin: 0 auto;">
-                No cloud databases, no recruitment telemetry, and zero mandatory accounts. Take control of your interview preparation with an offline-first personal command center.
-              </p>
-            </div>
-            <div class="hero-actions motion-cta-actions" style="justify-content: center;">
-              <a href="/app/" class="btn btn-primary btn-large">
-                <span>Launch Web App (v1.0.1)</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </a>
-              <a
-                href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk"
-                class="btn btn-secondary btn-large"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-                <span>Download APK (51.0 MB)</span>
-              </a>
-              <a href="guide.html" class="btn btn-secondary btn-large">
-                <span>Read Strategy Guide</span>
-              </a>
-            </div>
-            <div class="hero-proof-ledger motion-cta-ledger" style="justify-content: center; margin-top: 2rem;">
-              <div class="proof-item">
-                <span class="dot"></span>
-                <span>100% Client-Side Storage</span>
+
+            <div class="closing-carrier-deck">
+              <!-- Physical 3D Dossier Leaves Unfolding -->
+              <div class="closing-dossier-spread" id="closing-dossier-spread">
+                <div class="closing-dossier-leaf leaf-left" id="closing-leaf-left">
+                  <div class="leaf-header">
+                    <div class="leaf-seal" aria-hidden="true">P</div>
+                    <div>
+                      <div class="leaf-tag">CANDIDATE DOSSIER // MANIFEST</div>
+                      <div class="leaf-sub">VERIFIED SOVEREIGN WORKSPACE</div>
+                    </div>
+                  </div>
+                  <div class="leaf-stats-grid">
+                    <div class="leaf-stat-cell">
+                      <span class="stat-val">06</span>
+                      <span class="stat-lbl">Pipeline Stages Tracked</span>
+                    </div>
+                    <div class="leaf-stat-cell">
+                      <span class="stat-val">100%</span>
+                      <span class="stat-lbl">Client Sandbox Storage</span>
+                    </div>
+                    <div class="leaf-stat-cell">
+                      <span class="stat-val">v1.0</span>
+                      <span class="stat-lbl">Schema JSON Portability</span>
+                    </div>
+                    <div class="leaf-stat-cell">
+                      <span class="stat-val">0</span>
+                      <span class="stat-lbl">External Telemetry Pixels</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="closing-dossier-leaf leaf-right" id="closing-leaf-right">
+                  <div class="leaf-header">
+                    <div class="leaf-tag">OPERATIONAL READINESS // 2026</div>
+                    <span class="leaf-chip-active">OFFLINE READY</span>
+                  </div>
+                  <p class="leaf-body-text">
+                    Every interview debrief, salary negotiation checkpoint, and system design talking point stays locked inside your device. Own your career narrative without cloud surveillance.
+                  </p>
+                  <div class="leaf-brass-caliper">
+                    <span>ARCHIVAL SPEC: MIT_LICENSE</span>
+                    <span>FLUTTER_WEB_ENGINE</span>
+                  </div>
+                </div>
               </div>
-              <div class="proof-item">
-                <span class="dot"></span>
-                <span>Zero Telemetry or Trackers</span>
-              </div>
-              <div class="proof-item">
-                <span class="dot"></span>
-                <span>Free &amp; Open Source (MIT)</span>
+
+              <!-- Part 3: The Command Launchpad & Actions Deck -->
+              <div class="closing-launch-deck">
+                <div class="hero-actions motion-cta-actions" style="justify-content: center;">
+                  <a href="/app/" class="btn btn-primary btn-large btn-launch-primary">
+                    <span>Launch Web App (v1.0.1)</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                  <a
+                    href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk"
+                    class="btn btn-secondary btn-large"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    <span>Download APK (51.0 MB)</span>
+                  </a>
+                  <a href="guide.html" class="btn btn-secondary btn-large">
+                    <span>Read Strategy Guide</span>
+                  </a>
+                </div>
+
+                <div class="hero-proof-ledger motion-cta-ledger" style="justify-content: center; margin-top: 2rem;">
+                  <div class="proof-item">
+                    <span class="dot"></span>
+                    <span>100% Client-Side Storage</span>
+                  </div>
+                  <div class="proof-item">
+                    <span class="dot"></span>
+                    <span>Zero Telemetry or Trackers</span>
+                  </div>
+                  <div class="proof-item">
+                    <span class="dot"></span>
+                    <span>Free &amp; Open Source (MIT)</span>
+                  </div>
+                  <div class="proof-item">
+                    <span class="dot"></span>
+                    <span>Schema v1 Backup Portability</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -1393,8 +1393,48 @@ html.js-motion-active .pipeline-runway-grid.is-revealed .pipeline-runway-card.mo
 }
 
 /* --------------------------------------------------------------------------
-   11. Chapter 2: The STAR Evidence Assembly Deck (#chapter-evidence)
+   11. Chapter 2: The STAR Evidence Assembly Deck & Pinned Story (#star-matrix)
    -------------------------------------------------------------------------- */
+.star-pinned-section {
+  position: relative;
+  padding: 0 !important;
+  border-top: 1px solid var(--surface-border);
+}
+
+.star-scroll-track {
+  position: relative;
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  .star-scroll-track {
+    height: 220vh;
+  }
+  .star-sticky-viewport {
+    position: sticky;
+    top: 74px;
+    height: calc(100vh - 74px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.5rem 0 2rem;
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 991px) {
+  .star-scroll-track {
+    height: auto;
+  }
+  .star-sticky-viewport {
+    position: relative;
+    top: auto;
+    height: auto;
+    padding: 4rem 0 3rem;
+    overflow: visible;
+  }
+}
+
 .star-assembly-workbench {
   background-color: var(--surface);
   border: 1px solid var(--surface-border);
@@ -1406,11 +1446,12 @@ html.js-motion-active .pipeline-runway-grid.is-revealed .pipeline-runway-card.mo
 
 .matrix-filter-nav {
   display: flex;
-  padding: 1rem 1.5rem;
+  padding: 0.85rem 1.5rem;
   background-color: var(--bg-subdued);
   border-bottom: 1px solid var(--surface-border);
   gap: 0.75rem;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .matrix-filter-btn {
@@ -1437,49 +1478,147 @@ html.js-motion-active .pipeline-runway-grid.is-revealed .pipeline-runway-card.mo
   box-shadow: var(--shadow-sm);
 }
 
-.star-assembly-deck {
-  padding: 2.5rem;
+.star-scene-stage {
+  padding: 2rem 2.25rem;
   display: grid;
   grid-template-columns: 1.25fr 0.75fr;
-  gap: 2.5rem;
+  gap: 2.25rem;
   position: relative;
-  min-height: 460px;
-  overflow: hidden;
+  min-height: 440px;
+  align-items: stretch;
+}
+
+@media (max-width: 991px) {
+  .star-scene-stage {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.25rem 1rem;
+  }
+}
+
+/* Spacious Assembly Arena with Underlying Dossier Plate & SVG Drawn Links */
+.star-assembly-arena {
+  position: relative;
+  min-height: 380px;
+  perspective: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.star-dossier-plate {
+  position: absolute;
+  inset: -10px;
+  background-color: var(--bg-sunken);
+  border: 1px dashed var(--surface-border-strong);
+  border-radius: var(--radius-lg);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.8;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+}
+
+.dossier-plate-corner {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--brass);
+  opacity: 0.6;
+}
+.dossier-plate-corner.top-left { top: 8px; left: 10px; }
+.dossier-plate-corner.top-right { top: 8px; right: 10px; }
+.dossier-plate-corner.bottom-left { bottom: 8px; left: 10px; }
+.dossier-plate-corner.bottom-right { bottom: 8px; right: 10px; }
+
+.dossier-plate-title-bar {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.06em;
+  padding: 0 0.5rem;
+}
+
+/* Dynamic Drawn SVG Connector Lines */
+.star-drawn-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  overflow: visible;
+}
+
+.star-connector-line,
+.star-connector-curve {
+  stroke: var(--brass);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+  opacity: 0.55;
+  transition: stroke-dashoffset 0.1s linear, opacity 0.3s ease;
 }
 
 /* The 4 Physical Assembling Fragments */
 .star-fragments-grid {
+  position: relative;
+  z-index: 3;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
-  position: relative;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .star-fragments-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
 
 .star-fragment {
-  background-color: var(--bg-subdued);
+  background-color: var(--surface);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-md);
-  padding: 1.35rem;
+  padding: 1.25rem;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.5rem;
   will-change: transform, opacity;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+}
+
+.star-fragment.active {
+  border-color: var(--brass);
+  box-shadow: 0 0 0 2px var(--brass-border), var(--shadow-md);
+}
+
+.star-fragment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.2rem;
 }
 
 .star-fragment-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 8px;
-  background-color: var(--surface);
+  background-color: var(--bg-subdued);
   border: 1px solid var(--surface-border);
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--ink-primary);
 }
 
@@ -1487,6 +1626,18 @@ html.js-motion-active .pipeline-runway-grid.is-revealed .pipeline-runway-card.mo
   background-color: var(--accent);
   color: var(--accent-on-primary);
   border-color: var(--accent);
+}
+
+.star-phase-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+}
+
+.star-phase-tag.result-tag {
+  color: var(--accent);
 }
 
 .star-fragment-title {
@@ -1499,30 +1650,9 @@ html.js-motion-active .pipeline-runway-grid.is-revealed .pipeline-runway-card.mo
 }
 
 .star-fragment-body {
-  font-size: 0.88rem;
-  line-height: 1.55;
+  font-size: 0.86rem;
+  line-height: 1.5;
   color: var(--ink-secondary);
-}
-
-/* Initial detached states for scroll animation */
-#star-frag-situation {
-  transform: translate3d(-50px, 25px, 0) rotate(-5deg);
-  opacity: 0.55;
-}
-
-#star-frag-task {
-  transform: translate3d(45px, 20px, 0) rotate(4deg);
-  opacity: 0.55;
-}
-
-#star-frag-action {
-  transform: translate3d(-35px, -20px, 0) rotate(3deg);
-  opacity: 0.55;
-}
-
-#star-frag-result {
-  transform: translate3d(40px, -30px, 0) rotate(-4deg);
-  opacity: 0.55;
 }
 
 /* Stamped Verification Seal */
@@ -1544,8 +1674,8 @@ html.js-motion-active .pipeline-runway-grid.is-revealed .pipeline-runway-card.mo
   font-weight: 700;
   font-size: 0.72rem;
   text-align: center;
-  box-shadow: 0 4px 20px rgba(184, 134, 11, 0.4);
-  transform: scale(0.4) rotate(-30deg);
+  box-shadow: 0 4px 20px rgba(184, 134, 11, 0.45);
+  transform: scale(0.35) rotate(-35deg);
   opacity: 0;
   will-change: transform, opacity;
   z-index: 10;
@@ -1553,29 +1683,30 @@ html.js-motion-active .pipeline-runway-grid.is-revealed .pipeline-runway-card.mo
   border: 3px solid var(--surface);
 }
 
-/* Phone: seal sits in normal flow above the stacked fragments (never overlaps text) */
 @media (max-width: 767px) {
   .star-assembly-seal {
     position: relative;
     top: auto;
     left: auto;
-    margin: 0.5rem auto 1.5rem;
+    margin: 0.75rem auto 1.25rem;
     flex: none;
     justify-self: center;
   }
 }
 
-/* Right Side: Active Interview Citation Preview */
+/* Right Side: Active Citation Proof Panel that transitions with scroll stages */
 .star-citation-panel {
   background-color: var(--bg-subdued);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-md);
-  padding: 1.75rem;
+  padding: 1.6rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   will-change: transform, opacity;
   transition: opacity 0.85s ease, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative;
+  z-index: 3;
 }
 
 html.js-motion-active .star-citation-panel.motion-citation-panel:not(.is-revealed) {
@@ -1588,39 +1719,203 @@ html.js-motion-active .star-citation-panel.motion-citation-panel.is-revealed {
   transform: perspective(1200px) rotateY(0deg) translateX(0);
 }
 
+.citation-telemetry-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.citation-stage-pill {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--brass);
+  padding: 0.2rem 0.65rem;
+  background-color: var(--brass-light);
+  border: 1px solid var(--brass-border);
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.04em;
+}
+
 .citation-domain-pill {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--brass);
+  color: var(--accent);
   text-transform: uppercase;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.citation-live-link-box {
+  background-color: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--ink-secondary);
+  line-height: 1.45;
+  margin-top: 0.5rem;
+}
+
+.link-box-label {
+  font-weight: 700;
+  color: var(--brass);
+  font-size: 0.7rem;
+  margin-bottom: 0.2rem;
+}
+
+.link-box-content strong {
+  color: var(--accent);
 }
 
 .citation-action-box {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
+  margin-top: 1.25rem;
+  padding-top: 0.85rem;
   border-top: 1px solid var(--surface-border);
 }
 
 /* --------------------------------------------------------------------------
-   12. Chapter 3: Sovereign Dossier Vault & Backup Sealing (#chapter-vault)
+   12. Chapter 3: Sovereign Dossier Vault & Local Folding Sequence (#privacy-vault)
    -------------------------------------------------------------------------- */
+.vault-stepper-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.vault-step-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background-color: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  transition: all 0.3s ease;
+}
+
+.vault-step-pill.active {
+  background-color: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+  box-shadow: 0 0 12px var(--accent-light);
+}
+
+.vault-step-pill .step-num {
+  font-weight: 700;
+}
+
+.vault-step-arrow {
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+}
+
 .vault-presentation-block {
   margin-bottom: 3.5rem;
 }
 
-/* Dimensional Dossier Envelope Packet */
+/* Dimensional Dossier Envelope Packet & Collectable Documents */
 .vault-envelope-packet {
   position: relative;
   background-color: var(--surface);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  padding: 2.5rem;
-  margin-bottom: 3rem;
-  perspective: 1000px;
+  padding: 3.5rem 2.5rem 2.25rem;
+  margin-bottom: 2.5rem;
+  perspective: 1200px;
   overflow: hidden;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.vault-collectable-docs {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  z-index: 2;
+  margin-bottom: 1.5rem;
+  perspective: 1200px;
+}
+
+.vault-doc-sheet {
+  background-color: var(--bg-subdued);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+  will-change: transform, opacity;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, border-color var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.sheet-pipeline {
+  transform: perspective(1000px) rotateX(8deg) translateY(-30px);
+}
+
+.sheet-evidence {
+  transform: perspective(1000px) rotateX(4deg) translateY(-15px);
+}
+
+.sheet-notes {
+  transform: perspective(1000px) rotateX(0deg) translateY(0);
+}
+
+.doc-sheet-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--brass);
+  letter-spacing: 0.05em;
+}
+
+.doc-sheet-title {
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin: 0;
+}
+
+.doc-sheet-meta {
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.82rem;
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+}
+
+.vault-pocket-base {
+  position: relative;
+  background: linear-gradient(180deg, var(--bg-sunken), var(--surface-elevated));
+  border: 1px solid var(--surface-border-strong);
+  border-radius: var(--radius-md);
+  padding: 1.15rem;
+  text-align: center;
+  z-index: 3;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.vault-pocket-label {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+  letter-spacing: 0.08em;
 }
 
 .vault-envelope-flap {
@@ -1628,7 +1923,7 @@ html.js-motion-active .star-citation-panel.motion-citation-panel.is-revealed {
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  height: 80px;
   background: linear-gradient(to bottom, var(--bg-sunken), var(--bg-subdued));
   border-bottom: 2px solid var(--surface-border-strong);
   transform-origin: top center;
@@ -1640,7 +1935,7 @@ html.js-motion-active .star-citation-panel.motion-citation-panel.is-revealed {
 
 .vault-wax-seal {
   position: absolute;
-  top: 36px;
+  top: 48px;
   left: 50%;
   margin-left: -28px;
   width: 56px;
@@ -1663,10 +1958,118 @@ html.js-motion-active .star-citation-panel.motion-citation-panel.is-revealed {
 }
 
 .vault-code-drawer {
-  transform: translateY(45px);
+  margin-top: 1rem;
+  z-index: 4;
+  transform: translateY(35px);
   opacity: 0.35;
   will-change: transform, opacity;
-  transition: border-color var(--transition-fast);
+}
+
+.vault-manifest-status {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1.25rem;
+  background-color: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink-primary);
+  box-shadow: 0 0 12px var(--accent-light);
+  flex-wrap: wrap;
+}
+
+.vault-manifest-status code {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Sample JSON Export Inspector & Details */
+.schema-inspector-panel {
+  background-color: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  margin-bottom: 3.5rem;
+}
+
+.schema-inspector-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background-color: var(--bg-subdued);
+  border-bottom: 1px solid var(--surface-border);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.schema-inspector-details {
+  border-top: none;
+}
+
+.schema-inspector-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.5rem;
+  background-color: var(--surface);
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  transition: background-color var(--transition-fast);
+}
+
+.schema-inspector-summary:hover {
+  background-color: var(--bg-subdued);
+  color: var(--ink-primary);
+}
+
+.summary-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+  padding: 0.15rem 0.5rem;
+  background-color: var(--accent-light);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-sm);
+}
+
+.summary-chevron {
+  transition: transform 0.25s ease;
+  font-size: 0.85rem;
+}
+
+details[open] .summary-chevron {
+  transform: rotate(180deg);
+}
+
+.schema-details-body {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--surface-border);
+  background-color: var(--bg-sunken);
+}
+
+.schema-caption-note {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.schema-json-body {
+  background-color: transparent;
+  padding: 0;
+  max-height: 260px;
+  overflow-x: auto;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--ink-primary);
 }
 
 /* Comparison Grid: Cloud vs Pathfolio */
@@ -1747,36 +2150,6 @@ html.js-motion-active .motion-compare-box.is-revealed .comparison-item:nth-child
 html.js-motion-active .motion-compare-box.is-revealed .comparison-item:nth-child(3) { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.34s; }
 html.js-motion-active .motion-compare-box.is-revealed .comparison-item:nth-child(4) { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.46s; }
 
-/* Schema v1 JSON Inspector */
-.schema-inspector-card {
-  background-color: var(--surface);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-}
-
-.schema-inspector-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.5rem;
-  background-color: var(--bg-subdued);
-  border-bottom: 1px solid var(--surface-border);
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.schema-json-body {
-  padding: 1.5rem;
-  background-color: var(--bg-sunken);
-  overflow-x: auto;
-  font-size: 0.86rem;
-  line-height: 1.55;
-  color: var(--ink-primary);
-  max-height: 280px;
-}
-
 /* --------------------------------------------------------------------------
    13. Chapter 4: Product Craft & App Tour (#app-tour)
    -------------------------------------------------------------------------- */
@@ -1844,31 +2217,225 @@ html.js-motion-active .app-tour-card.motion-gallery-card.mobile-card.is-revealed
 .cta-section {
   position: relative;
   z-index: 1;
-  padding: 5rem 0 3rem;
+  padding: 6rem 0 4rem;
   border-top: 1px solid var(--surface-border);
 }
 
-.cta-card.motion-cta-card {
+.closing-typography-stage {
+  text-align: center;
+  max-width: 920px;
+  margin: 0 auto 3rem;
+}
+
+.closing-monumental-title {
+  font-size: clamp(2.6rem, 5.2vw, 4.2rem);
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  margin-bottom: 1.25rem;
+  font-family: var(--font-display);
+}
+
+.scroll-lit-line {
+  display: block;
+}
+
+.lit-word {
+  display: inline-block;
+  color: var(--ink-muted);
+  transition: color 0.45s ease, text-shadow 0.45s ease;
+  will-change: color;
+}
+
+.lit-word.is-lit {
+  color: var(--ink-primary);
+  text-shadow: 0 0 20px rgba(184, 115, 51, 0.25);
+}
+
+[data-theme="dark"] .lit-word.is-lit {
+  color: #FFFFFF;
+  text-shadow: 0 0 24px rgba(45, 212, 191, 0.35);
+}
+
+.closing-editorial-lead {
+  font-size: 1.15rem;
+  color: var(--ink-secondary);
+  line-height: 1.6;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* 3D Dossier Carrier & Launch Composition */
+.closing-dossier-composition.motion-cta-card {
   position: relative;
   background-color: var(--surface);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-xl);
-  padding: 4rem 2.5rem;
-  text-align: center;
+  padding: 3.5rem 3rem;
   box-shadow: var(--shadow-card);
   overflow: hidden;
+  perspective: 1400px;
   will-change: transform, opacity;
   transition: opacity 0.85s ease, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), box-shadow var(--transition-fast);
 }
 
-html.js-motion-active .cta-card.motion-cta-card:not(.is-revealed) {
+html.js-motion-active .closing-dossier-composition.motion-cta-card:not(.is-revealed) {
   opacity: 0;
   transform: perspective(1200px) rotateX(6deg) translateY(36px);
 }
 
-html.js-motion-active .cta-card.motion-cta-card.is-revealed {
+html.js-motion-active .closing-dossier-composition.motion-cta-card.is-revealed {
   opacity: 1;
   transform: perspective(1200px) rotateX(0deg) translateY(0);
+}
+
+.closing-carrier-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.closing-dossier-spread {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  perspective: 1400px;
+}
+
+@media (max-width: 767px) {
+  .closing-dossier-spread {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+.closing-dossier-leaf {
+  background-color: var(--bg-subdued);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+  will-change: transform, opacity;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.closing-dossier-leaf.leaf-left {
+  transform: perspective(1400px) rotateY(-6deg) rotateX(2deg);
+}
+
+.closing-dossier-leaf.leaf-right {
+  transform: perspective(1400px) rotateY(6deg) rotateX(2deg);
+}
+
+.leaf-header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.leaf-seal {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: var(--brass);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.leaf-tag {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--brass);
+  letter-spacing: 0.05em;
+}
+
+.leaf-sub {
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+}
+
+.leaf-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.leaf-stat-cell {
+  background-color: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.stat-val {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stat-lbl {
+  font-size: 0.72rem;
+  color: var(--ink-secondary);
+  line-height: 1.3;
+}
+
+.leaf-chip-active {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent);
+  padding: 0.15rem 0.5rem;
+  background-color: var(--accent-light);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-sm);
+}
+
+.leaf-body-text {
+  font-size: 0.92rem;
+  color: var(--ink-secondary);
+  line-height: 1.6;
+}
+
+.leaf-brass-caliper {
+  border-top: 1px solid var(--surface-border);
+  padding-top: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+
+.closing-launch-deck {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--surface-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.btn-launch-primary {
+  box-shadow: 0 0 20px var(--accent-light);
 }
 
 .cta-ambient-glow {
@@ -2435,7 +3002,15 @@ html.js-motion-active .footer-grid.motion-footer-grid.is-revealed .motion-footer
   #star-frag-situation, 
   #star-frag-task, 
   #star-frag-action, 
-  #star-frag-result {
+  #star-frag-result,
+  .vault-doc-sheet,
+  #vault-doc-pipeline,
+  #vault-doc-evidence,
+  #vault-doc-notes,
+  .closing-dossier-leaf,
+  #closing-leaf-left,
+  #closing-leaf-right,
+  .lit-word {
     transform: none !important;
     opacity: 1 !important;
   }
@@ -2482,6 +3057,14 @@ html:not(.js-motion-active) #star-assembly-seal,
 html:not(.js-motion-active) #vault-envelope-flap,
 html:not(.js-motion-active) #vault-wax-seal,
 html:not(.js-motion-active) #vault-code-drawer,
+html:not(.js-motion-active) .vault-doc-sheet,
+html:not(.js-motion-active) #vault-doc-pipeline,
+html:not(.js-motion-active) #vault-doc-evidence,
+html:not(.js-motion-active) #vault-doc-notes,
+html:not(.js-motion-active) .closing-dossier-leaf,
+html:not(.js-motion-active) #closing-leaf-left,
+html:not(.js-motion-active) #closing-leaf-right,
+html:not(.js-motion-active) .lit-word,
 html:not(.js-motion-active) .motion-compare-box,
 html:not(.js-motion-active) .comparison-item,
 html:not(.js-motion-active) .motion-gallery-card,
