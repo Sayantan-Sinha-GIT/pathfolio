@@ -41,3 +41,8 @@ Thumbs.db
 
 # Owner-provided design originals remain local
 /my-design/
+
+# Release handoff and disposable QA output
+/scratch/
+/release/
+/DRIVE_UPLOAD/

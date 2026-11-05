@@ -1,8 +1,11 @@
 import 'dart:convert';
+
 import 'opportunity.dart';
 import 'task_item.dart';
 import 'timeline_entry.dart';
 import 'evidence_item.dart';
+import 'stage.dart';
+import '../services/validation_service.dart';
 
 class BackupValidationResult {
   final bool isValid;
@@ -24,10 +27,7 @@ class BackupValidationResult {
   });
 
   static BackupValidationResult failure(String message) {
-    return BackupValidationResult(
-      isValid: false,
-      errorMessage: message,
-    );
+    return BackupValidationResult(isValid: false, errorMessage: message);
   }
 }
 
@@ -46,7 +46,7 @@ class BackupData {
 
   const BackupData({
     this.schemaVersion = currentSchemaVersion,
-    this.appVersion = '1.0.1',
+    this.appVersion = '1.0.2',
     required this.exportedAt,
     required this.opportunities,
     required this.tasks,
@@ -56,15 +56,15 @@ class BackupData {
   });
 
   Map<String, dynamic> toJson() => {
-        'schemaVersion': schemaVersion,
-        'appVersion': appVersion,
-        'exportedAt': exportedAt.toIso8601String(),
-        'opportunities': opportunities.map((o) => o.toJson()).toList(),
-        'tasks': tasks.map((t) => t.toJson()).toList(),
-        'timeline': timeline.map((te) => te.toJson()).toList(),
-        'evidence': evidence.map((e) => e.toJson()).toList(),
-        'preferences': preferences,
-      };
+    'schemaVersion': schemaVersion,
+    'appVersion': appVersion,
+    'exportedAt': exportedAt.toIso8601String(),
+    'opportunities': opportunities.map((o) => o.toJson()).toList(),
+    'tasks': tasks.map((t) => t.toJson()).toList(),
+    'timeline': timeline.map((te) => te.toJson()).toList(),
+    'evidence': evidence.map((e) => e.toJson()).toList(),
+    'preferences': preferences,
+  };
 
   String toFormattedJson() {
     return const JsonEncoder.withIndent('  ').convert(toJson());
@@ -75,46 +75,71 @@ class BackupData {
       return BackupValidationResult.failure('Backup file is empty.');
     }
 
-    if (jsonString.length > maxFileSizeBytes) {
-      return BackupValidationResult.failure('Backup file exceeds the 10 MB limit.');
+    if (jsonString.length > maxFileSizeBytes ||
+        utf8.encode(jsonString).length > maxFileSizeBytes) {
+      return BackupValidationResult.failure(
+        'Backup file exceeds the 10 MB limit.',
+      );
     }
 
     dynamic decoded;
     try {
       decoded = jsonDecode(jsonString);
     } catch (e) {
-      return BackupValidationResult.failure('Malformed JSON syntax: ${e.toString()}');
+      return BackupValidationResult.failure(
+        'Malformed JSON syntax: ${e.toString()}',
+      );
     }
 
     if (decoded is! Map<String, dynamic>) {
-      return BackupValidationResult.failure('Root JSON structure must be a JSON object.');
+      return BackupValidationResult.failure(
+        'Root JSON structure must be a JSON object.',
+      );
+    }
+
+    if (decoded['appVersion'] != null && decoded['appVersion'] is! String) {
+      return BackupValidationResult.failure('"appVersion" must be a string.');
     }
 
     final schemaVer = decoded['schemaVersion'];
     if (schemaVer == null) {
-      return BackupValidationResult.failure('Missing required "schemaVersion" field.');
+      return BackupValidationResult.failure(
+        'Missing required "schemaVersion" field.',
+      );
     }
     if (schemaVer is! int) {
-      return BackupValidationResult.failure('"schemaVersion" must be an integer.');
+      return BackupValidationResult.failure(
+        '"schemaVersion" must be an integer.',
+      );
     }
     if (schemaVer != currentSchemaVersion) {
       return BackupValidationResult.failure(
-          'Unsupported schema version ($schemaVer). Pathfolio currently supports schema version $currentSchemaVersion.');
+        'Unsupported schema version ($schemaVer). Pathfolio currently supports schema version $currentSchemaVersion.',
+      );
     }
 
     final rawExportedAt = decoded['exportedAt'];
     DateTime exportedDate = DateTime.now();
     if (rawExportedAt != null) {
       if (rawExportedAt is! String) {
-        return BackupValidationResult.failure('"exportedAt" must be an ISO-8601 date string.');
+        return BackupValidationResult.failure(
+          '"exportedAt" must be an ISO-8601 date string.',
+        );
       }
       final parsed = DateTime.tryParse(rawExportedAt);
-      if (parsed != null) exportedDate = parsed;
+      if (parsed == null) {
+        return BackupValidationResult.failure(
+          '"exportedAt" must be a valid date.',
+        );
+      }
+      exportedDate = parsed;
     }
 
     final rawOpps = decoded['opportunities'];
     if (rawOpps != null && rawOpps is! List) {
-      return BackupValidationResult.failure('"opportunities" must be an array.');
+      return BackupValidationResult.failure(
+        '"opportunities" must be an array.',
+      );
     }
 
     final rawTasks = decoded['tasks'];
@@ -136,26 +161,58 @@ class BackupData {
     if (rawPrefs != null && rawPrefs is! Map) {
       return BackupValidationResult.failure('"preferences" must be an object.');
     }
+    if (rawPrefs is Map) {
+      for (final key in [
+        'reduce_motion',
+        'onboarding_completed',
+        'is_demo_workspace',
+      ]) {
+        if (rawPrefs.containsKey(key) && rawPrefs[key] is! bool) {
+          return BackupValidationResult.failure(
+            'Preference "$key" must be true or false.',
+          );
+        }
+      }
+      if (rawPrefs.containsKey('theme_mode') &&
+          !['light', 'dark', 'system'].contains(rawPrefs['theme_mode'])) {
+        return BackupValidationResult.failure(
+          'Theme must be light, dark, or system.',
+        );
+      }
+      if (rawPrefs.containsKey('last_export_date') &&
+          (rawPrefs['last_export_date'] is! String ||
+              DateTime.tryParse(rawPrefs['last_export_date']) == null)) {
+        return BackupValidationResult.failure('Last export date is invalid.');
+      }
+    }
 
     List<Opportunity> parsedOpps = [];
     if (rawOpps is List) {
       for (int i = 0; i < rawOpps.length; i++) {
         final item = rawOpps[i];
         if (item is! Map<String, dynamic>) {
-          return BackupValidationResult.failure('Opportunity at index $i is not a valid object.');
+          return BackupValidationResult.failure(
+            'Opportunity at index $i is not a valid object.',
+          );
         }
         final company = item['company'];
         final role = item['role'];
         if (company == null || company is! String || company.trim().isEmpty) {
-          return BackupValidationResult.failure('Opportunity at index $i is missing required "company" field.');
+          return BackupValidationResult.failure(
+            'Opportunity at index $i is missing required "company" field.',
+          );
         }
         if (role == null || role is! String || role.trim().isEmpty) {
-          return BackupValidationResult.failure('Opportunity at index $i is missing required "role" field.');
+          return BackupValidationResult.failure(
+            'Opportunity at index $i is missing required "role" field.',
+          );
         }
         try {
           parsedOpps.add(Opportunity.fromJson(item));
         } catch (e) {
-          return BackupValidationResult.failure('Failed to parse opportunity at index $i: $e');
+          return BackupValidationResult.failure(
+            'Failed to parse opportunity at index $i: $e',
+          );
         }
       }
     }
@@ -165,12 +222,16 @@ class BackupData {
       for (int i = 0; i < rawTasks.length; i++) {
         final item = rawTasks[i];
         if (item is! Map<String, dynamic>) {
-          return BackupValidationResult.failure('Task at index $i is not a valid object.');
+          return BackupValidationResult.failure(
+            'Task at index $i is not a valid object.',
+          );
         }
         try {
           parsedTasks.add(TaskItem.fromJson(item));
         } catch (e) {
-          return BackupValidationResult.failure('Failed to parse task at index $i: $e');
+          return BackupValidationResult.failure(
+            'Failed to parse task at index $i: $e',
+          );
         }
       }
     }
@@ -180,12 +241,16 @@ class BackupData {
       for (int i = 0; i < rawTimeline.length; i++) {
         final item = rawTimeline[i];
         if (item is! Map<String, dynamic>) {
-          return BackupValidationResult.failure('Timeline entry at index $i is not a valid object.');
+          return BackupValidationResult.failure(
+            'Timeline entry at index $i is not a valid object.',
+          );
         }
         try {
           parsedTimeline.add(TimelineEntry.fromJson(item));
         } catch (e) {
-          return BackupValidationResult.failure('Failed to parse timeline at index $i: $e');
+          return BackupValidationResult.failure(
+            'Failed to parse timeline at index $i: $e',
+          );
         }
       }
     }
@@ -195,14 +260,122 @@ class BackupData {
       for (int i = 0; i < rawEvidence.length; i++) {
         final item = rawEvidence[i];
         if (item is! Map<String, dynamic>) {
-          return BackupValidationResult.failure('Evidence item at index $i is not a valid object.');
+          return BackupValidationResult.failure(
+            'Evidence item at index $i is not a valid object.',
+          );
         }
         try {
           parsedEvidence.add(EvidenceItem.fromJson(item));
         } catch (e) {
-          return BackupValidationResult.failure('Failed to parse evidence at index $i: $e');
+          return BackupValidationResult.failure(
+            'Failed to parse evidence at index $i: $e',
+          );
         }
       }
+    }
+
+    // Model readers deliberately tolerate old local storage. Imports need a
+    // stricter boundary: reject incomplete, ambiguous or unsafe replacements.
+    for (final name in ['opportunities', 'tasks', 'timeline', 'evidence']) {
+      final records = decoded[name];
+      if (records is! List) {
+        return BackupValidationResult.failure('"$name" must be an array.');
+      }
+      final ids = <String>{};
+      for (final raw in records) {
+        final item = raw as Map<String, dynamic>;
+        final id = item['id'];
+        if (id is! String || id.trim().isEmpty || !ids.add(id)) {
+          return BackupValidationResult.failure(
+            '$name contains a missing or duplicate ID.',
+          );
+        }
+        for (final field in [
+          'title',
+          'opportunityId',
+          'actionType',
+          'description',
+          'company',
+          'role',
+          'location',
+          'salaryNote',
+          'privateNotes',
+          'conciseResult',
+          'sourceUrl',
+          'stage',
+          'fromStage',
+          'toStage',
+        ]) {
+          if (item[field] != null && item[field] is! String) {
+            return BackupValidationResult.failure(
+              '$name field "$field" must be text.',
+            );
+          }
+        }
+        for (final field in [
+          'createdAt',
+          'updatedAt',
+          'applicationDate',
+          'nextActionDate',
+          'dueDate',
+          'completedAt',
+          'timestamp',
+        ]) {
+          final value = item[field];
+          if (value != null &&
+              (value is! String || DateTime.tryParse(value) == null)) {
+            return BackupValidationResult.failure(
+              '$name field "$field" must be a valid date.',
+            );
+          }
+        }
+        for (final field in ['attachedEvidenceIds', 'skillTags']) {
+          final value = item[field];
+          if (value != null &&
+              (value is! List || value.any((entry) => entry is! String))) {
+            return BackupValidationResult.failure(
+              '$name field "$field" must contain text values.',
+            );
+          }
+        }
+        for (final field in ['isCompleted', 'isArchived']) {
+          if (item[field] != null && item[field] is! bool) {
+            return BackupValidationResult.failure(
+              '$name field "$field" must be true or false.',
+            );
+          }
+        }
+        if (item['sourceUrl'] is String &&
+            ValidationService.validateUrl(item['sourceUrl']) != null) {
+          return BackupValidationResult.failure(
+            '$name contains an unsafe or invalid source URL.',
+          );
+        }
+        if (item['stage'] is String &&
+            !JobStage.values.any(
+              (stage) => stage.name == (item['stage'] as String).toLowerCase(),
+            )) {
+          return BackupValidationResult.failure('Unknown opportunity stage.');
+        }
+        if ((name == 'tasks' || name == 'evidence') &&
+            (item['title'] is! String ||
+                (item['title'] as String).trim().isEmpty)) {
+          return BackupValidationResult.failure(
+            '$name contains an empty title.',
+          );
+        }
+      }
+    }
+    final opportunityIds = parsedOpps.map((item) => item.id).toSet();
+    if (parsedTasks.any(
+          (item) => !opportunityIds.contains(item.opportunityId),
+        ) ||
+        parsedTimeline.any(
+          (item) => !opportunityIds.contains(item.opportunityId),
+        )) {
+      return BackupValidationResult.failure(
+        'Tasks and activity must reference an existing opportunity.',
+      );
     }
 
     final backup = BackupData(
@@ -226,4 +399,3 @@ class BackupData {
     );
   }
 }
-

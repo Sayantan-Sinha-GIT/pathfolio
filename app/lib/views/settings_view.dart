@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+
 import '../models/backup_data.dart';
 import '../state/app_state.dart';
 import '../theme/app_theme.dart';
+import '../services/backup_file_service.dart';
 
 class SettingsView extends StatefulWidget {
   final AppState appState;
+  final BackupFileService backupFiles;
 
-  const SettingsView({super.key, required this.appState});
+  const SettingsView({
+    super.key,
+    required this.appState,
+    this.backupFiles = const BackupFileService(),
+  });
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
@@ -16,14 +23,61 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   final DateFormat _dateFormat = DateFormat('MMMM d, yyyy • h:mm a');
+  bool _fileBusy = false;
+
+  void _showBackupError(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _saveBackup(String json) async {
+    if (_fileBusy) return;
+    setState(() => _fileBusy = true);
+    try {
+      final saved = await widget.backupFiles.save(json);
+      if (saved) {
+        await widget.appState.exportBackupString();
+        if (mounted)
+          _showBackupError('Backup saved. Keep this file somewhere safe.');
+      }
+    } catch (_) {
+      _showBackupError(
+        'Could not save the backup. Try again or copy the JSON instead.',
+      );
+    } finally {
+      if (mounted) setState(() => _fileBusy = false);
+    }
+  }
+
+  Future<void> _handleImportFile() async {
+    if (_fileBusy) return;
+    setState(() => _fileBusy = true);
+    String? json;
+    try {
+      json = await widget.backupFiles.pick();
+    } on FormatException {
+      _showBackupError(
+        'Choose a valid UTF-8 JSON backup smaller than 10 MB. Your records were not changed.',
+      );
+    } catch (_) {
+      _showBackupError(
+        'Could not open that file. Try another backup or paste the JSON instead.',
+      );
+    } finally {
+      if (mounted) setState(() => _fileBusy = false);
+    }
+    if (mounted && json != null) await _previewImport(json);
+  }
 
   Future<void> _handleExportJson() async {
-    final jsonStr = await widget.appState.exportBackupString();
+    final jsonStr = widget.appState.createBackup().toFormattedJson();
 
     if (!mounted) return;
     await showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
+        scrollable: true,
         title: const Text('Export JSON Backup'),
         content: SizedBox(
           width: 520,
@@ -46,7 +100,10 @@ class _SettingsViewState extends State<SettingsView> {
                 child: SingleChildScrollView(
                   child: SelectableText(
                     jsonStr,
-                    style: const TextStyle(fontFamily: 'monospace', fontSize: 11),
+                    style: const TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 11,
+                    ),
                   ),
                 ),
               ),
@@ -59,14 +116,33 @@ class _SettingsViewState extends State<SettingsView> {
           ),
         ),
         actions: [
+          ElevatedButton.icon(
+            icon: const Icon(Icons.save_alt_rounded, size: 16),
+            label: const Text('Save Backup File'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              _saveBackup(jsonStr);
+            },
+          ),
           OutlinedButton.icon(
             icon: const Icon(Icons.copy_rounded, size: 16),
             label: const Text('Copy to Clipboard'),
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: jsonStr));
+            onPressed: () async {
+              try {
+                await Clipboard.setData(ClipboardData(text: jsonStr));
+                await widget.appState.exportBackupString();
+              } catch (_) {
+                _showBackupError(
+                  'Could not copy the backup. Use Save Backup File instead.',
+                );
+                return;
+              }
+              if (!ctx.mounted || !mounted) return;
               Navigator.of(ctx).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Backup JSON copied to clipboard!')),
+                const SnackBar(
+                  content: Text('Backup JSON copied to clipboard!'),
+                ),
               );
             },
           ),
@@ -85,6 +161,7 @@ class _SettingsViewState extends State<SettingsView> {
     final rawJson = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
+        scrollable: true,
         title: const Text('Import Backup JSON'),
         content: SizedBox(
           width: 520,
@@ -121,8 +198,12 @@ class _SettingsViewState extends State<SettingsView> {
       ),
     );
 
-    if (rawJson == null || rawJson.trim().isEmpty) return;
+    textController.dispose();
+    if (rawJson == null || rawJson.trim().isEmpty || !mounted) return;
+    await _previewImport(rawJson);
+  }
 
+  Future<void> _previewImport(String rawJson) async {
     // Run schema validation
     final validation = BackupData.validateAndParse(rawJson);
     if (!validation.isValid) {
@@ -130,13 +211,8 @@ class _SettingsViewState extends State<SettingsView> {
       await showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Row(
-            children: [
-              Icon(Icons.error_outline_rounded, color: AppColors.crimson),
-              SizedBox(width: 8),
-              Text('Invalid Backup File'),
-            ],
-          ),
+          scrollable: true,
+          title: const Text('Invalid Backup File'),
           content: Text(
             'The backup data could not be imported because it failed validation:\n\n${validation.errorMessage}\n\nYour existing records were NOT changed.',
           ),
@@ -156,6 +232,7 @@ class _SettingsViewState extends State<SettingsView> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
+        scrollable: true,
         title: const Text('Confirm Restore & Replace'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -174,17 +251,32 @@ class _SettingsViewState extends State<SettingsView> {
               ),
               child: Column(
                 children: [
-                  _PreviewStatRow(label: 'Opportunities', count: validation.opportunityCount),
-                  _PreviewStatRow(label: 'Follow-up Tasks', count: validation.taskCount),
-                  _PreviewStatRow(label: 'Career Evidence Items', count: validation.evidenceCount),
-                  _PreviewStatRow(label: 'Timeline Events', count: validation.timelineCount),
+                  _PreviewStatRow(
+                    label: 'Opportunities',
+                    count: validation.opportunityCount,
+                  ),
+                  _PreviewStatRow(
+                    label: 'Follow-up Tasks',
+                    count: validation.taskCount,
+                  ),
+                  _PreviewStatRow(
+                    label: 'Career Evidence Items',
+                    count: validation.evidenceCount,
+                  ),
+                  _PreviewStatRow(
+                    label: 'Timeline Events',
+                    count: validation.timelineCount,
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 14),
             const Text(
               'Warning: This action will replace current local data.',
-              style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.crimson),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: AppColors.crimson,
+              ),
             ),
           ],
         ),
@@ -205,7 +297,14 @@ class _SettingsViewState extends State<SettingsView> {
     );
 
     if (confirmed == true && validation.backupData != null) {
-      await widget.appState.restoreBackup(validation.backupData!);
+      try {
+        await widget.appState.restoreBackup(validation.backupData!);
+      } catch (_) {
+        _showBackupError(
+          'Could not restore the backup. Your existing records were kept. Free some device storage and retry.',
+        );
+        return;
+      }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Backup restored successfully!')),
@@ -220,13 +319,8 @@ class _SettingsViewState extends State<SettingsView> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.warning_amber_rounded, color: AppColors.crimson),
-            SizedBox(width: 8),
-            Text('Erase All Workspace Data?'),
-          ],
-        ),
+        scrollable: true,
+        title: const Text('Erase All Workspace Data?'),
         content: SizedBox(
           width: 460,
           child: Column(
@@ -245,9 +339,7 @@ class _SettingsViewState extends State<SettingsView> {
               TextField(
                 controller: confirmController,
                 autofocus: false,
-                decoration: const InputDecoration(
-                  hintText: 'Type ERASE',
-                ),
+                decoration: const InputDecoration(hintText: 'Type ERASE'),
               ),
             ],
           ),
@@ -266,7 +358,9 @@ class _SettingsViewState extends State<SettingsView> {
                 Navigator.of(ctx).pop(true);
               } else {
                 ScaffoldMessenger.of(ctx).showSnackBar(
-                  const SnackBar(content: Text('Please type ERASE to confirm.')),
+                  const SnackBar(
+                    content: Text('Please type ERASE to confirm.'),
+                  ),
                 );
               }
             },
@@ -280,7 +374,9 @@ class _SettingsViewState extends State<SettingsView> {
       await widget.appState.eraseAllData();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('All local workspace data has been erased.')),
+          const SnackBar(
+            content: Text('All local workspace data has been erased.'),
+          ),
         );
       }
     }
@@ -302,7 +398,10 @@ class _SettingsViewState extends State<SettingsView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Settings & Data Privacy', style: theme.textTheme.headlineMedium),
+            Text(
+              'Settings & Data Privacy',
+              style: theme.textTheme.headlineMedium,
+            ),
             const SizedBox(height: 4),
             Text(
               'Audit local storage guarantees, export backups, and configure preferences.',
@@ -319,11 +418,20 @@ class _SettingsViewState extends State<SettingsView> {
                   children: [
                     const Row(
                       children: [
-                        Icon(Icons.shield_outlined, color: AppColors.emerald, size: 24),
+                        Icon(
+                          Icons.shield_outlined,
+                          color: AppColors.emerald,
+                          size: 24,
+                        ),
                         SizedBox(width: 12),
-                        Text(
-                          'Local-Only Storage Architecture',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                        Expanded(
+                          child: Text(
+                            'Local-Only Storage Architecture',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -335,7 +443,11 @@ class _SettingsViewState extends State<SettingsView> {
                     const SizedBox(height: 10),
                     const Text(
                       '• No cloud databases\n• No third-party analytics or tracking\n• No mandatory user accounts or logins\n• Data never leaves this device unless you explicitly export a JSON backup.',
-                      style: TextStyle(fontSize: 13, height: 1.6, color: Colors.grey),
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.6,
+                        color: Colors.grey,
+                      ),
                     ),
                   ],
                 ),
@@ -350,7 +462,10 @@ class _SettingsViewState extends State<SettingsView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Data Backup & Restore', style: theme.textTheme.titleMedium),
+                    Text(
+                      'Data Backup & Restore',
+                      style: theme.textTheme.titleMedium,
+                    ),
                     const SizedBox(height: 6),
                     Text(
                       'Export your entire workspace as a portable JSON backup, or restore an earlier backup from another device.',
@@ -358,18 +473,24 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                     const SizedBox(height: 16),
 
-                    Row(
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
                       children: [
                         ElevatedButton.icon(
                           icon: const Icon(Icons.download_rounded, size: 18),
                           label: const Text('Export JSON Backup'),
-                          onPressed: _handleExportJson,
+                          onPressed: _fileBusy ? null : _handleExportJson,
                         ),
-                        const SizedBox(width: 12),
+                        OutlinedButton.icon(
+                          icon: const Icon(Icons.folder_open_rounded, size: 18),
+                          label: const Text('Open Backup File'),
+                          onPressed: _fileBusy ? null : _handleImportFile,
+                        ),
                         OutlinedButton.icon(
                           icon: const Icon(Icons.upload_rounded, size: 18),
-                          label: const Text('Restore from Backup'),
-                          onPressed: _handleImportJson,
+                          label: const Text('Paste Backup JSON'),
+                          onPressed: _fileBusy ? null : _handleImportJson,
                         ),
                       ],
                     ),
@@ -393,7 +514,10 @@ class _SettingsViewState extends State<SettingsView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Sample Demo Workspace', style: theme.textTheme.titleMedium),
+                    Text(
+                      'Sample Demo Workspace',
+                      style: theme.textTheme.titleMedium,
+                    ),
                     const SizedBox(height: 6),
                     Text(
                       'Explore Pathfolio with realistic student and early-career job applications, interview timelines, and evidence items.',
@@ -405,17 +529,34 @@ class _SettingsViewState extends State<SettingsView> {
                       Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.amberBg,
                               borderRadius: BorderRadius.circular(6),
                             ),
-                            child: const Text('Demo Workspace Active', style: TextStyle(color: AppColors.amber, fontWeight: FontWeight.bold, fontSize: 12)),
+                            child: const Text(
+                              'Demo Workspace Active',
+                              style: TextStyle(
+                                color: AppColors.amber,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
                           ),
                           const SizedBox(width: 12),
                           OutlinedButton.icon(
-                            icon: const Icon(Icons.delete_sweep_rounded, size: 18, color: AppColors.crimson),
-                            label: const Text('Clear Demo Workspace', style: TextStyle(color: AppColors.crimson)),
+                            icon: const Icon(
+                              Icons.delete_sweep_rounded,
+                              size: 18,
+                              color: AppColors.crimson,
+                            ),
+                            label: const Text(
+                              'Clear Demo Workspace',
+                              style: TextStyle(color: AppColors.crimson),
+                            ),
                             onPressed: () => appState.clearDemoWorkspace(),
                           ),
                         ],
@@ -439,7 +580,10 @@ class _SettingsViewState extends State<SettingsView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Appearance & Motion', style: theme.textTheme.titleMedium),
+                    Text(
+                      'Appearance & Motion',
+                      style: theme.textTheme.titleMedium,
+                    ),
                     const SizedBox(height: 16),
 
                     // Theme selector
@@ -452,18 +596,40 @@ class _SettingsViewState extends State<SettingsView> {
                         const Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Color Theme', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-                            Text('Choose light porcelain or dark slate aesthetic', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                            Text(
+                              'Color Theme',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                              ),
+                            ),
+                            Text(
+                              'Choose light porcelain or dark slate aesthetic',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
+                            ),
                           ],
                         ),
                         SegmentedButton<ThemeMode>(
                           segments: const [
-                            ButtonSegment(value: ThemeMode.system, label: Text('System')),
-                            ButtonSegment(value: ThemeMode.light, label: Text('Light')),
-                            ButtonSegment(value: ThemeMode.dark, label: Text('Dark')),
+                            ButtonSegment(
+                              value: ThemeMode.system,
+                              label: Text('System'),
+                            ),
+                            ButtonSegment(
+                              value: ThemeMode.light,
+                              label: Text('Light'),
+                            ),
+                            ButtonSegment(
+                              value: ThemeMode.dark,
+                              label: Text('Dark'),
+                            ),
                           ],
                           selected: {appState.themeMode},
-                          onSelectionChanged: (set) => appState.setThemeMode(set.first),
+                          onSelectionChanged: (set) =>
+                              appState.setThemeMode(set.first),
                         ),
                       ],
                     ),
@@ -472,8 +638,17 @@ class _SettingsViewState extends State<SettingsView> {
                     // Reduced motion toggle
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('Reduce Motion & Animations', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-                      subtitle: const Text('Minimize screen transitions and decorative movement', style: TextStyle(fontSize: 12)),
+                      title: const Text(
+                        'Reduce Motion & Animations',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                      subtitle: const Text(
+                        'Minimize screen transitions and decorative movement',
+                        style: TextStyle(fontSize: 12),
+                      ),
                       value: appState.reduceMotion,
                       onChanged: (val) => appState.setReduceMotion(val),
                     ),
@@ -496,11 +671,21 @@ class _SettingsViewState extends State<SettingsView> {
                   children: [
                     const Row(
                       children: [
-                        Icon(Icons.delete_forever_rounded, color: AppColors.crimson, size: 22),
+                        Icon(
+                          Icons.delete_forever_rounded,
+                          color: AppColors.crimson,
+                          size: 22,
+                        ),
                         SizedBox(width: 8),
-                        Text(
-                          'Danger Zone: Erase All Data',
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.crimson),
+                        Expanded(
+                          child: Text(
+                            'Danger Zone: Erase All Data',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.crimson,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -511,7 +696,9 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                     const SizedBox(height: 14),
                     ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.crimson),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.crimson,
+                      ),
                       icon: const Icon(Icons.delete_outline_rounded, size: 18),
                       label: const Text('Erase All Workspace Data'),
                       onPressed: _handleEraseAll,
@@ -540,11 +727,14 @@ class _PreviewStatRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(fontSize: 13)),
-          Text('$count', style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+          Expanded(child: Text(label, style: const TextStyle(fontSize: 13))),
+          const SizedBox(width: 8),
+          Text(
+            '$count',
+            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+          ),
         ],
       ),
     );
   }
 }
-

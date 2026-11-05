@@ -10,6 +10,9 @@ import '../services/storage_service.dart';
 import '../services/demo_data.dart';
 
 class AppState extends ChangeNotifier {
+  static int _idSequence = 0;
+  static String _newId(String prefix) =>
+      '$prefix-${DateTime.now().microsecondsSinceEpoch}-${_idSequence++}';
   final IStorageService storage;
 
   AppState({required this.storage});
@@ -295,7 +298,7 @@ class AppState extends ChangeNotifier {
     );
 
     final timelineEntry = TimelineEntry(
-      id: 'time-${now.millisecondsSinceEpoch}',
+      id: _newId('time'),
       opportunityId: newId,
       timestamp: now,
       actionType: 'created',
@@ -324,7 +327,7 @@ class AppState extends ChangeNotifier {
     TimelineEntry? stageChangeEntry;
     if (existing.stage != updated.stage) {
       stageChangeEntry = TimelineEntry(
-        id: 'time-${now.millisecondsSinceEpoch}',
+        id: _newId('time'),
         opportunityId: updated.id,
         timestamp: now,
         actionType: 'stage_change',
@@ -360,7 +363,7 @@ class AppState extends ChangeNotifier {
     final now = DateTime.now();
     final updated = opp.copyWith(isArchived: true, updatedAt: now);
     final timelineEntry = TimelineEntry(
-      id: 'time-${now.millisecondsSinceEpoch}',
+      id: _newId('time'),
       opportunityId: id,
       timestamp: now,
       actionType: 'archived',
@@ -383,7 +386,7 @@ class AppState extends ChangeNotifier {
     final now = DateTime.now();
     final updated = opp.copyWith(isArchived: false, updatedAt: now);
     final timelineEntry = TimelineEntry(
-      id: 'time-${now.millisecondsSinceEpoch}',
+      id: _newId('time'),
       opportunityId: id,
       timestamp: now,
       actionType: 'restored',
@@ -479,7 +482,7 @@ class AppState extends ChangeNotifier {
 
     if (willComplete) {
       final timelineEntry = TimelineEntry(
-        id: 'time-${now.millisecondsSinceEpoch}',
+        id: _newId('time'),
         opportunityId: current.opportunityId,
         timestamp: now,
         actionType: 'task_completed',
@@ -588,7 +591,7 @@ class AppState extends ChangeNotifier {
   BackupData createBackup() {
     return BackupData(
       schemaVersion: BackupData.currentSchemaVersion,
-      appVersion: '1.0.1',
+      appVersion: '1.0.2',
       exportedAt: DateTime.now(),
       opportunities: _opportunities,
       tasks: _tasks,

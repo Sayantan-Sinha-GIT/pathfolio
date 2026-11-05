@@ -8,6 +8,10 @@
 
 ---
 
+## Final handoff (6 November 2026)
+
+Start with [START_HERE.txt](START_HERE.txt). [FINAL_VERIFICATION.md](FINAL_VERIFICATION.md) records the final checks and fixes. Version 1.0.2 adds native/browser JSON file save/open, stricter safe imports, persistent date/link clearing, unique timeline IDs, and narrow-screen backup dialog fixes. After `npm ci` and `flutter pub get` in `app/`, use `npm run build`, `npm run preview`, `npm run test:app`, and `npm run build:apk` (private signing files required). `FLUTTER_BIN` can point to an SDK that is not on PATH.
+
 ## Live Links & Downloads
 
 - **Live Web Application**: [https://pathfolio.pages.dev/app/](https://pathfolio.pages.dev/app/)
@@ -66,7 +70,7 @@ pathfolio/
 │   │   ├── state/        # AppState (ChangeNotifier with atomic commits & filter engine)
 │   │   ├── theme/        # AppTheme (editorial porcelain & deep ink palette, responsive breakpoints)
 │   │   └── views/        # Dashboard, Pipeline Kanban, Opportunity Detail, Evidence Bank, Settings
-│   └── test/             # Comprehensive unit and widget test suite (39 tests)
+│   └── test/             # Comprehensive unit and widget test suite (47 tests)
 ├── site/                 # Web-native semantic marketing site (HTML5, CSS3, vanilla JS)
 ├── dist/                 # Combined Cloudflare Pages production bundle (Site at /, Flutter Web at /app/)
 ├── QUALITY_CASES.md      # 44 executed test cases across 3 bounded rounds
@@ -86,7 +90,7 @@ pathfolio/
 
 Pathfolio adheres to the Antigravity-Kit testing protocol:
 
-- **Automated Tests**: 39 unit and widget tests covering models, validation, timeline tracking, repository operations, single-snapshot restore persistence, and failed-write rollback.
+- **Automated Tests**: 47 unit and widget tests covering models, validation, timeline tracking, repository operations, single-snapshot restore persistence, and failed-write rollback.
 - **Quality Gate**: Passed `CHECK_QUALITY_CASES.ps1` with 44 distinct executed test cases across 3 iterations:
   - Iteration 1 (Baseline): 15 distinct cases + frozen 11-case CORE suite.
   - Iteration 2 (Adversarial): 14 distinct cases + CORE rerun.

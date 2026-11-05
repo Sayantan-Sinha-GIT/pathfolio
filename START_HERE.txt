@@ -1,0 +1,54 @@
+PATHFOLIO - FINAL PROJECT HANDOFF
+Release: 1.0.2 (Android build 3)
+
+USE IT
+Website: https://pathfolio.pages.dev/
+Web app: https://pathfolio.pages.dev/app/
+Android: https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk
+Source: https://github.com/Sayantan-Sinha-GIT/pathfolio
+
+YOUR DRIVE BACKUP
+Use the prepared Pathfolio archive in Desktop\FINAL_DRIVE_UPLOAD.
+It contains source, the owner-supplied homepage designs, documentation,
+tests, the signed APK, and the deployable static website/app bundle.
+Node modules, SDKs, temporary captures and build caches are excluded.
+Keep the separate PRIVATE_RECOVERY archive private. It contains the Android
+signing key required to publish updates that retain the app's identity.
+
+FOLDER MAP
+app/          Flutter Android and web source, fonts and tests
+site/         Animated marketing website, guide and privacy pages
+scripts/      Reproducible build and local preview commands
+my-design/    Your original homepage design (local/private; not on GitHub)
+release/      Signed APK and release checksums (in the Drive archive)
+dist/         Ready-to-deploy website + web app (in the Drive archive)
+FINAL_VERIFICATION.md  Actual final test results and release notes
+README.md     Architecture, developer setup and deployment details
+
+REBUILD ON ANOTHER COMPUTER
+Install Flutter 3.47.7, Node.js 22 or 24, and an Android SDK/JDK for Android.
+From the project folder:
+  npm ci
+  cd app
+  flutter pub get
+  flutter test
+  cd ..
+  npm run build
+  npm run preview
+Open http://127.0.0.1:8086/ (working app at /app/).
+If Flutter is not on PATH, set FLUTTER_BIN to your flutter executable first.
+Windows example: $env:FLUTTER_BIN='C:\path\to\flutter\bin\flutter.bat'
+
+For a signed Android rebuild, first restore the signing files according to
+PRIVATE_RECOVERY/README.txt, then run: npm run build:apk
+For a Pages update: npx wrangler pages deploy dist --project-name pathfolio
+This project deliberately uses Cloudflare Pages Direct Upload.
+
+YOUR DATA
+Records stay on the current browser profile or Android installation.
+Settings -> Export JSON Backup -> Save Backup File makes a portable backup.
+Settings -> Open Backup File validates and previews it before replacement.
+Copy/paste JSON remains available as a fallback. There is no cloud sync.
+The web app needs a complete first online load before offline use; Android
+works offline after installation. Clearing site data removes local records.
+Your personal job-search records are not copied into the source archive.

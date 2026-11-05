@@ -1,9 +1,13 @@
 {
   "name": "pathfolio",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Private, offline-first career workspace for software engineers",
   "private": true,
   "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:apk": "node scripts/build.mjs --apk",
+    "preview": "node scripts/preview.mjs",
+    "test:app": "node scripts/test-app.mjs",
     "test:gate": "node test-scroll-gate.js",
     "test:gate:local": "node test-scroll-gate.js --target=local",
     "test:gate:remote": "node test-scroll-gate.js --target=remote",

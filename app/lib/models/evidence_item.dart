@@ -1,4 +1,5 @@
 class EvidenceItem {
+  static const _unchanged = Object();
   final String id;
   final String title;
   final List<String> skillTags;
@@ -20,7 +21,7 @@ class EvidenceItem {
     String? title,
     List<String>? skillTags,
     String? conciseResult,
-    String? sourceUrl,
+    Object? sourceUrl = _unchanged,
     DateTime? createdAt,
   }) {
     return EvidenceItem(
@@ -28,25 +29,31 @@ class EvidenceItem {
       title: title ?? this.title,
       skillTags: skillTags ?? this.skillTags,
       conciseResult: conciseResult ?? this.conciseResult,
-      sourceUrl: sourceUrl ?? this.sourceUrl,
+      sourceUrl: identical(sourceUrl, _unchanged)
+          ? this.sourceUrl
+          : sourceUrl as String?,
       createdAt: createdAt ?? this.createdAt,
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'skillTags': skillTags,
-        'conciseResult': conciseResult,
-        if (sourceUrl != null && sourceUrl!.trim().isNotEmpty) 'sourceUrl': sourceUrl!.trim(),
-        'createdAt': createdAt.toIso8601String(),
-      };
+    'id': id,
+    'title': title,
+    'skillTags': skillTags,
+    'conciseResult': conciseResult,
+    if (sourceUrl != null && sourceUrl!.trim().isNotEmpty)
+      'sourceUrl': sourceUrl!.trim(),
+    'createdAt': createdAt.toIso8601String(),
+  };
 
   factory EvidenceItem.fromJson(Map<String, dynamic> json) {
     final rawTags = json['skillTags'];
     List<String> tags = [];
     if (rawTags is List) {
-      tags = rawTags.map((e) => e.toString().trim()).where((e) => e.isNotEmpty).toList();
+      tags = rawTags
+          .map((e) => e.toString().trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
     }
     return EvidenceItem(
       id: json['id'] as String? ?? '',
@@ -54,8 +61,9 @@ class EvidenceItem {
       skillTags: tags,
       conciseResult: json['conciseResult'] as String? ?? '',
       sourceUrl: json['sourceUrl'] as String?,
-      createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now(),
+      createdAt:
+          DateTime.tryParse(json['createdAt'] as String? ?? '') ??
+          DateTime.now(),
     );
   }
 }
-

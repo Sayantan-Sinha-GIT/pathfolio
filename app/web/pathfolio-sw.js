@@ -1,10 +1,13 @@
 // Local-first app shell. No user records pass through this worker or a server.
-const CACHE = 'pathfolio-app-v1';
+const CACHE = 'pathfolio-app-v1.0.2';
 const APP = '/app/';
 const SHELL = [
   '', 'index.html', 'flutter_bootstrap.js', 'flutter.js', 'main.dart.js',
   'manifest.json', 'favicon.png', 'assets/AssetManifest.bin',
   'assets/FontManifest.json', 'assets/fonts/MaterialIcons-Regular.otf',
+  'assets/assets/fonts/PlusJakartaSans-Variable.ttf',
+  'assets/assets/fonts/Fraunces-Variable.ttf',
+  'assets/fonts/fallback/Roboto-Regular.ttf',
   'assets/packages/cupertino_icons/assets/CupertinoIcons.ttf',
   'assets/shaders/ink_sparkle.frag', 'assets/shaders/stretch_effect.frag',
   'canvaskit/canvaskit.js', 'canvaskit/canvaskit.wasm',

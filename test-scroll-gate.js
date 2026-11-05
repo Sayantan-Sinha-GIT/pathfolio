@@ -14,7 +14,7 @@ const http = require('http');
 const url = require('url');
 
 const ROOT_DIR = __dirname;
-const SCREENSHOT_DIR = path.join(ROOT_DIR, 'screenshots');
+const SCREENSHOT_DIR = process.env.PATHFOLIO_QA_DIR || path.join(ROOT_DIR, 'screenshots');
 const SIDE_BY_SIDE_DIR = path.join(SCREENSHOT_DIR, 'side_by_side');
 
 for (const d of [SCREENSHOT_DIR, SIDE_BY_SIDE_DIR]) {
@@ -522,11 +522,13 @@ async function assertMobileNavigationInteraction(page, viewportLabel) {
     errors.push(`[${viewportLabel}] Mobile menu failed to dismiss on Escape key press`);
   }
 
-  // Test Backdrop click dismissal (tap exposed backdrop area below menu drawer)
+  // Tap the exposed backdrop below the drawer. A forced center click can hit
+  // an overlapping menu link and navigate away instead of testing dismissal.
   await toggle.click();
   await page.waitForTimeout(300);
-  const vp = page.viewportSize();
-  await page.mouse.click(100, (vp ? vp.height : 600) - 15);
+  const backdropBox = await page.locator('#mob-backdrop').boundingBox();
+  if (!backdropBox) throw new Error('Mobile navigation backdrop is missing');
+  await page.locator('#mob-backdrop').click({ position: { x: 20, y: backdropBox.height - 15 } });
   await page.waitForTimeout(300);
 
   const backdropState = await page.evaluate(() => {
@@ -671,203 +673,203 @@ async function runGateForBaseUrl(baseUrl, label) {
         { width: 390, height: 844, deviceLabel: 'phone-390' }
       ];
 
-    for (const cfg of comparisonConfigs) {
-      for (const theme of ['dark', 'light']) {
-        console.log(`\n  >> Testing ${cfg.deviceLabel} in ${theme.toUpperCase()} theme`);
-        const ctxRef = await browser.newContext({ viewport: { width: cfg.width, height: cfg.height } });
-        const ctxImpl = await browser.newContext({ viewport: { width: cfg.width, height: cfg.height } });
-        const pageRef = await ctxRef.newPage();
-        const pageImpl = await ctxImpl.newPage();
+      for (const cfg of comparisonConfigs) {
+        for (const theme of ['dark', 'light']) {
+          console.log(`\n  >> Testing ${cfg.deviceLabel} in ${theme.toUpperCase()} theme`);
+          const ctxRef = await browser.newContext({ viewport: { width: cfg.width, height: cfg.height } });
+          const ctxImpl = await browser.newContext({ viewport: { width: cfg.width, height: cfg.height } });
+          const pageRef = await ctxRef.newPage();
+          const pageImpl = await ctxImpl.newPage();
 
-        // Listen for JS errors
-        const implErrors = [];
-        pageImpl.on('pageerror', (err) => implErrors.push(err.message));
-        pageImpl.on('console', (msg) => {
-          if (msg.type() === 'error') implErrors.push(msg.text());
-        });
-
-        await pageRef.goto(refUrl, { waitUntil: 'networkidle' });
-        await pageImpl.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
-
-        // Apply theme if light
-        if (theme === 'light') {
-          await pageRef.evaluate(() => {
-            document.documentElement.dataset.theme = 'light';
-            if (typeof colors === 'function') colors();
+          // Listen for JS errors
+          const implErrors = [];
+          pageImpl.on('pageerror', (err) => implErrors.push(err.message));
+          pageImpl.on('console', (msg) => {
+            if (msg.type() === 'error') implErrors.push(msg.text());
           });
-          await pageImpl.evaluate(() => {
-            document.documentElement.dataset.theme = 'light';
-            if (typeof colors === 'function') colors();
-          });
-        }
-        await pageRef.waitForTimeout(600);
-        await pageImpl.waitForTimeout(600);
 
-        // Define matched scene phases
-        const scenes = [
-          {
-            name: '01_hero_settled',
-            selector: '.hero',
-            phase: 'settled',
-            setup: async () => {
-              await pageRef.evaluate(() => window.scrollTo(0, 0));
-              await pageImpl.evaluate(() => window.scrollTo(0, 0));
-              await pageRef.waitForTimeout(1400);
-              await pageImpl.waitForTimeout(1400);
-            }
-          },
-          {
-            name: '02_pipeline_mid',
-            selector: '#pipeline',
-            phase: 'mid',
-            setup: async () => {
-              const yRef = await pageRef.evaluate(() => {
-                const el = document.getElementById('pipeline');
-                return el ? el.offsetTop + 350 : 1800;
-              });
-              const yImpl = await pageImpl.evaluate(() => {
-                const el = document.getElementById('pipeline');
-                return el ? el.offsetTop + 350 : 1800;
-              });
-              await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
-              await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
-              await pageRef.waitForTimeout(400);
-              await pageImpl.waitForTimeout(400);
-            }
-          },
-          {
-            name: '02_pipeline_after',
-            selector: '#pipeline',
-            phase: 'after',
-            setup: async () => {
-              const yRef = await pageRef.evaluate(() => {
-                const el = document.getElementById('pipeline');
-                return el ? el.offsetTop + 650 : 2200;
-              });
-              const yImpl = await pageImpl.evaluate(() => {
-                const el = document.getElementById('pipeline');
-                return el ? el.offsetTop + 650 : 2200;
-              });
-              await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
-              await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
-              await pageRef.waitForTimeout(400);
-              await pageImpl.waitForTimeout(400);
-            }
-          },
-          {
-            name: '03_evidence_mid',
-            selector: '#evidence',
-            phase: 'mid',
-            setup: async () => {
-              const yRef = await pageRef.evaluate(() => {
-                const el = document.getElementById('evidence');
-                return el ? el.offsetTop + 250 : 3000;
-              });
-              const yImpl = await pageImpl.evaluate(() => {
-                const el = document.getElementById('evidence');
-                return el ? el.offsetTop + 250 : 3000;
-              });
-              await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
-              await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
-              await pageRef.waitForTimeout(400);
-              await pageImpl.waitForTimeout(400);
-            }
-          },
-          {
-            name: '04_vault_sealed',
-            selector: '#vault',
-            phase: 'after',
-            setup: async () => {
-              const yRef = await pageRef.evaluate(() => {
-                const el = document.getElementById('vault');
-                return el ? el.offsetTop + 450 : 4200;
-              });
-              const yImpl = await pageImpl.evaluate(() => {
-                const el = document.getElementById('vault');
-                return el ? el.offsetTop + 450 : 4200;
-              });
-              await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
-              await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
-              await pageRef.waitForTimeout(400);
-              await pageImpl.waitForTimeout(400);
-            }
-          },
-          {
-            name: '05_tour_android',
-            selector: '#tour',
-            phase: 'android',
-            setup: async () => {
-              const yRef = await pageRef.evaluate(() => {
-                const el = document.getElementById('tour');
-                return el ? el.offsetTop + 150 : 5000;
-              });
-              const yImpl = await pageImpl.evaluate(() => {
-                const el = document.getElementById('tour');
-                return el ? el.offsetTop + 150 : 5000;
-              });
-              await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
-              await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
-              await pageRef.waitForTimeout(300);
-              await pageImpl.waitForTimeout(300);
-            }
-          },
-          {
-            name: '06_launch_closing',
-            selector: '#launch',
-            phase: 'closing',
-            setup: async () => {
-              const yRef = await pageRef.evaluate(() => {
-                const el = document.getElementById('launch');
-                return el ? el.offsetTop + 200 : 6600;
-              });
-              const yImpl = await pageImpl.evaluate(() => {
-                const el = document.getElementById('launch');
-                return el ? el.offsetTop + 200 : 6600;
-              });
-              await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
-              await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
-              await pageRef.waitForTimeout(400);
-              await pageImpl.waitForTimeout(400);
-            }
+          await pageRef.goto(refUrl, { waitUntil: 'networkidle' });
+          await pageImpl.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+
+          // Apply theme if light
+          if (theme === 'light') {
+            await pageRef.evaluate(() => {
+              document.documentElement.dataset.theme = 'light';
+              if (typeof colors === 'function') colors();
+            });
+            await pageImpl.evaluate(() => {
+              document.documentElement.dataset.theme = 'light';
+              if (typeof colors === 'function') colors();
+            });
           }
-        ];
+          await pageRef.waitForTimeout(600);
+          await pageImpl.waitForTimeout(600);
 
-        for (const sc of scenes) {
-          await sc.setup();
-          const shotRef = path.join(SIDE_BY_SIDE_DIR, `ref_${cfg.deviceLabel}_${theme}_${sc.name}.png`);
-          const shotImpl = path.join(SIDE_BY_SIDE_DIR, `impl_${cfg.deviceLabel}_${theme}_${sc.name}.png`);
-          const shotComp = path.join(SIDE_BY_SIDE_DIR, `compare_${cfg.deviceLabel}_${theme}_${sc.name}.png`);
+          // Define matched scene phases
+          const scenes = [
+            {
+              name: '01_hero_settled',
+              selector: '.hero',
+              phase: 'settled',
+              setup: async () => {
+                await pageRef.evaluate(() => window.scrollTo(0, 0));
+                await pageImpl.evaluate(() => window.scrollTo(0, 0));
+                await pageRef.waitForTimeout(1400);
+                await pageImpl.waitForTimeout(1400);
+              }
+            },
+            {
+              name: '02_pipeline_mid',
+              selector: '#pipeline',
+              phase: 'mid',
+              setup: async () => {
+                const yRef = await pageRef.evaluate(() => {
+                  const el = document.getElementById('pipeline');
+                  return el ? el.offsetTop + 350 : 1800;
+                });
+                const yImpl = await pageImpl.evaluate(() => {
+                  const el = document.getElementById('pipeline');
+                  return el ? el.offsetTop + 350 : 1800;
+                });
+                await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
+                await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
+                await pageRef.waitForTimeout(400);
+                await pageImpl.waitForTimeout(400);
+              }
+            },
+            {
+              name: '02_pipeline_after',
+              selector: '#pipeline',
+              phase: 'after',
+              setup: async () => {
+                const yRef = await pageRef.evaluate(() => {
+                  const el = document.getElementById('pipeline');
+                  return el ? el.offsetTop + 650 : 2200;
+                });
+                const yImpl = await pageImpl.evaluate(() => {
+                  const el = document.getElementById('pipeline');
+                  return el ? el.offsetTop + 650 : 2200;
+                });
+                await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
+                await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
+                await pageRef.waitForTimeout(400);
+                await pageImpl.waitForTimeout(400);
+              }
+            },
+            {
+              name: '03_evidence_mid',
+              selector: '#evidence',
+              phase: 'mid',
+              setup: async () => {
+                const yRef = await pageRef.evaluate(() => {
+                  const el = document.getElementById('evidence');
+                  return el ? el.offsetTop + 250 : 3000;
+                });
+                const yImpl = await pageImpl.evaluate(() => {
+                  const el = document.getElementById('evidence');
+                  return el ? el.offsetTop + 250 : 3000;
+                });
+                await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
+                await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
+                await pageRef.waitForTimeout(400);
+                await pageImpl.waitForTimeout(400);
+              }
+            },
+            {
+              name: '04_vault_sealed',
+              selector: '#vault',
+              phase: 'after',
+              setup: async () => {
+                const yRef = await pageRef.evaluate(() => {
+                  const el = document.getElementById('vault');
+                  return el ? el.offsetTop + 450 : 4200;
+                });
+                const yImpl = await pageImpl.evaluate(() => {
+                  const el = document.getElementById('vault');
+                  return el ? el.offsetTop + 450 : 4200;
+                });
+                await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
+                await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
+                await pageRef.waitForTimeout(400);
+                await pageImpl.waitForTimeout(400);
+              }
+            },
+            {
+              name: '05_tour_android',
+              selector: '#tour',
+              phase: 'android',
+              setup: async () => {
+                const yRef = await pageRef.evaluate(() => {
+                  const el = document.getElementById('tour');
+                  return el ? el.offsetTop + 150 : 5000;
+                });
+                const yImpl = await pageImpl.evaluate(() => {
+                  const el = document.getElementById('tour');
+                  return el ? el.offsetTop + 150 : 5000;
+                });
+                await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
+                await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
+                await pageRef.waitForTimeout(300);
+                await pageImpl.waitForTimeout(300);
+              }
+            },
+            {
+              name: '06_launch_closing',
+              selector: '#launch',
+              phase: 'closing',
+              setup: async () => {
+                const yRef = await pageRef.evaluate(() => {
+                  const el = document.getElementById('launch');
+                  return el ? el.offsetTop + 200 : 6600;
+                });
+                const yImpl = await pageImpl.evaluate(() => {
+                  const el = document.getElementById('launch');
+                  return el ? el.offsetTop + 200 : 6600;
+                });
+                await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
+                await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
+                await pageRef.waitForTimeout(400);
+                await pageImpl.waitForTimeout(400);
+              }
+            }
+          ];
 
-          await pageRef.screenshot({ path: shotRef });
-          await pageImpl.screenshot({ path: shotImpl });
+          for (const sc of scenes) {
+            await sc.setup();
+            const shotRef = path.join(SIDE_BY_SIDE_DIR, `ref_${cfg.deviceLabel}_${theme}_${sc.name}.png`);
+            const shotImpl = path.join(SIDE_BY_SIDE_DIR, `impl_${cfg.deviceLabel}_${theme}_${sc.name}.png`);
+            const shotComp = path.join(SIDE_BY_SIDE_DIR, `compare_${cfg.deviceLabel}_${theme}_${sc.name}.png`);
 
-          await createSideBySideComposite(
-            browser,
-            shotRef,
-            shotImpl,
-            shotComp,
-            `OWNER REFERENCE (my-design/home.html) [${cfg.deviceLabel} - ${theme}]`,
-            `PATHFOLIO IMPLEMENTATION [${cfg.deviceLabel} - ${theme}]`
-          );
+            await pageRef.screenshot({ path: shotRef });
+            await pageImpl.screenshot({ path: shotImpl });
 
-          results.sideBySideComparisons.push({
-            device: cfg.deviceLabel,
-            theme,
-            scene: sc.name,
-            compositeFile: path.basename(shotComp)
-          });
+            await createSideBySideComposite(
+              browser,
+              shotRef,
+              shotImpl,
+              shotComp,
+              `OWNER REFERENCE (my-design/home.html) [${cfg.deviceLabel} - ${theme}]`,
+              `PATHFOLIO IMPLEMENTATION [${cfg.deviceLabel} - ${theme}]`
+            );
+
+            results.sideBySideComparisons.push({
+              device: cfg.deviceLabel,
+              theme,
+              scene: sc.name,
+              compositeFile: path.basename(shotComp)
+            });
+          }
+
+          // Check for JS errors during visual comparison
+          if (implErrors.length > 0) {
+            results.passed = false;
+            results.errors.push(`JS Errors in ${cfg.deviceLabel} (${theme}): ${implErrors.join('; ')}`);
+          }
+
+          await ctxRef.close();
+          await ctxImpl.close();
         }
-
-        // Check for JS errors during visual comparison
-        if (implErrors.length > 0) {
-          results.passed = false;
-          results.errors.push(`JS Errors in ${cfg.deviceLabel} (${theme}): ${implErrors.join('; ')}`);
-        }
-
-        await ctxRef.close();
-        await ctxImpl.close();
       }
-    }
 
       results.referenceComparison = {
         status: 'COMPLETED',
@@ -1401,13 +1403,13 @@ async function runGateForBaseUrl(baseUrl, label) {
     const flutterStatus = await pageApp.evaluate(() => {
       const glass = document.querySelector('flt-glass-pane') || document.querySelector('flutter-view');
       const canvas = document.querySelector('flt-glass-pane')?.shadowRoot?.querySelector('canvas') ||
-                     document.querySelector('flutter-view')?.shadowRoot?.querySelector('canvas') ||
-                     document.querySelector('canvas');
+        document.querySelector('flutter-view')?.shadowRoot?.querySelector('canvas') ||
+        document.querySelector('canvas');
       let dataLen = 0;
       if (canvas) {
         try {
           dataLen = canvas.toDataURL().length;
-        } catch (e) {}
+        } catch (e) { }
       }
       return {
         hasView: !!glass,
@@ -1467,8 +1469,8 @@ async function runGateForBaseUrl(baseUrl, label) {
   console.log(`CORE ASSERTIONS:      ${results.passed ? 'PASSED (100% OK)' : 'FAILED'}`);
   const finalStatus = results.passed
     ? (results.referenceComparison && results.referenceComparison.status === 'SKIPPED'
-        ? 'PASSED (Core assertions 100% OK; reference comparison SKIPPED)'
-        : 'PASSED (100% OK)')
+      ? 'PASSED (Core assertions 100% OK; reference comparison SKIPPED)'
+      : 'PASSED (100% OK)')
     : 'FAILED';
   console.log(`RESULT:               ${finalStatus}`);
   if (results.errors.length > 0) {
