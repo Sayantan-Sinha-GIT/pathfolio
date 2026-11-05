@@ -717,7 +717,6 @@ html.js-motion-active .hero-anim-ledger {
 .dossier-stack-container {
   position: relative;
   width: 100%;
-  transform-style: preserve-3d;
   perspective: 1400px;
 }
 
@@ -738,7 +737,7 @@ html.js-motion-active .hero-anim-ledger {
   position: absolute;
   top: -26px;
   left: 20px;
-  z-index: 4;
+  z-index: 10;
   box-shadow: 0 -2px 6px rgba(20, 24, 22, 0.03);
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
@@ -759,12 +758,13 @@ html.js-motion-active .hero-anim-ledger {
   background-color: var(--bg-sunken);
   border: 1px solid var(--surface-border-strong);
   border-radius: var(--radius-lg);
-  transform: rotate(3deg) translateZ(-40px);
+  transform: rotate(3deg);
   z-index: 1;
   opacity: 0.75;
   transform-origin: center center;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
+  pointer-events: none;
 }
 
 .dossier-underlay-sheet-1 {
@@ -773,23 +773,24 @@ html.js-motion-active .hero-anim-ledger {
   background-color: var(--bg-subdued);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-lg);
-  transform: rotate(-1.5deg) translateZ(-20px);
+  transform: rotate(-1.5deg);
   z-index: 2;
   opacity: 0.85;
   transform-origin: center center;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
+  pointer-events: none;
 }
 
 .dossier-card {
   position: relative;
-  z-index: 3;
+  z-index: 5;
   background-color: var(--surface);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   overflow: hidden;
-  transform: perspective(1200px) rotateY(-6deg) rotateX(4deg) translateZ(0);
+  transform: perspective(1200px) rotateY(-6deg) rotateX(4deg);
   transform-origin: center center;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color var(--transition-fast), box-shadow var(--transition-fast);
   will-change: transform, opacity;
@@ -802,19 +803,19 @@ html.js-motion-active .hero-anim-ledger {
 
 @keyframes dossier-entrance-3d {
   0% {
-    transform: perspective(1400px) rotateX(16deg) rotateY(-18deg) translateY(60px) translateZ(-80px);
-    opacity: 0.15;
+    transform: perspective(1400px) rotateX(12deg) rotateY(-14deg) translateY(40px);
+    opacity: 0.2;
     box-shadow: 0 4px 12px rgba(20, 24, 22, 0.02);
   }
   100% {
-    transform: perspective(1200px) rotateX(4deg) rotateY(-6deg) translateY(0) translateZ(0);
+    transform: perspective(1200px) rotateX(4deg) rotateY(-6deg) translateY(0);
     opacity: 1;
     box-shadow: var(--shadow-card);
   }
 }
 
 .dossier-card:hover {
-  transform: rotateY(-2deg) rotateX(1deg) translateZ(10px);
+  transform: perspective(1200px) rotateY(-2deg) rotateX(1deg);
   box-shadow: 0 8px 24px rgba(20, 24, 22, 0.08), 0 24px 50px rgba(20, 24, 22, 0.1);
 }
 
@@ -2015,11 +2016,11 @@ html.js-motion-active .motion-reading-section.is-revealed {
 
 .callout-box {
   background-color: var(--bg-subdued);
-  border: 1px solid var(--surface-border);
-  border-left: 4px solid var(--accent);
-  border-radius: var(--radius-sm);
-  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--surface-border-strong);
+  border-radius: var(--radius-md);
+  padding: 1.35rem 1.6rem;
   margin: 1.75rem 0;
+  box-shadow: 0 1px 3px rgba(20, 24, 22, 0.04);
 }
 
 .callout-box h4 {

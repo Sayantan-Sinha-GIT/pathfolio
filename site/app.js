@@ -204,6 +204,14 @@
           ctx.stroke();
         }
 
+        // Monospace Milestone Caliper Tag safely docked at left architectural margin ruler
+        // Preserves the drafting aesthetic without sweeping moving text tags across foreground copy
+        if (width >= 1024) {
+          ctx.font = '500 9px "JetBrains Mono", monospace';
+          ctx.fillStyle = labelColor;
+          ctx.fillText(rail.label, 24, y - 6);
+        }
+
         // Active Kinetic Milestone Transport Packets
         rail.pips.forEach((pos, pIdx) => {
           rail.pips[pIdx] = (pos + rail.speed * dt) % 1.0;
@@ -234,13 +242,6 @@
           ctx.beginPath();
           ctx.arc(px, y, 3.2, 0, Math.PI * 2);
           ctx.fill();
-
-          // Monospace Milestone Caliper Tag (shown on desktop/tablet, hidden on mobile behind text)
-          if (width >= 768) {
-            ctx.font = '500 9px "JetBrains Mono", monospace';
-            ctx.fillStyle = labelColor;
-            ctx.fillText(rail.label, px + 12, y - 6);
-          }
         });
       });
 
@@ -735,19 +736,19 @@
             const u1Rot = (-1.5 - heroProgress * 4.5).toFixed(2);
             const u1X = Math.round(-heroProgress * 30);
             const u1Y = Math.round(heroProgress * 14);
-            heroUnderlay1.style.transform = `rotate(${u1Rot}deg) translate3d(${u1X}px, ${u1Y}px, -25px)`;
+            heroUnderlay1.style.transform = `rotate(${u1Rot}deg) translate(${u1X}px, ${u1Y}px)`;
           }
 
           if (heroUnderlay2) {
             const u2Rot = (3 + heroProgress * 3.8).toFixed(2);
             const u2X = Math.round(heroProgress * 26);
             const u2Y = Math.round(heroProgress * 18);
-            heroUnderlay2.style.transform = `rotate(${u2Rot}deg) translate3d(${u2X}px, ${u2Y}px, -50px)`;
+            heroUnderlay2.style.transform = `rotate(${u2Rot}deg) translate(${u2X}px, ${u2Y}px)`;
           }
 
           if (heroFolderTab) {
             const tabY = Math.round(-heroProgress * 8);
-            heroFolderTab.style.transform = `translate3d(0, ${tabY}px, 15px)`;
+            heroFolderTab.style.transform = `translateY(${tabY}px)`;
           }
         }
       }

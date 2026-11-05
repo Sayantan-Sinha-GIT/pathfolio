@@ -272,6 +272,92 @@ async function assertNoJsVisibility(page) {
   });
 }
 
+/**
+ * Assert that front card text and control elements are NEVER occluded by underlay sheets
+ * Uses document.elementFromPoint to geometrically verify real rendering across light and dark themes
+ */
+async function assertFrontCardNonOcclusion(page, theme, viewportLabel, label) {
+  const isMobile = viewportLabel.includes('mobile') || viewportLabel.includes('phone') || viewportLabel.includes('390');
+  const scrollOffsets = isMobile ? [0, 150, 300] : [0, 150, 350, 500];
+  const sampleSelectors = [
+    '#hero-dossier-tab',
+    '#dossier-company',
+    '#dossier-role',
+    '#dossier-stage-pill',
+    '#dossier-next-action',
+    '.dossier-tab.active'
+  ];
+
+  const errors = [];
+
+  for (const scrollY of scrollOffsets) {
+    await page.evaluate((y) => window.scrollTo(0, y), scrollY);
+    await page.waitForTimeout(120);
+
+    const checkResult = await page.evaluate(({ selectors, y }) => {
+      const issues = [];
+      const underlay1 = document.getElementById('hero-underlay-1');
+      const underlay2 = document.getElementById('hero-underlay-2');
+
+      for (const sel of selectors) {
+        const el = document.querySelector(sel);
+        if (!el) {
+          issues.push({ selector: sel, error: 'Element not found in DOM' });
+          continue;
+        }
+
+        const rect = el.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) continue;
+
+        // Sample center point and upper point
+        const points = [
+          { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, label: 'center' },
+          { x: rect.left + rect.width / 2, y: rect.top + Math.min(10, rect.height / 4), label: 'top' }
+        ];
+
+        for (const pt of points) {
+          if (pt.x < 0 || pt.x > window.innerWidth || pt.y < 0 || pt.y > window.innerHeight) {
+            continue; // offscreen
+          }
+
+          const hit = document.elementFromPoint(pt.x, pt.y);
+          if (!hit) continue;
+
+          const hitUnderlay1 = hit.closest('#hero-underlay-1');
+          const hitUnderlay2 = hit.closest('#hero-underlay-2');
+
+          if (hitUnderlay1 || hitUnderlay2) {
+            issues.push({
+              selector: sel,
+              scrollY: y,
+              point: pt.label,
+              hitTag: hit.tagName,
+              hitId: hit.id,
+              error: `OCCLUDED by underlay sheet (${hitUnderlay1 ? 'hero-underlay-1' : 'hero-underlay-2'})`
+            });
+          }
+        }
+      }
+
+      return issues;
+    }, { selectors: sampleSelectors, y: scrollY });
+
+    if (checkResult.length > 0) {
+      errors.push(...checkResult.map(c => `[${theme} ${viewportLabel} scrollY=${scrollY}] ${c.selector} ${c.error}`));
+    }
+
+    // Save visual proof screenshot
+    const shotPath = path.join(SCREENSHOT_DIR, `${label}-${viewportLabel}-${theme}-scroll${scrollY}.png`);
+    await page.screenshot({ path: shotPath });
+  }
+
+  // Restore scroll to 0
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(100);
+
+  return errors;
+}
+
 async function runGateForBaseUrl(baseUrl, label) {
   console.log(`\n===============================================================`);
   console.log(`RUNNING PLAYWRIGHT SCROLL GATE FOR: [${label}] -> ${baseUrl}`);
@@ -415,6 +501,31 @@ async function runGateForBaseUrl(baseUrl, label) {
     } else {
       console.log(`  ✓ 3D Layered Dossier Spread PASSED: Underlay 1 & 2 rotated/translated distinctly across scroll.`);
     }
+
+    // Verify front card geometric non-occlusion in both Light and Dark themes (Desktop 1440)
+    console.log(`\n--- Testing Front Card Non-Occlusion (Desktop 1440 Light Theme) ---`);
+    const lightOcclusionErrors = await assertFrontCardNonOcclusion(page1440, 'light', 'desktop-1440', label);
+    if (lightOcclusionErrors.length > 0) {
+      results.passed = false;
+      results.errors.push(...lightOcclusionErrors);
+      console.error(`  ✗ Light Desktop 1440 Front Card Occlusion Errors:`, lightOcclusionErrors);
+    } else {
+      console.log(`  ✓ Light Desktop 1440: Backing planes strictly behind front card at all scroll offsets (0, 150, 350, 500px).`);
+    }
+
+    console.log(`\n--- Testing Front Card Non-Occlusion (Desktop 1440 Dark Theme) ---`);
+    await page1440.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+    await page1440.waitForTimeout(200);
+    const darkOcclusionErrors = await assertFrontCardNonOcclusion(page1440, 'dark', 'desktop-1440', label);
+    if (darkOcclusionErrors.length > 0) {
+      results.passed = false;
+      results.errors.push(...darkOcclusionErrors);
+      console.error(`  ✗ Dark Desktop 1440 Front Card Occlusion Errors:`, darkOcclusionErrors);
+    } else {
+      console.log(`  ✓ Dark Desktop 1440: Backing planes strictly behind front card at all scroll offsets (0, 150, 350, 500px).`);
+    }
+    await page1440.evaluate(() => document.documentElement.removeAttribute('data-theme'));
+    await page1440.waitForTimeout(100);
 
     // -------------------------------------------------------------------------
     // Desktop Chapter 1: The Six-Stage Career Pipeline Runway (#milestones)
@@ -915,6 +1026,23 @@ async function runGateForBaseUrl(baseUrl, label) {
     // Close drawer
     await page390.click('#mobile-menu-toggle');
     await page390.waitForTimeout(200);
+
+    // Verify front card geometric non-occlusion in both Light and Dark themes (Mobile 390)
+    console.log(`\n--- Testing Front Card Non-Occlusion (Mobile 390 Light & Dark) ---`);
+    const mobileLightErrors = await assertFrontCardNonOcclusion(page390, 'light', 'phone-390', label);
+    await page390.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+    await page390.waitForTimeout(150);
+    const mobileDarkErrors = await assertFrontCardNonOcclusion(page390, 'dark', 'phone-390', label);
+    await page390.evaluate(() => document.documentElement.removeAttribute('data-theme'));
+    await page390.waitForTimeout(100);
+    const mobileOcclusionErrors = [...mobileLightErrors, ...mobileDarkErrors];
+    if (mobileOcclusionErrors.length > 0) {
+      results.passed = false;
+      results.errors.push(...mobileOcclusionErrors);
+      console.error(`  ✗ Mobile 390 Front Card Occlusion Errors:`, mobileOcclusionErrors);
+    } else {
+      console.log(`  ✓ Mobile 390: Backing planes strictly behind front card in light and dark.`);
+    }
 
     // -------------------------------------------------------------------------
     // Phone Chapter 1: Runway Motion on 390 Viewport (#milestones)
