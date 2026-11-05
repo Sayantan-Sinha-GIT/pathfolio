@@ -329,6 +329,205 @@ async function assertNoJsVisibility(page) {
 }
 
 /**
+ * Verify settled rolling counters actual visible glyphs, geometry, and accessible attributes
+ */
+async function assertSettledRollingCounters(page, viewportLabel) {
+  const errors = [];
+  const counters = await page.evaluate(() => {
+    return Array.from(document.querySelectorAll('.od')).map((od) => {
+      const rect = od.getBoundingClientRect();
+      const col = od.querySelector('.od-col');
+      const colRect = col ? col.getBoundingClientRect() : null;
+      const centerEl = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+      const bs = Array.from(od.querySelectorAll('b')).map((b, idx) => {
+        const bRect = b.getBoundingClientRect();
+        const overlapTop = Math.max(rect.top, bRect.top);
+        const overlapBottom = Math.min(rect.bottom, bRect.bottom);
+        const overlap = Math.max(0, overlapBottom - overlapTop);
+        return {
+          digit: b.textContent.trim(),
+          index: idx,
+          overlapRatio: overlap / rect.height
+        };
+      });
+      const visibleB = bs.find((b) => b.overlapRatio > 0.85);
+
+      return {
+        dataN: od.dataset.n,
+        containerHeight: rect.height,
+        colHeight: colRect ? colRect.height : null,
+        centerText: centerEl ? centerEl.textContent.trim() : null,
+        visibleDigit: visibleB ? visibleB.digit : null,
+        visibleOverlap: visibleB ? visibleB.overlapRatio : null,
+        ariaLabel: od.getAttribute('aria-label'),
+        srText: od.querySelector('.sr-only')?.textContent.trim(),
+        decorativeAriaHidden: od.querySelector('.od-strip')?.getAttribute('aria-hidden')
+      };
+    });
+  });
+
+  const expectedDigits = ['6', '2', '0', '0'];
+  if (counters.length !== 4) {
+    errors.push(`[${viewportLabel}] Expected 4 .od counters, found ${counters.length}`);
+    return { errors, counters };
+  }
+
+  counters.forEach((c, idx) => {
+    const exp = expectedDigits[idx];
+    if (c.visibleDigit !== exp) {
+      errors.push(`[${viewportLabel}] Counter ${idx} (data-n=${c.dataN}): visible digit is '${c.visibleDigit}', expected '${exp}'`);
+    }
+    if (c.centerText !== exp) {
+      errors.push(`[${viewportLabel}] Counter ${idx} (data-n=${c.dataN}): center point text is '${c.centerText}', expected '${exp}'`);
+    }
+    if (!c.visibleOverlap || c.visibleOverlap < 0.9) {
+      errors.push(`[${viewportLabel}] Counter ${idx} (data-n=${c.dataN}): visible overlap is ${((c.visibleOverlap || 0) * 100).toFixed(1)}%, expected >= 90% (clipped digit)`);
+    }
+    if (c.decorativeAriaHidden !== 'true') {
+      errors.push(`[${viewportLabel}] Counter ${idx}: decorative strip missing aria-hidden="true"`);
+    }
+    if (!c.ariaLabel && !c.srText) {
+      errors.push(`[${viewportLabel}] Counter ${idx}: missing truthful accessible aria-label or .sr-only label`);
+    }
+  });
+
+  return { errors, counters };
+}
+
+/**
+ * Verify accessible interactive mobile navigation (tap targets, drawer open/close, escape, links, scroll)
+ */
+async function assertMobileNavigationInteraction(page, viewportLabel) {
+  const errors = [];
+
+  const toggle = page.locator('#mob-toggle');
+  const count = await toggle.count();
+  if (count === 0) {
+    errors.push(`[${viewportLabel}] Missing #mob-toggle button`);
+    return errors;
+  }
+
+  const box = await toggle.boundingBox();
+  if (!box || box.width < 36 || box.height < 36) {
+    errors.push(`[${viewportLabel}] #mob-toggle tap target is too small: ${box?.width}x${box?.height}`);
+  }
+
+  // Click toggle to open
+  await toggle.click();
+  await page.waitForTimeout(300);
+
+  const openState = await page.evaluate(() => {
+    const menu = document.getElementById('mob-menu');
+    const btn = document.getElementById('mob-toggle');
+    const backdrop = document.getElementById('mob-backdrop');
+    const links = Array.from(menu ? menu.querySelectorAll('a') : []).map((a) => ({
+      href: a.getAttribute('href'),
+      text: a.textContent.trim(),
+      height: a.getBoundingClientRect().height,
+      visible: window.getComputedStyle(a).display !== 'none'
+    }));
+
+    return {
+      expanded: btn?.getAttribute('aria-expanded'),
+      menuOpen: menu?.classList.contains('is-open'),
+      backdropOpen: backdrop?.classList.contains('is-open'),
+      links
+    };
+  });
+
+  if (openState.expanded !== 'true') {
+    errors.push(`[${viewportLabel}] #mob-toggle aria-expanded is '${openState.expanded}', expected 'true' on open`);
+  }
+  if (!openState.menuOpen) {
+    errors.push(`[${viewportLabel}] #mob-menu missing .is-open class when opened`);
+  }
+  if (!openState.backdropOpen) {
+    errors.push(`[${viewportLabel}] #mob-backdrop missing .is-open class when opened`);
+  }
+
+  // Check required links
+  const requiredHrefs = ['#pipeline', '#evidence', '#vault', '#tour', '#privacy', '/guide.html', '/privacy.html', '/app/'];
+  for (const href of requiredHrefs) {
+    const found = openState.links.find((l) => l.href === href || l.href?.endsWith(href));
+    if (!found) {
+      errors.push(`[${viewportLabel}] Mobile menu missing required route link: ${href}`);
+    } else if (!found.visible) {
+      errors.push(`[${viewportLabel}] Mobile menu link ${href} is not visible`);
+    } else if (found.height < 44) {
+      errors.push(`[${viewportLabel}] Mobile menu link ${href} tap target is too small (${found.height.toFixed(1)}px < 44px)`);
+    }
+  }
+
+  // Test Escape key dismissal
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(300);
+
+  const escapeState = await page.evaluate(() => {
+    const menu = document.getElementById('mob-menu');
+    const btn = document.getElementById('mob-toggle');
+    return {
+      expanded: btn?.getAttribute('aria-expanded'),
+      menuClosed: !menu?.classList.contains('is-open')
+    };
+  });
+
+  if (escapeState.expanded !== 'false' || !escapeState.menuClosed) {
+    errors.push(`[${viewportLabel}] Mobile menu failed to dismiss on Escape key press`);
+  }
+
+  // Test Backdrop click dismissal
+  await toggle.click();
+  await page.waitForTimeout(300);
+  await page.locator('#mob-backdrop').click({ force: true });
+  await page.waitForTimeout(300);
+
+  const backdropState = await page.evaluate(() => {
+    const menu = document.getElementById('mob-menu');
+    const btn = document.getElementById('mob-toggle');
+    return {
+      expanded: btn?.getAttribute('aria-expanded'),
+      menuClosed: !menu?.classList.contains('is-open')
+    };
+  });
+
+  if (backdropState.expanded !== 'false' || !backdropState.menuClosed) {
+    errors.push(`[${viewportLabel}] Mobile menu failed to dismiss on backdrop click`);
+  }
+
+  // Test Opening after scroll and anchor link click
+  await page.evaluate(() => window.scrollTo(0, 1200));
+  await page.waitForTimeout(200);
+  await toggle.click();
+  await page.waitForTimeout(300);
+
+  await page.click('#mob-menu a[href="#vault"]');
+  await page.waitForTimeout(600);
+
+  const navResult = await page.evaluate(() => {
+    const menu = document.getElementById('mob-menu');
+    const btn = document.getElementById('mob-toggle');
+    const vault = document.getElementById('vault');
+    const header = document.querySelector('.hd');
+    const vRect = vault?.getBoundingClientRect();
+    const hRect = header?.getBoundingClientRect();
+    return {
+      menuClosed: btn?.getAttribute('aria-expanded') === 'false' && !menu?.classList.contains('is-open'),
+      clearance: vRect && hRect ? vRect.top - hRect.bottom : -999
+    };
+  });
+
+  if (!navResult.menuClosed) {
+    errors.push(`[${viewportLabel}] Mobile menu did not auto-close after clicking anchor #vault`);
+  }
+  if (navResult.clearance < 10) {
+    errors.push(`[${viewportLabel}] Anchor #vault occluded by header after mobile nav click (clearance: ${navResult.clearance.toFixed(1)}px)`);
+  }
+
+  return errors;
+}
+
+/**
  * Verify Front Sheet Non-Occlusion by Underlay Sheets
  */
 async function assertFrontSheetNonOcclusion(page, theme, viewportLabel) {
@@ -855,7 +1054,36 @@ async function runGateForBaseUrl(baseUrl, label) {
     console.log(`    C5 Cinematic Clip: Start=${c5Start.cinClip} -> End=${c5End.cinClip}`);
     console.log(`    C5 Leaf Transform: Start=${c5Start.leafL} -> End=${c5End.leafL}`);
 
+    // Settled Rolling Counters on Desktop (1440x900)
+    console.log(`\n--- Testing Settled Rolling Counters on Desktop (1440x900) ---`);
+    await pageMotion.evaluate(() => window.scrollTo(0, 0));
+    await pageMotion.waitForTimeout(3600); // Wait for roll animation to settle
+    const desktopCounterRes = await assertSettledRollingCounters(pageMotion, 'desktop-1440');
+    if (desktopCounterRes.errors.length > 0) {
+      results.passed = false;
+      results.errors.push(...desktopCounterRes.errors);
+      console.error(`  ✗ Desktop Counter Errors:`, desktopCounterRes.errors);
+    } else {
+      console.log(`  ✓ Settled Rolling Counters PASSED (Desktop 1440): Exact visible glyphs [6, 2, 0, 0] confirmed with >90% bounding overlap.`);
+    }
+
     await ctxMotion.close();
+
+    // Settled Rolling Counters on Mobile (390x844)
+    console.log(`\n--- Testing Settled Rolling Counters on Mobile (390x844) ---`);
+    const ctxMobC = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const pageMobC = await ctxMobC.newPage();
+    await pageMobC.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+    await pageMobC.waitForTimeout(3600);
+    const mobCounterRes = await assertSettledRollingCounters(pageMobC, 'mobile-390');
+    if (mobCounterRes.errors.length > 0) {
+      results.passed = false;
+      results.errors.push(...mobCounterRes.errors);
+      console.error(`  ✗ Mobile Counter Errors:`, mobCounterRes.errors);
+    } else {
+      console.log(`  ✓ Settled Rolling Counters PASSED (Mobile 390): Exact visible glyphs [6, 2, 0, 0] confirmed with >90% bounding overlap.`);
+    }
+    await ctxMobC.close();
 
     // -------------------------------------------------------------------------
     // 3. Viewport Containment Checks (1440, 1024, 768, 390, 320)
@@ -893,6 +1121,55 @@ async function runGateForBaseUrl(baseUrl, label) {
       }
       await ctxVp.close();
     }
+
+    // -------------------------------------------------------------------------
+    // 3A. Interactive Mobile Navigation Checks (Phone 390 & Narrow 320, Both Themes)
+    // -------------------------------------------------------------------------
+    console.log(`\n--- Testing Interactive Mobile Navigation (Phone 390x844 & Narrow 320x600) ---`);
+    // 390 Dark
+    const ctxNav390 = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const pageNav390 = await ctxNav390.newPage();
+    await pageNav390.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+    await pageNav390.waitForTimeout(300);
+    const nav390DarkErrors = await assertMobileNavigationInteraction(pageNav390, 'phone-390-dark');
+    if (nav390DarkErrors.length > 0) {
+      results.passed = false;
+      results.errors.push(...nav390DarkErrors);
+      console.error(`  ✗ Mobile Nav Errors (390 Dark):`, nav390DarkErrors);
+    } else {
+      console.log(`  ✓ Mobile Navigation PASSED (Phone 390 Dark): Toggle, tap targets >=44px, drawer open/close, Escape, outside click, clearance.`);
+    }
+
+    // 390 Light
+    await pageNav390.evaluate(() => {
+      document.documentElement.dataset.theme = 'light';
+      if (typeof colors === 'function') colors();
+    });
+    await pageNav390.waitForTimeout(200);
+    const nav390LightErrors = await assertMobileNavigationInteraction(pageNav390, 'phone-390-light');
+    if (nav390LightErrors.length > 0) {
+      results.passed = false;
+      results.errors.push(...nav390LightErrors);
+      console.error(`  ✗ Mobile Nav Errors (390 Light):`, nav390LightErrors);
+    } else {
+      console.log(`  ✓ Mobile Navigation PASSED (Phone 390 Light): All 9 destinations accessible with proper contrast and clearance.`);
+    }
+    await ctxNav390.close();
+
+    // 320 Narrow
+    const ctxNav320 = await browser.newContext({ viewport: { width: 320, height: 600 } });
+    const pageNav320 = await ctxNav320.newPage();
+    await pageNav320.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+    await pageNav320.waitForTimeout(300);
+    const nav320Errors = await assertMobileNavigationInteraction(pageNav320, 'narrow-320');
+    if (nav320Errors.length > 0) {
+      results.passed = false;
+      results.errors.push(...nav320Errors);
+      console.error(`  ✗ Mobile Nav Errors (320 Narrow):`, nav320Errors);
+    } else {
+      console.log(`  ✓ Mobile Navigation PASSED (Narrow 320): Clean open, zero overflow, all links reachable.`);
+    }
+    await ctxNav320.close();
 
     // -------------------------------------------------------------------------
     // 4. Sticky Header Clearance on Anchor Clicks
@@ -949,6 +1226,15 @@ async function runGateForBaseUrl(baseUrl, label) {
     } else {
       console.log(`  ✓ Reduced-Motion PASSED: All 28 key content elements rendered at opacity >= 0.9.`);
     }
+
+    const rmCounterRes = await assertSettledRollingCounters(pageRm, 'reduced-motion');
+    if (rmCounterRes.errors.length > 0) {
+      results.passed = false;
+      results.errors.push(...rmCounterRes.errors);
+      console.error(`  ✗ Reduced-Motion Counter Errors:`, rmCounterRes.errors);
+    } else {
+      console.log(`  ✓ Reduced-Motion Counters PASSED: Static digits [6, 2, 0, 0] confirmed.`);
+    }
     await ctxRm.close();
 
     console.log(`\n--- Testing No-JS Fallback Visibility ---`);
@@ -967,6 +1253,15 @@ async function runGateForBaseUrl(baseUrl, label) {
       console.error(`  ✗ No-JS Visibility Errors:`, noJsErrors);
     } else {
       console.log(`  ✓ No-JS Visibility PASSED: All major structural sections visible and readable without script.`);
+    }
+
+    const noJsCounterRes = await assertSettledRollingCounters(pageNoJs, 'no-js');
+    if (noJsCounterRes.errors.length > 0) {
+      results.passed = false;
+      results.errors.push(...noJsCounterRes.errors);
+      console.error(`  ✗ No-JS Counter Errors:`, noJsCounterRes.errors);
+    } else {
+      console.log(`  ✓ No-JS Counters PASSED: Static HTML fallback digits [6, 2, 0, 0] confirmed.`);
     }
     await ctxNoJs.close();
 

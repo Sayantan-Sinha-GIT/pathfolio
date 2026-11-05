@@ -1,17 +1,22 @@
 # Pathfolio — Website Cinematic Motion & Visual Overhaul Review (Section 4A)
 
-## Visual World Direction & Audit
-- **Visual World**: **The Kinetic Career Dossier & Architectural Milestone System**.
-- **Audit Against CodeSense (Motifs Explicitly Removed)**:
-  1. *Removed Black Cosmic Void*: Replaced `#0B0D12` / `#0B0E14` space background with Warm Porcelain / Archival Linen (`#F8F7F4` light default, `#0A1210` deep-forest slate dark).
-  2. *Removed Neon Orange/Amber Cosmic Filaments*: Replaced glowing orange `--accent-glow` and drifting aurora clouds with Alpine Verdigris (`#0F4D3F` light, `#2DD4BF` dark) and Architectural Brass (`#B87333`).
-  3. *Removed Floating Star Particles & Distance Spider-Webs*: Replaced cosmic particle swarm with dual-line horizontal architectural guide rails, moving warm brass milestone transport packets with luminous tracer tails, and precision drafting grid rules.
-  4. *Removed Terminal / Mock IDE Window*: Replaced red/amber/green window dots and `pathfolio@local:~$` logs with an authentic tactile 3D candidate portfolio dossier card (*"Maya Lin — Staff Distributed Systems Engineer"*) with architectural folder ear tab (`DOSSIER // 2026-ENG-SYSTEMS`).
-  5. *Removed Telemetric / Military Jargon & Security Absolutes*: Audited and removed `LOCAL_SANDBOX :: SECURED`, replacing with technically accurate `STORAGE :: CLIENT SANDBOX (v1 SCHEMA)`.
-- **Typography System (Self-Hosted)**:
-  - Display / Headings: `Fraunces` (600, 700) self-hosted woff2 with commanding scale and italic display contrast (*"Track every loop. Own the evidence."*).
-  - Body & UI: `Plus Jakarta Sans` (400, 500, 600, 700) self-hosted woff2.
-  - Monospace / Data: `JetBrains Mono` (400, 500) self-hosted woff2.
+## Visual World Direction & Design Fidelity Clarification
+
+### Owner-Supplied HTML as Intended Visual Specification
+In accordance with global and kit fidelity guidelines, the owner-supplied design (`my-design/home.html`, 43,390 bytes, Claude reference) is the **authoritative visual and motion specification**, rather than a benchmark to differentiate from. The implementation faithfully executes its layout, self-hosted typography (`Fraunces`, `Plus Jakarta Sans`, `JetBrains Mono`), color palette, background canvas, and GSAP/ScrollTrigger/Lenis motion engine.
+
+> [!NOTE] Historical Benchmark Reviews (Superseded)
+> Prior review rounds evaluated differentiation against third-party benchmarks (e.g. CodeSense, Grepless, Haan). Those analyses are now **officially superseded** by the direct implementation and side-by-side verification of the owner-supplied design.
+
+### Essential Technical Corrections to Reference Design
+1. **Hero Rolling Counter Strip Geometry**:
+   - The reference HTML suffered from a flexbox height stretching issue where `.od` as an `inline-flex` container clamped `.od span` to a computed height of 41.6px (33.6px on mobile) instead of the full 11-digit strip height ($457.6\text{px}$). This caused percentage translations to move less than a single digit, showing clipped numbers (e.g. half of '0' and half of '1').
+   - **Fix**: Updated production CSS with `align-items: flex-start; overflow: hidden;` and `.od-col` with `flex-shrink: 0; height: auto; min-height: 11em;` and animated to exact target digits with GSAP `yPercent`. Settled visible glyphs are strictly verified by automated Playwright browser checks at **6 stages, 2 platforms, 0 sign-ins, and 0 tracking scripts** with $>90\%$ bounding box overlap and `document.elementFromPoint` assertion.
+   - **Accessibility & No-JS Fallback**: Decorative digits have `aria-hidden="true"`, while screen-readers receive one truthful accessible value (`aria-label="6 pipeline stages"`, `.sr-only`). Without JavaScript, static HTML displays the exact settled digits.
+2. **Accessible Mobile Navigation**:
+   - The reference HTML hid `.nav` on mobile viewports ($\le 900\text{px}$) with `display: none` without providing an alternative menu.
+   - **Fix**: Added a compact, accessible mobile navigation drawer (`#mob-menu`) and toggle button (`#mob-toggle`) with backdrop overlay (`#mob-backdrop`). All 9 destinations (5 sections + guide, privacy, app, APK) are reachable at 390px and 320px in both dark and light themes, with tap targets $\ge 44\text{px}$, Escape key dismissal, backdrop tap dismissal, and sticky header clearance.
+
 - **Surfaces Evaluated**:
   - Marketing Landing Page (`/`)
   - User Strategy Guide (`/guide.html`)

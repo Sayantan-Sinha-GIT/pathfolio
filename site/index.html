@@ -17,8 +17,30 @@
 <header class="hd">
 <a class="logo" href="#top" aria-label="Pathfolio home"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="3" y="7" width="22" height="22" rx="2" stroke="var(--ink)" stroke-width="2"/><rect x="7" y="3" width="22" height="22" rx="2" fill="var(--bg)" stroke="var(--brass)" stroke-width="2"/><path d="M12 18l4-8 4 8" stroke="var(--acc)" stroke-width="2"/></svg><span>Pathfolio</span></a>
 <nav class="nav" aria-label="Primary"><a href="#pipeline">Pipeline</a><a href="#evidence">Evidence</a><a href="#vault">Backup</a><a href="#tour">App tour</a><a href="#privacy">Privacy</a></nav>
-<div class="hr"><button class="th" id="th" type="button" aria-label="Switch between dark and light theme"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 2a7 7 0 000 14z" fill="currentColor"/></svg></button><a class="btn mag" href="/app/">Launch App</a></div>
+<div class="hr"><button class="th" id="th" type="button" aria-label="Switch between dark and light theme"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 2a7 7 0 000 14z" fill="currentColor"/></svg></button><a class="btn mag" href="/app/">Launch App</a><button class="mob-toggle" id="mob-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mob-menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line class="l1" x1="4" y1="6" x2="20" y2="6"/><line class="l2" x1="4" y1="12" x2="20" y2="12"/><line class="l3" x1="4" y1="18" x2="20" y2="18"/></svg></button></div>
 </header>
+<div class="mob-backdrop" id="mob-backdrop" aria-hidden="true"></div>
+<nav class="mob-menu" id="mob-menu" aria-label="Mobile Navigation" aria-hidden="true">
+<div class="mob-menu-inner">
+<div class="mob-group">
+<div class="mob-group-title">Sections</div>
+<a class="mob-link" href="#pipeline"><span class="mob-num">01</span><span>Pipeline Runway</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+<a class="mob-link" href="#evidence"><span class="mob-num">02</span><span>Evidence Bank</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+<a class="mob-link" href="#vault"><span class="mob-num">03</span><span>Sovereign Backup</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+<a class="mob-link" href="#tour"><span class="mob-num">04</span><span>App Tour</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+<a class="mob-link" href="#privacy"><span class="mob-num">05</span><span>Storage & Privacy</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+</div>
+<div class="mob-group">
+<div class="mob-group-title">Documentation & Strategy</div>
+<a class="mob-link" href="/guide.html"><span class="mob-num">DOC</span><span>Usage Guide & Strategy</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+<a class="mob-link" href="/privacy.html"><span class="mob-num">PRI</span><span>Privacy Architecture</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+</div>
+<div class="mob-group mob-acts">
+<a class="btn mag" href="/app/">Launch Web App</a>
+<a class="btn g mag" href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest">Download Android APK</a>
+</div>
+</div>
+</nav>
 <main id="top">
 <section class="hero">
 <div>
@@ -26,7 +48,7 @@
 <h1 aria-label="Your job search, kept in your own hands."><span class="ln"><span>Your job search,</span></span><span class="ln"><span><em>kept in your</em></span></span><span class="ln"><span>own hands.</span></span></h1>
 <p class="lead hs">Track every opportunity from Saved to Offer, prepare with reusable evidence, and keep it all on your own device. Works offline on Android and the web. No sign-in. No tracking.</p>
 <div class="acts hs"><a class="btn mag" href="/app/">Launch App</a><a class="btn g mag" href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest">Download Android APK</a></div>
-<dl class="proof hs"><div><dd class="od" data-n="6" aria-label="6"></dd><dt>Pipeline stages</dt></div><div><dd class="od" data-n="2" aria-label="2"></dd><dt>Platforms</dt></div><div><dd class="od" data-n="0" aria-label="0"></dd><dt>Sign-ins required</dt></div><div><dd class="od" data-n="0" aria-label="0"></dd><dt>Tracking scripts</dt></div></dl>
+<dl class="proof hs"><div><dd class="od" data-n="6" aria-label="6 pipeline stages"><span class="sr-only">6 pipeline stages</span><span class="od-strip" aria-hidden="true"><span class="od-col"><b>6</b></span></span></dd><dt>Pipeline stages</dt></div><div><dd class="od" data-n="2" aria-label="2 platforms"><span class="sr-only">2 platforms</span><span class="od-strip" aria-hidden="true"><span class="od-col"><b>2</b></span></span></dd><dt>Platforms</dt></div><div><dd class="od" data-n="0" aria-label="0 sign-ins required"><span class="sr-only">0 sign-ins required</span><span class="od-strip" aria-hidden="true"><span class="od-col"><b>0</b></span></span></dd><dt>Sign-ins required</dt></div><div><dd class="od" data-n="0" aria-label="0 tracking scripts"><span class="sr-only">0 tracking scripts</span><span class="od-strip" aria-hidden="true"><span class="od-col"><b>0</b></span></span></dd><dt>Tracking scripts</dt></div></dl>
 </div>
 <div class="dos" id="dos" role="img" aria-label="Illustration: a Career Dossier folder with an opportunity sheet showing its stage, timeline and a follow-up task. Demo data.">
 <div class="dsc" id="dsc">

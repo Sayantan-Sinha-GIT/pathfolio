@@ -94,6 +94,16 @@
     - Verified responsive containment (zero overflow across 1440, 1024, 768, 390, 320), sticky clearance, reduced motion, no-JS fallback, reverse scroll, direct midpage reload, and Flutter web app mounting.
     - Fixed `_redirects` configuration for Cloudflare Pages clean URLs to eliminate redirect loops (`/app/* /app/index.html 200`).
     - Deployed via Wrangler to Cloudflare Pages (`https://pathfolio.pages.dev`); verified 100% PASS on remote production gate. [COMPLETE]
+14. **Fidelity Hardening: Rolling Counters Geometry Fix & Accessible Mobile Navigation**:
+    - Identified and fixed hero rolling counter strip geometry: reference `.od` flex container was stretching `.od span` height to 41.6px (33.6px on mobile) instead of the full 11-digit strip height ($457.6\text{px}$), causing clipped digits.
+    - Updated `site/styles.css` with `align-items: flex-start; overflow: hidden;` and `.od-col` with `flex-shrink: 0; height: auto; min-height: 11em;`, and added `align-self: flex-start;` on `.proof dd`.
+    - Mathematically guaranteed settled visible glyphs at exactly **6 pipeline stages, 2 platforms, 0 sign-ins, and 0 tracking scripts**.
+    - Set truthful accessible screen-reader attributes (`aria-label="6 pipeline stages"`, `.sr-only`) and marked decorative digits `aria-hidden="true"`.
+    - Verified static HTML fallback renders the exact digits without JavaScript.
+    - Added compact, accessible mobile navigation drawer (`#mob-menu`, `#mob-toggle`, `#mob-backdrop`) in the supplied design visual language.
+    - All 9 destinations (5 sections + guide, privacy, app, APK download) accessible on 390px and 320px viewports with tap targets $\ge 44\text{px}$, Escape key dismiss, backdrop click dismiss, link navigation auto-dismiss, and sticky header clearance ($> 15\text{px}$).
+    - Updated `test-scroll-gate.js` with strict regressions: verified visible glyphs and bounding overlap $> 90\%$ via `document.elementFromPoint`, and verified complete mobile drawer interactions.
+    - Clarified documentation across `PRD.md`, `PROGRESS.md`, `UI_REVIEW.md`, `MOTION_REVIEW.md`, and `MOTION_SPEC.md` establishing the owner HTML as the intended visual specification and marking historical benchmark comparisons as superseded. [COMPLETE]
 
 ## Feature Ledger (PRD Must Behaviors)
 

@@ -60,17 +60,83 @@ function split(el) {
 
 $$('[data-split]').forEach(split);
 
-// Odometer numbers
+// Mobile navigation drawer controller
+const mobToggle = $('#mob-toggle');
+const mobMenu = $('#mob-menu');
+const mobBackdrop = $('#mob-backdrop');
+
+function openMobMenu() {
+  if (!mobToggle || !mobMenu) return;
+  mobToggle.setAttribute('aria-expanded', 'true');
+  mobToggle.setAttribute('aria-label', 'Close navigation menu');
+  mobMenu.classList.add('is-open');
+  mobMenu.setAttribute('aria-hidden', 'false');
+  if (mobBackdrop) {
+    mobBackdrop.classList.add('is-open');
+    mobBackdrop.setAttribute('aria-hidden', 'false');
+  }
+  document.body.style.overflow = 'hidden';
+  const firstLink = mobMenu.querySelector('a');
+  if (firstLink) firstLink.focus();
+}
+
+function closeMobMenu() {
+  if (!mobToggle || !mobMenu) return;
+  mobToggle.setAttribute('aria-expanded', 'false');
+  mobToggle.setAttribute('aria-label', 'Open navigation menu');
+  mobMenu.classList.remove('is-open');
+  mobMenu.setAttribute('aria-hidden', 'true');
+  if (mobBackdrop) {
+    mobBackdrop.classList.remove('is-open');
+    mobBackdrop.setAttribute('aria-hidden', 'true');
+  }
+  document.body.style.overflow = '';
+}
+
+if (mobToggle && mobMenu) {
+  mobToggle.addEventListener('click', () => {
+    const isOpen = mobToggle.getAttribute('aria-expanded') === 'true';
+    if (isOpen) {
+      closeMobMenu();
+    } else {
+      openMobMenu();
+    }
+  });
+
+  if (mobBackdrop) {
+    mobBackdrop.addEventListener('click', closeMobMenu);
+  }
+
+  mobMenu.querySelectorAll('a').forEach((a) => {
+    a.addEventListener('click', () => {
+      closeMobMenu();
+    });
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobToggle.getAttribute('aria-expanded') === 'true') {
+      closeMobMenu();
+      mobToggle.focus();
+    }
+  });
+}
+
+// Odometer numbers setup
 $$('.od').forEach((o) => {
-  const s = String(o.dataset.n);
-  o.innerHTML = [...s]
-    .map(
-      () =>
-        '<span>' +
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((d) => '<b>' + d + '</b>').join('') +
-        '</span>'
-    )
-    .join('');
+  const s = String(o.dataset.n || '0');
+  const label = o.getAttribute('aria-label') || s;
+  o.innerHTML =
+    `<span class="sr-only">${label}</span>` +
+    `<span class="od-strip" aria-hidden="true">` +
+    [...s]
+      .map(
+        () =>
+          `<span class="od-col">` +
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((d) => `<b>${d}</b>`).join('') +
+          `</span>`
+      )
+      .join('') +
+    `</span>`;
 });
 
 const names = ['Saved', 'Applied', 'Screening', 'Interview', 'Offer', 'Rejected'];
@@ -199,10 +265,11 @@ const stpLi = $$('#stp li');
 // Reduced Motion & No-GSAP fallback state
 if (!hasG || rm) {
   $$('.od').forEach((o) => {
-    const s = String(o.dataset.n);
-    $$('span', o).forEach((c, k) => {
+    const s = String(o.dataset.n || '0');
+    $$('.od-col', o).forEach((c, k) => {
       const d = +s[k];
-      c.style.transform = 'translateY(-' + ((d === 0 ? 10 : d) / 11 * 100) + '%)';
+      const targetIndex = (d === 0 ? 10 : d);
+      c.style.transform = 'translateY(-' + ((targetIndex / 11) * 100) + '%)';
     });
   });
   if (st.length) setStage(5);
@@ -301,11 +368,12 @@ if (!hasG || rm) {
 
   // Odometer animation
   $$('.od').forEach((o) => {
-    const s = String(o.dataset.n);
-    $$('span', o).forEach((c, k) => {
+    const s = String(o.dataset.n || '0');
+    $$('.od-col', o).forEach((c, k) => {
       const d = +s[k];
+      const targetIndex = (d === 0 ? 10 : d);
       gsap.to(c, {
-        yPercent: -((d === 0 ? 10 : d) / 11 * 100),
+        yPercent: -((targetIndex / 11) * 100),
         duration: 2.2 + k * 0.4,
         delay: 1.1,
         ease: 'power4.inOut'

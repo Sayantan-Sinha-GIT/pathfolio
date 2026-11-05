@@ -1,29 +1,30 @@
 # Pathfolio — Kinetic Career Dossier Motion & Visual Specification
 
-## 1. Reference Identity Gate & Motif Audit
+## 1. Authoritative Visual Specification & Design Fidelity
 
-### CodeSense Benchmark Analysis (Craft floor, distinct visual world)
-- **Palette**: Dark space void (`#0B0D12` / `#0B0E14`), glowing neon orange/amber accent (`#E06D44`, `rgba(224, 109, 68, 0.35)`), cyan terminal accents.
-- **Font Style**: Display serif `Gloock` paired with `Schibsted Grotesk` body.
-- **Hero Composition**: Asymmetric split — oversized headline on the far left, pseudo-IDE terminal / diff console with red/amber/green window dots on the right.
-- **Background Motif**: Deep cosmic orbital field with drifting particles, elastic geometric proximity filaments, and glowing star nodes.
-- **Motion Grammar**: Floating gravitational particles, travelling energy packet pulses along filaments, terminal typewriter logs.
+### Owner-Supplied HTML as Intended Visual Specification
+In accordance with global and kit fidelity guidelines, the owner-supplied design (`my-design/home.html`, 43,390 bytes, Claude reference) represents the **intended visual and motion specification**, rather than a benchmark to differentiate from. The implementation faithfully executes its complete visual identity, typography system, color palette, background canvas, and GSAP/ScrollTrigger/Lenis motion engine.
 
-### Shared Motifs Explicitly REMOVED from Pathfolio
-1. **Dark cosmic space void**: Completely eliminated `#0B0D12` / `#0B0E14` black background. Replaced with Warm Archival Porcelain (`#F8F7F4` light default) and Deep Spruce/Forest Slate (`#0A1210` dark).
-2. **Neon orange/amber glow & auroras**: Removed `--accent-glow: rgba(224, 109, 68, 0.35)` and atmospheric aurora gradient drift. Replaced with Alpine Verdigris (`#0F4D3F`) and Architectural Chamois/Brass (`#B87333`).
-3. **Drifting star particles & spider-web filaments**: Removed canvas-driven particle constellation and elastic distance lines. Replaced with horizontal architectural guide rails with solid warm brass index beads (`#D4AF37`) and precision drafting grid rules.
-4. **Floating code tags**: Removed floating technical labels in the background canvas.
-5. **Terminal / mock IDE window hero**: Removed red/amber/green window dots, pseudo-terminal logs (`pathfolio@local:~$`), and developer observability framing. Replaced with an authentic 3D tactile candidate career dossier folder with underlay sheets.
-6. **Tactile telemetry / military tropes**: Removed telemetry slash dividers (`CLIENT STORAGE / REMOTE TRACKING / BACKUP FORMAT`), `LOCAL_V1` radar badges, and devops telemetry styling.
+> [!NOTE] Historical Benchmark Context (Superseded)
+> Early prototype iterations explored architectural differentiation from external benchmarks (e.g. CodeSense, Grepless, Haan). That exploration is now **officially superseded** by the direct adoption of the owner-supplied design as the authoritative visual truth for production.
 
-### Pathfolio's New Distinct Choices (Private Career Workspace)
+### Implementation Corrections & Hardening
+The owner reference HTML remains byte-for-byte untouched. However, two necessary technical corrections were identified and resolved in the production implementation:
+1. **Hero Rolling Counter Strip Geometry**:
+   - In the reference HTML, `.od` is an `inline-flex` container with `height: 1em`. Flex items default to `align-self: stretch`, which forced `.od span` to have a computed height of only 41.6px (33.6px on mobile) instead of the full 11-digit strip height ($457.6\text{px}$). Consequently, percentage translations like `yPercent: -54.5%` moved the strip by less than one digit, causing clipped glyphs (e.g. showing half of '0' and half of '1').
+   - **Correction**: In production `site/styles.css`, `.od` is given `align-items: flex-start; overflow: hidden;` and `.od-col` is given `flex-shrink: 0; height: auto; min-height: 11em; line-height: 1;`. Each `<b>` has `height: 1em; line-height: 1;`. GSAP animates `yPercent: -(targetIndex / 11 * 100)` so the final visible glyphs are mathematically guaranteed and settled at exactly **6 pipeline stages, 2 platforms, 0 sign-ins, and 0 tracking scripts** across both desktop and mobile viewports.
+   - **Accessibility & No-JS Fallback**: Decorative digit strips are marked with `aria-hidden="true"`, while one truthful screen-reader accessible label/text is provided. Without JavaScript, static HTML displays the exact settled digits immediately.
+2. **Accessible Mobile Navigation Drawer**:
+   - The reference HTML hid `.nav` on viewports $\le 900\text{px}$ with `display: none` without providing an alternative mobile menu, leaving mobile users unable to navigate to sections, guide, privacy, or release artifacts.
+   - **Correction**: A mobile toggle button (`#mob-toggle`) and slide-out navigation drawer (`#mob-menu`) with backdrop overlay (`#mob-backdrop`) were implemented in the supplied visual language. All 9 destinations (Pipeline, Evidence, Sovereign Vault, App Tour, Privacy, Usage Guide, Privacy Policy, Web App launch, and Android APK download) are fully accessible with touch targets $\ge 44\text{px}$, keyboard focus traps, Escape key dismissal, backdrop tap dismissal, and sticky header clearance.
+
+### Pathfolio Visual Metaphor & Palette
 - **Visual Metaphor**: **The Kinetic Career Dossier & Architectural Milestone System**. An architectural, tangible personal workspace engineered for high-agency candidates. Fine archival paper surfaces, embossed dossier folders, tactile milestone tab indexing, and purposeful scroll-driven physical transitions.
 - **Palette & Materials**:
   - Primary Ground (Light Mode default): Warm linen / architectural porcelain (`#F8F7F4`), soft recessed tray (`#F0EDE6`), crisp archival white card surfaces (`#FFFFFF`).
   - Deep Dossier (Dark Mode): Architect's deep-forest night studio (`#0A1210`), deep spruce card surfaces (`#121C18`), structural borders (`#1F332C`).
-  - Signature Accent: **Alpine Verdigris / Confident Evergreen (`#0F4D3F` light, `#2DD4BF` dark)** — conveying permanence, executive polish, and natural growth.
-  - Secondary Accent: **Architectural Chamois / Brass (`#B87333` / `#A16207`)** — highlighting active milestone dates and STAR evidence tags.
+  - Signature Accent: **Alpine Verdigris / Confident Evergreen (`#0F4D3F` light, `#2DD4BF` dark)**.
+  - Secondary Accent: **Architectural Chamois / Brass (`#B87333` / `#A16207`)**.
   - Structural Ink: Deep warm charcoal (`#16171A`), secondary warm graphite (`#525760`), muted stone (`#808693`).
 - **Typography System (Self-Hosted)**:
   - Display / Headings: `Fraunces` (600, 700) — editorial authority, high typographic craft, bespoke career portfolio personality.

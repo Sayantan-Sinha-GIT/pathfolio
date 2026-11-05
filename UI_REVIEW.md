@@ -1,9 +1,9 @@
 # Pathfolio — UI/UX Visual Review & Quality Log (Section 4A)
 
-## Design Brief & Benchmarks
+## Design Brief & Authoritative Specification
 - **Audience & Context**: Students and early-career software engineers managing technical application cycles.
+- **Authoritative Visual Specification**: The owner-supplied design (`my-design/home.html`, 43,390 bytes, Claude reference) is the intended visual specification. Early prototype benchmark comparisons against third-party sites (e.g. CodeSense) are **officially superseded** by the direct implementation and side-by-side verification of the owner-supplied design.
 - **Visual Aesthetic**: The Kinetic Career Dossier — warm porcelain backgrounds (`#F8F7F4`), deep ink typography (`#16171A`), confident Alpine Verdigris accent (`#0F4D3F` light, `#2DD4BF` dark), architectural brass milestones (`#B87333`), tactile hairline borders, and clear semantic status indicators.
-- **CodeSense Motif Removal Audit**: Completely removed dark cosmic space void, neon orange filaments, floating particle nodes, red/amber/green IDE window dots, and pseudo-terminal logs. Replaced with an architectural milestone rail, tactile candidate dossier card with underlay sheets, self-hosted typography, and structured STAR evidence matrix.
 - **Typography System (Self-Hosted)**:
   - Display / Headings: `Fraunces` (600, 700)
   - Body & UI: `Plus Jakarta Sans` (400, 500, 600, 700)
