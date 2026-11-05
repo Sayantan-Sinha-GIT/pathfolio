@@ -1,246 +1,101 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Privacy Policy & Storage Architecture — Pathfolio</title>
-    <meta
-      name="description"
-      content="Pathfolio's local-first privacy policy and storage architecture. No cloud databases, no analytics, and private on-device storage."
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <!-- Universal Ambient Drafting Background -->
-    <div class="ambient-environment" aria-hidden="true">
-      <div class="drafting-grid-overlay"></div>
-    </div>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Privacy Policy & Storage Architecture — Pathfolio</title>
+<meta name="description" content="Pathfolio's local-first privacy policy and storage model. No cloud databases, no analytics, no accounts, and private on-device storage.">
+<link rel="icon" type="image/png" href="/app/favicon.png">
+<script>try{var t=localStorage.getItem('pf-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<header class="hd">
+<a class="logo" href="/" aria-label="Pathfolio home"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="3" y="7" width="22" height="22" rx="2" stroke="var(--ink)" stroke-width="2"/><rect x="7" y="3" width="22" height="22" rx="2" fill="var(--bg)" stroke="var(--brass)" stroke-width="2"/><path d="M12 18l4-8 4 8" stroke="var(--acc)" stroke-width="2"/></svg><span>Pathfolio</span></a>
+<nav class="nav" aria-label="Primary"><a href="/#pipeline">Pipeline</a><a href="/#evidence">Evidence</a><a href="/#vault">Backup</a><a href="/#tour">App tour</a><a href="guide.html">Guide</a><a href="privacy.html" class="active">Privacy</a></nav>
+<div class="hr"><button class="th" id="th" type="button" aria-label="Switch between dark and light theme"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 2a7 7 0 000 14z" fill="currentColor"/></svg></button><a class="btn mag" href="/app/">Launch App</a></div>
+</header>
 
-    <!-- Universal Site Header -->
-    <header class="site-header">
-      <div class="container header-container">
-        <a href="/" class="brand-link" aria-label="Pathfolio Home">
-          <div class="brand-seal" aria-hidden="true">P</div>
-          <span class="brand-title">Pathfolio</span>
-          <span class="brand-badge">v1.0.1</span>
-        </a>
+<main class="doc-main" id="top">
+<div class="doc-hero">
+<p class="eye"><i></i>Data Sovereignty & Local Privacy</p>
+<h1 class="doc-title" data-split>Privacy Policy & Storage Model</h1>
+<p class="doc-lead">Pathfolio is built on a simple principle: your career data belongs entirely to you. Nothing leaves your device unless you choose to export it.</p>
+</div>
 
-        <nav class="main-nav" aria-label="Primary Navigation">
-          <a href="/" class="nav-link">Dossier</a>
-          <a href="/#milestones" class="nav-link">Milestone Rail</a>
-          <a href="/#star-matrix" class="nav-link">STAR Matrix</a>
-          <a href="/#privacy-vault" class="nav-link">Storage Vault</a>
-          <a href="/#app-tour" class="nav-link">App Tour</a>
-          <a href="guide.html" class="nav-link">Strategy Guide</a>
-          <a href="privacy.html" class="nav-link active">Privacy Policy</a>
-          <a
-            href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
-            class="nav-link"
-            target="_blank"
-            rel="noopener"
-            >GitHub</a
-          >
-        </nav>
+<section class="doc-sec">
+<h2>1. Zero Telemetry & Zero Cloud Databases</h2>
+<p>Pathfolio contains no analytics SDKs, no behavioral trackers, no advertising beacons, and no backend database servers:</p>
+<ul>
+<li><strong>No accounts required:</strong> You never register, verify email addresses, or sign in with third-party identity providers.</li>
+<li><strong>No telemetry scripts:</strong> We do not track page views, feature clicks, search queries, or time spent in the app.</li>
+<li><strong>No server synchronization:</strong> We operate no cloud synchronization daemon, message broker, or telemetry collector.</li>
+</ul>
+</section>
 
-        <div class="header-actions">
-          <button
-            id="theme-toggle"
-            class="theme-toggle-btn"
-            aria-label="Toggle light and dark theme"
-            title="Toggle theme"
-          >
-            <svg
-              id="theme-icon"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="5" />
-              <line x1="12" y1="1" x2="12" y2="3" />
-              <line x1="12" y1="21" x2="12" y2="23" />
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-              <line x1="1" y1="12" x2="3" y2="12" />
-              <line x1="21" y1="12" x2="23" y2="12" />
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-            </svg>
-          </button>
+<section class="doc-sec">
+<h2>2. Where Data Resides on Your Device</h2>
+<p>All application records reside exclusively in client-side persistence managed by the Flutter runtime:</p>
+<ul>
+<li><strong>Web App (`/app/`):</strong> Stored in your web browser's origin-isolated local storage sandbox. Data is accessible only to `pathfolio.pages.dev` on your browser profile.</li>
+<li><strong>Android Application:</strong> Stored in private, application-sandboxed key-value preferences. No external SD-card access or broad storage permissions are requested or used.</li>
+<li><strong>Encrypted Transport:</strong> Assets on Cloudflare Pages are served strictly over HTTPS with modern TLS 1.3 encryption.</li>
+</ul>
+</section>
 
-          <button
-            id="mobile-menu-toggle"
-            class="mobile-menu-toggle"
-            aria-expanded="false"
-            aria-controls="mobile-nav"
-            aria-label="Toggle navigation menu"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
+<section class="doc-sec">
+<h2>3. Deliberate Data Movement (Export & Import)</h2>
+<p>Because there is no background cloud sync, data moves across devices only when you explicitly export a file:</p>
+<div class="doc-card">
+<h4>Versioned JSON Schema (v1)</h4>
+<p>When you trigger <strong>Export Backup</strong>, the app generates a structured JSON file containing your opportunities, tasks, evidence bank entries, and preferences. You control where this file is saved, emailed, or archived.</p>
+</div>
+<p>When importing, Pathfolio validates the file structure and schema before prompting you to confirm replacement. If you reject the confirmation, your current workspace data remains intact.</p>
+</section>
 
-          <a href="/app/" class="btn btn-primary">Launch App →</a>
-        </div>
-      </div>
-    </header>
+<section class="doc-sec">
+<h2>4. Honest Storage Limits & Recommendations</h2>
+<p>Local-only storage gives you total confidentiality, but requires understanding its operating constraints:</p>
+<div class="lim" style="margin-top: .5rem; margin-bottom: 1.5rem;">
+<strong>Important Storage Fact:</strong> Browser storage is scoped to your browser profile. Clearing your browser's site data, using private/incognito windows, or switching browsers will not carry over existing records. Similarly, uninstalling the Android APK deletes its sandboxed app data.
+</div>
+<p>We strongly recommend downloading a versioned JSON backup after significant milestones (e.g. after adding high-priority opportunities or recording interview rounds) and keeping it in your personal backup store.</p>
+</section>
 
-    <!-- Mobile Navigation Drawer -->
-    <nav id="mobile-nav" class="mobile-nav-drawer" aria-label="Mobile Navigation">
-      <div class="mobile-drawer-links">
-        <a href="/" class="mobile-drawer-link">01 // Dossier Hero</a>
-        <a href="/#milestones" class="mobile-drawer-link">02 // Milestone Runway</a>
-        <a href="/#star-matrix" class="mobile-drawer-link">03 // STAR Assembly</a>
-        <a href="/#privacy-vault" class="mobile-drawer-link">04 // Storage Vault</a>
-        <a href="/#app-tour" class="mobile-drawer-link">05 // App Tour</a>
-        <a href="guide.html" class="mobile-drawer-link">Strategy & Workflow Guide</a>
-        <a href="privacy.html" class="mobile-drawer-link">Privacy Policy & Storage</a>
-        <a
-          href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
-          class="mobile-drawer-link"
-          target="_blank"
-          rel="noopener"
-          >GitHub Repository</a
-        >
-      </div>
-      <a href="/app/" class="btn btn-primary" style="width: 100%;">Launch Web App →</a>
-    </nav>
+<section class="doc-sec">
+<h2>5. Open Source Code Transparency</h2>
+<p>The entire source code of Pathfolio is published openly under the permissive MIT License on GitHub. You can inspect the implementation, verify the storage repository layer, compile the Flutter web app or Android APK yourself, and confirm that zero unauthorized outbound network connections are ever initiated.</p>
+</section>
 
-    <main class="reading-page-main" id="main-content">
-      <div class="container reading-container">
-        <div class="reading-hero motion-reading-hero">
-          <span class="reading-eyebrow motion-eyebrow">Architecture &amp; Guarantees</span>
-          <h1 class="reading-title motion-title"><span class="motion-title-inner">Privacy &amp; Storage Architecture</span></h1>
-          <p class="reading-lead motion-lead">
-            Pathfolio is built on a simple premise: your job search, compensation targets, and interview notes should never live on someone else's server.
-          </p>
-        </div>
+<div class="doc-card" style="text-align: center; padding: 2.4rem 1.6rem; margin-top: 3rem;">
+<h3 style="font-size: 1.8rem; margin-bottom: .6rem; color: var(--ink);">Inspect the Code or Launch the App</h3>
+<p style="margin-bottom: 1.6rem;">Experience private, local-first opportunity tracking today.</p>
+<div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+<a class="btn mag" href="/app/">Launch App</a>
+<a class="btn g mag" href="https://github.com/Sayantan-Sinha-GIT/pathfolio">View on GitHub</a>
+</div>
+</div>
+</main>
 
-        <section class="reading-section motion-reading-section">
-          <h2>1. Zero Remote Storage &amp; Zero Telemetry</h2>
-          <p>
-            Pathfolio does not operate a user database, auth server, or analytics backend. When you use the web application or install the Android APK, all data is written directly to your device's local application storage:
-          </p>
-          <ul>
-            <li><strong>Web:</strong> Records are saved locally in browser storage via <code>shared_preferences</code> (backed by browser <code>localStorage</code>), scoped solely to your current browser profile.</li>
-            <li><strong>Android:</strong> Records are saved locally in sandboxed application storage via <code>shared_preferences</code>.</li>
-            <li><strong>Network Requests &amp; Same-Origin Asset Delivery:</strong> Loading the website or web application performs standard same-origin HTTP requests solely to fetch application assets (HTML documents, JavaScript bundles, CSS stylesheets, and self-hosted fonts) from the hosting origin. Pathfolio never transmits user records, analytics events, telemetry payloads, or tracking beacons over the network. The only third-party outbound network requests occur when you explicitly click an external link to visit a company's job posting or GitHub repository.</li>
-          </ul>
-        </section>
+<footer>
+<p class="fw" aria-label="Pathfolio" data-split>Pathfolio</p><div class="fl" id="fl"></div>
+<div class="fc"><div><h4>Pathfolio</h4><p>A local-first job-application command center for students and early-career professionals.</p></div>
+<div><h4>Product</h4><ul><li><a href="/#pipeline">Pipeline</a></li><li><a href="/#evidence">Evidence bank</a></li><li><a href="/#vault">Backup</a></li><li><a href="/#tour">App tour</a></li></ul></div>
+<div><h4>Trust</h4><ul><li><a href="privacy.html">Privacy</a></li><li><a href="guide.html">Usage guide</a></li><li><a href="/#privacy">Storage limits</a></li></ul></div>
+<div><h4>Source</h4><ul><li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio">GitHub</a></li><li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest">Android APK</a></li><li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/blob/main/LICENSE">MIT license</a></li></ul></div></div>
+<div class="fb"><span>No analytics. No tracking. No sign-in.</span><span>MIT licensed · Built by Sayantan Sinha</span></div>
+</footer>
 
-        <section class="reading-section motion-reading-section">
-          <h2>2. Browser Storage Limitations &amp; Best Practices</h2>
-          <p>
-            Because your browser manages local site storage, certain user actions or browser maintenance tasks can impact your data:
-          </p>
-          <ul>
-            <li>Clearing your browser's "Site Data and Cookies" will remove locally stored opportunities and tasks.</li>
-            <li>Incognito or Private Browsing mode will discard records once the private window is closed.</li>
-            <li>Browsers on different devices or across different user profiles cannot automatically synchronize data without a server.</li>
-          </ul>
-          <div class="callout-box motion-callout">
-            <h4>Recommended Backup Practice</h4>
-            <p>
-              Use the built-in <em>Export JSON Backup</em> feature in Settings regularly. Saving this file to your personal computer or private cloud drive ensures your records can be restored instantly anywhere.
-            </p>
-          </div>
-        </section>
-
-        <section class="reading-section motion-reading-section">
-          <h2>3. Data Export, Import &amp; Erase Guarantees</h2>
-          <p>
-            You retain full sovereignty over your information:
-          </p>
-          <ul>
-            <li><strong>Export:</strong> Produces a plain, human-readable, schema-versioned JSON file containing all opportunities, timeline events, follow-ups, and evidence items.</li>
-            <li><strong>Import:</strong> Validates payload size, JSON syntax, required fields, and schema version before modifying any local records. If validation fails, your existing data remains untouched.</li>
-            <li><strong>Erase All Data:</strong> A confirmed two-step action that wipes all keys, real records, and demo workspace records from device storage.</li>
-          </ul>
-        </section>
-
-        <div class="motion-reading-card" style="background-color: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius-md); padding: 2rem; box-shadow: var(--shadow-sm); margin-top: 3rem; text-align: center;">
-          <h3 style="margin-bottom: 0.5rem;">Experience Sovereign Career Tracking</h3>
-          <p style="color: var(--ink-secondary); margin-bottom: 1.5rem;">Launch Pathfolio now without creating an account or providing an email address.</p>
-          <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <a href="/app/" class="btn btn-primary btn-large">Launch Web App →</a>
-            <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk" class="btn btn-secondary btn-large">Download APK</a>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- Universal Site Footer -->
-    <footer class="site-footer">
-      <div class="container">
-        <div class="footer-grid motion-footer-grid">
-          <div class="footer-brand-col motion-footer-col">
-            <a href="/" class="brand-link">
-              <div class="brand-seal" aria-hidden="true">P</div>
-              <span class="brand-title">Pathfolio</span>
-            </a>
-            <p>
-              A private, offline-first career workspace for ambitious engineers. Built with Flutter and deployed to Cloudflare Pages.
-            </p>
-          </div>
-
-          <div class="motion-footer-col">
-            <div class="footer-col-title">Navigation</div>
-            <ul class="footer-links">
-              <li><a href="/">Candidate Dossier</a></li>
-              <li><a href="/#milestones">Milestone Rail</a></li>
-              <li><a href="/#star-matrix">STAR Evidence Matrix</a></li>
-              <li><a href="/#privacy-vault">Storage Tradeoffs</a></li>
-            </ul>
-          </div>
-
-          <div class="motion-footer-col">
-            <div class="footer-col-title">Documentation</div>
-            <ul class="footer-links">
-              <li><a href="guide.html">Strategy &amp; Workflow Guide</a></li>
-              <li><a href="privacy.html">Privacy Policy &amp; Storage</a></li>
-              <li><a href="/app/">Launch Web Application</a></li>
-              <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk">Download Android APK</a></li>
-            </ul>
-          </div>
-
-          <div class="motion-footer-col">
-            <div class="footer-col-title">Architecture</div>
-            <ul class="footer-links">
-              <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio" target="_blank" rel="noopener">GitHub Repository</a></li>
-              <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/blob/main/LICENSE" target="_blank" rel="noopener">MIT Open Source License</a></li>
-              <li><span>Flutter 3.47.7 &amp; Dart 3.13</span></li>
-              <li><span>Schema Version 1 JSON</span></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="footer-bottom-row">
-          <div>© 2026 Pathfolio. Crafted for private, local-first career management. Open source under MIT License.</div>
-          <div style="font-family: var(--font-mono); font-size: 0.78rem;">
-            LOCAL CLIENT STORAGE • ZERO ANALYTICS TRACKERS • OFFLINE CAPABLE
-          </div>
-        </div>
-      </div>
-    </footer>
-
-    <!-- Unified JavaScript Application -->
-    <script src="app.js"></script>
-  </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>window.gsap||document.write('<script src="/vendor/gsap.min.js"><\/script>')</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>window.ScrollTrigger||document.write('<script src="/vendor/ScrollTrigger.min.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>window.Lenis||document.write('<script src="/vendor/lenis.min.js"><\/script>')</script>
+<script src="app.js"></script>
+</body>
 </html>

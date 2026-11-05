@@ -44,20 +44,38 @@ Build a polished, genuinely usable job-application command center for students a
 
 ## Design direction & foreground motion choreography
 
-Pathfolio should feel like a considered personal workspace, not a generic SaaS dashboard. Use an editorial but energetic visual language: warm architectural porcelain surfaces (`#F8F7F4` light default, `#0A1210` deep-forest slate dark), deep ink, signature Alpine Verdigris (`#0F4D3F` light, `#2DD4BF` dark) & architectural brass (`#B87333`), self-hosted `Fraunces`, `Plus Jakarta Sans`, and `JetBrains Mono` typography, tactile interaction details, carefully structured data, and useful illustration or imagery only where it improves understanding. Avoid a wall of identical cards, oversized vanity metrics, emoji icons, gradients as decoration, and empty stock imagery. The app must be pleasant during daily use; the public site must look portfolio-worthy.
+### Owner-Supplied Homepage Design Supersedence (Authoritative Visual & Motion Truth)
+In accordance with the owner's explicit directive, the visual and motion design of the marketing homepage is governed byte-for-byte by the owner-supplied design (`my-design/home.html`, 43,390 bytes, Claude-authored reference). This supersedes any earlier synthetic or prototype designs. The PRD retains authoritative governance over product facts, tech stack (vanilla HTML/CSS/JS marketing site, Flutter web at `/app/`, Flutter Android APK release), privacy controls, and deployment targets (Cloudflare Pages Direct Upload). The supplied HTML controls all homepage typography (`Fraunces`, `Plus Jakarta Sans`, `JetBrains Mono`), palette (porcelain/dark forest slate, verdigris, architectural brass), layout, section hierarchy, background canvas, pinned/scroll scenes, timing, and interactions.
 
-### Motion-Studio Foreground Craft Requirements (Owner Upgrade)
-In accordance with the owner's explicit motion upgrade request referencing CodeSense (`https://pr-reviewer-omega-liard.vercel.app/`), Grepless (`https://grepless.vercel.app/`), and Haan (`https://haan-kolkata-pilot.pages.dev/`), the public website foreground motion density is elevated to motion-studio / advertisement craft level across all visible content groups:
-1. **Hero Staged Entrance & Masked Line Reveal**: Staggered masked line typography reveals for the editorial headline (`.hero-line-mask` with `.hero-line-inner`), coordinated entrance for status badge, lead briefing, action buttons, and proof ledger, accompanied by a 3D perspective settling entrance of the Career Dossier object.
-2. **Scroll-Led 3D Layered Dossier Spread**: Physical fanning out of underlay sheets (`#hero-underlay-1`, `#hero-underlay-2`) and folder tab (`#hero-dossier-tab`) with controlled 3D rotation, translation, and depth relative to scroll progression.
-3. **Chapter Section Reveal & Kinematics**:
-   - Section headers, eyebrows, and lead paragraphs independently reveal with blur clearing and masked unmasking.
-   - Chapter 1: The Six-Stage Pipeline Runway carriage travels along precision calipers, progress bar scales, telemetry text updates, and runway cards stagger into view with active station highlights.
-   - Chapter 2: Pinned STAR Evidence Assembly Deck featuring a 220vh desktop sticky arena with dynamic SVG drawn connector links between separate paper fragments (Situation, Task, Action, Result) traveling across a spacious physical stage into an aligned interview dossier with coherent 3D depth, active scroll-stage citation link previews (`#citation-stage-pill`), skill domain tabs, and tactile citation button feedback. On phones, flows naturally without sticky trapping.
-   - Chapter 3: Sovereign Dossier Vault featuring a dimensional 3-document local-backup sequence (Pipeline Snapshot, Evidence Dossier, Confidential Notes) collecting into an archival pocket, followed by a 3D folding envelope flap, stamping red-brass wax seal, synchronized status steppers, and a collapsible `<details>` raw sample JSON inspector replacing giant static dumps without unverified encryption claims.
-   - Chapter 4: App Tour Gallery dual-perspective parallax shifts with viewport elevation and platform tab interactions.
-   - Section 05: Closing Sovereign Command scene with monumental scroll-lit typography (`.lit-word` spans word-by-word unmasking), unfolding physical 3D dossier carrier leaves (`#closing-leaf-left`, `#closing-leaf-right`), and architectural launchpad CTA composition transition matching reference craft level (CodeSense/Grepless/Haan).
-4. **Resilience & Accessibility**: Single-owner element transforms without wrapper fighting; full No-JS progressive enhancement (`opacity: 1 !important`, `transform: none !important`) ensuring complete readability without JavaScript; strict reduced-motion fallback; zero horizontal overflow on 390px and 320px viewports; minimum seal-to-text geometric clearance > 30px across all scroll offsets; front cards strictly in front of backing planes.
+### Foreground Craft Requirements & Scene Architecture
+The marketing homepage implements the full motion-studio foreground craft defined in the supplied reference across all visible content groups:
+1. **Hero Staged Entrance & Interactive Dossier**:
+   - Staggered typography reveals with dual theme support (`#canvas` dynamic ambient background).
+   - 3D perspective layered dossier object with physics-driven underlay spread and interactive rotation.
+   - Live telemetry status badge and verifiable product metrics.
+2. **Scroll-Led Pipeline Runway (Scene 1)**:
+   - Precision dual-track caliper carriage with synchronized progress scaling.
+   - Interactive stage selector / scrubber cycling through Saved, Applied, Screening, Interview, Offer, and Rejected.
+   - Dynamic stage telemetry and stage description updates.
+3. **STAR Evidence Assembly Deck (Scene 2)**:
+   - Pinned 3D paper fragment choreography (Situation, Task, Action, Result) converging into an aligned interview dossier.
+   - SVG link connectors with dynamic stroke and tactile citation tags.
+   - Domain-specific skill pill filters (Architecture, Engineering, Product, Design).
+4. **Sovereign Local Vault (Scene 3)**:
+   - Dimensional 3-document local backup archival sequence (Pipeline Snapshot, Evidence Dossier, Confidential Notes).
+   - 3D folding vault envelope flap with hot-wax stamping red-brass seal.
+   - Collapsible formatted sample JSON inspector displaying real schema structure without unverified claims.
+5. **App Tour Gallery (Scene 4)**:
+   - Interactive platform switcher (Web Dashboard vs Android Mobile).
+   - Dual-perspective elevation with synchronized device framing and actual product screenshots.
+6. **Closing Sovereign Command (Scene 5)**:
+   - Monumental scroll-lit typography with word-by-word unmasking.
+   - Unfolding physical dossier carrier leaves and high-contrast dual launch CTAs (`/app/` web launch and latest GitHub APK release download).
+7. **Resilience & Accessibility Standards**:
+   - Complete Progressive Enhancement with No-JS fallback (`.no-js` inline styles ensuring 100% text/content visibility).
+   - Strict `prefers-reduced-motion` compliance (`.rm` class forcing zero opacity traps, static scaling, and instant visibility).
+   - Zero horizontal overflow across all viewports (320px, 390px, 768px, 1024px, 1440px).
+   - Deep anchor scroll clearance (`scroll-margin-top: 5rem`) ensuring sticky header never occludes content headings.
 
 Inspect actual rendered desktop (1440×900), small laptop (1024×768), and mobile (390×844 and a narrow 320 px case) screens, plus a real Android emulator when available. The kit's visual loop requires **six website visual/motion review-and-fix rounds** (and four app visual review rounds) that repeat the same anchor journeys (onboarding → add opportunity → move stage → add task → export/import), add new states, fix observed defects, and record screenshots and results in `UI_REVIEW.md` and `MOTION_REVIEW.md`. The website and Flutter app both count as user-facing surfaces. Do not ask the owner to review each round.
 

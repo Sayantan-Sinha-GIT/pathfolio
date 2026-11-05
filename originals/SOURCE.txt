@@ -1,0 +1,4 @@
+Original MESSAGE D, START_HERE.txt.
+Source: saved Claude Read result dated 2026-10-02T03:05:47.852Z, original lines 155-186.
+Recovered without rewriting the prompt text.
+SHA-256 (UTF-8, LF): 97f67e9ea4380fd31735a77a95e40fd4f1978cb6072351ee865e00cd906c6377

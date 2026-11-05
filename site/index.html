@@ -1,978 +1,139 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pathfolio — Kinetic Career Dossier & Sovereign Command Center</title>
-    <meta
-      name="description"
-      content="A private, offline-first career workspace for ambitious engineers. Track multi-stage applications through an architectural milestone rail, cite quantifiable STAR evidence during interviews, and store data securely on your device."
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <!-- Living Ambient Environment (Milestone Rails & Drafting Matrix) -->
-    <div class="ambient-environment" aria-hidden="true">
-      <canvas id="dossier-canvas" class="dossier-canvas"></canvas>
-      <div class="drafting-grid-overlay" id="drafting-overlay"></div>
-    </div>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pathfolio — your job search, kept in your own hands</title>
+<meta name="description" content="Pathfolio is a local-first job-application command center for students and early-career professionals. Android and web, offline, no sign-in, no tracking.">
+<link rel="icon" type="image/png" href="/app/favicon.png">
+<script>try{var t=localStorage.getItem('pf-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<header class="hd">
+<a class="logo" href="#top" aria-label="Pathfolio home"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="3" y="7" width="22" height="22" rx="2" stroke="var(--ink)" stroke-width="2"/><rect x="7" y="3" width="22" height="22" rx="2" fill="var(--bg)" stroke="var(--brass)" stroke-width="2"/><path d="M12 18l4-8 4 8" stroke="var(--acc)" stroke-width="2"/></svg><span>Pathfolio</span></a>
+<nav class="nav" aria-label="Primary"><a href="#pipeline">Pipeline</a><a href="#evidence">Evidence</a><a href="#vault">Backup</a><a href="#tour">App tour</a><a href="#privacy">Privacy</a></nav>
+<div class="hr"><button class="th" id="th" type="button" aria-label="Switch between dark and light theme"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 2a7 7 0 000 14z" fill="currentColor"/></svg></button><a class="btn mag" href="/app/">Launch App</a></div>
+</header>
+<main id="top">
+<section class="hero">
+<div>
+<p class="eye hs"><i></i>Local-first job-application command center</p>
+<h1 aria-label="Your job search, kept in your own hands."><span class="ln"><span>Your job search,</span></span><span class="ln"><span><em>kept in your</em></span></span><span class="ln"><span>own hands.</span></span></h1>
+<p class="lead hs">Track every opportunity from Saved to Offer, prepare with reusable evidence, and keep it all on your own device. Works offline on Android and the web. No sign-in. No tracking.</p>
+<div class="acts hs"><a class="btn mag" href="/app/">Launch App</a><a class="btn g mag" href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest">Download Android APK</a></div>
+<dl class="proof hs"><div><dd class="od" data-n="6" aria-label="6"></dd><dt>Pipeline stages</dt></div><div><dd class="od" data-n="2" aria-label="2"></dd><dt>Platforms</dt></div><div><dd class="od" data-n="0" aria-label="0"></dd><dt>Sign-ins required</dt></div><div><dd class="od" data-n="0" aria-label="0"></dd><dt>Tracking scripts</dt></div></dl>
+</div>
+<div class="dos" id="dos" role="img" aria-label="Illustration: a Career Dossier folder with an opportunity sheet showing its stage, timeline and a follow-up task. Demo data.">
+<div class="dsc" id="dsc">
+<div class="sh s1" id="hero-underlay-1"><span class="lb">Evidence bank</span><div class="rl"></div></div>
+<div class="sh s2" id="hero-underlay-2"><span class="lb">Backup · versioned JSON</span><div class="rl"></div></div>
+<div class="tabx" id="hero-dossier-tab">Career Dossier</div>
+<div class="sh ft">
+<span class="lb">Opportunity · demo workspace</span>
+<h3>Product Designer</h3><p>Sample Co. · Remote</p>
+<div class="hd6" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<div class="st">Stage: <span id="hst">Interview</span></div>
+<ul class="tl"><li><span id="htl">Moved to Interview</span><small>dated in the activity timeline</small></li><li>Applied<small>application date recorded</small></li><li>Saved<small>source URL kept</small></li></ul>
+<div class="tk"><svg class="chk" viewBox="0 0 22 22" fill="none"><rect x="1" y="1" width="20" height="20" rx="3" stroke="#4B5853" stroke-width="1.5"/><path d="M6 11.5l3.5 3.5L16 7" stroke="#8F5524" stroke-width="2.4" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg><span>Send thank-you note<small>Follow-up · due tomorrow</small></span></div>
+</div>
+</div>
+</div>
+</section>
 
-    <!-- Universal Site Header -->
-    <header class="site-header">
-      <div class="container header-container">
-        <a href="/" class="brand-link" aria-label="Pathfolio Home">
-          <div class="brand-seal" aria-hidden="true">P</div>
-          <span class="brand-title">Pathfolio</span>
-          <span class="brand-badge">v1.0.1</span>
-        </a>
+<div class="mq" aria-hidden="true"><div id="m1"><span>Saved</span><span class="a">Applied</span><span>Screening</span><span class="a">Interview</span><span>Offer</span><span class="a">Rejected</span><span>Saved</span><span class="a">Applied</span><span>Screening</span><span class="a">Interview</span><span>Offer</span><span class="a">Rejected</span></div><div id="m2" class="o"><span>Local only</span><span>No sign-in</span><span>No tracking</span><span>Export when you choose</span><span>Local only</span><span>No sign-in</span><span>No tracking</span><span>Export when you choose</span></div></div>
 
-        <nav class="main-nav" aria-label="Primary Navigation">
-          <a href="#hero" class="nav-link active">Dossier</a>
-          <a href="#milestones" class="nav-link">Milestone Rail</a>
-          <a href="#star-matrix" class="nav-link">STAR Matrix</a>
-          <a href="#privacy-vault" class="nav-link">Storage Vault</a>
-          <a href="#app-tour" class="nav-link">App Tour</a>
-          <a href="guide.html" class="nav-link">Strategy Guide</a>
-          <a href="privacy.html" class="nav-link">Privacy Policy</a>
-          <a
-            href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
-            class="nav-link"
-            target="_blank"
-            rel="noopener"
-            >GitHub</a
-          >
-        </nav>
+<section class="run" id="pipeline" aria-labelledby="h-pipe">
+<div class="pin">
+<div><p class="eye"><i></i>Chapter 1 · Pipeline</p><h2 id="h-pipe" data-split>Six stages. Every move dated.</h2><p class="lead">Move a record between stages from the list or the detail view. Each change lands in an activity timeline, and the choice persists after reload or restart.</p></div>
+<div class="rule" id="rule"><div class="bar" id="bar"></div><div class="car" id="car">Sample Co. · demo</div>
+<div class="stn" data-d="Capture company, role, source URL, work mode and a salary note. Only company and role are required."><span>01</span><b>Saved</b></div>
+<div class="stn" data-d="Record the application date. The stage change is written to the activity timeline with its date."><span>02</span><b>Applied</b></div>
+<div class="stn" data-d="Set a next action date and attach follow-up tasks so nothing waits unnoticed."><span>03</span><b>Screening</b></div>
+<div class="stn" data-d="Attach entries from your evidence bank so the right stories are ready."><span>04</span><b>Interview</b></div>
+<div class="stn" data-d="Keep salary notes and private notes beside the record, on your device."><span>05</span><b>Offer</b></div>
+<div class="stn" data-d="Archive it. Archived records leave active counts, and you can restore them any time."><span>06</span><b>Rejected</b></div></div>
+<div class="det"><div><p class="tele" id="tele">STAGE 01 / 06 · SAVED</p><h3 id="dn">Saved</h3></div><p id="dd">Capture company, role, source URL, work mode and a salary note. Only company and role are required.</p></div>
+</div>
+</section>
 
-        <div class="header-actions">
-          <button
-            id="theme-toggle"
-            class="theme-toggle-btn"
-            aria-label="Toggle light and dark theme"
-            title="Toggle theme"
-          >
-            <svg
-              id="theme-icon"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="5" />
-              <line x1="12" y1="1" x2="12" y2="3" />
-              <line x1="12" y1="21" x2="12" y2="23" />
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-              <line x1="1" y1="12" x2="3" y2="12" />
-              <line x1="21" y1="12" x2="23" y2="12" />
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-            </svg>
-          </button>
+<section class="star" id="evidence" aria-labelledby="h-ev">
+<div class="sp" id="spin">
+<div><p class="eye"><i></i>Chapter 2 · Evidence bank</p><h2 id="h-ev" data-split>Stories ready before the interview.</h2><p class="lead">Store reusable career evidence as a title, skill tags, a concise result and an optional link. Search it, then attach a reference to an opportunity. No files are uploaded, and removing an entry never corrupts an opportunity's history.</p><div class="tags" aria-label="Example skill tags"><span>research</span><span>prototyping</span><span>writing</span><span>facilitation</span></div></div>
+<div class="deck" id="deck"><svg class="dsv" viewBox="0 0 2 100" preserveAspectRatio="none" aria-hidden="true"><path id="spath" d="M1 0V100" pathLength="1"/></svg><span class="lb">Evidence entry · sample</span>
+<div class="fr"><b>Situation</b><p>The onboarding flow lost people before they reached the first task.</p></div>
+<div class="fr"><b>Task</b><p>Find out where they stalled and propose a simpler path.</p></div>
+<div class="fr"><b>Action</b><p>Interviewed users, mapped the steps, and prototyped two shorter flows.</p></div>
+<div class="fr"><b>Result</b><p>Shipped the shorter flow and wrote up what the team learned.</p></div>
+<div id="citation-stage-pill">Attached to Sample Co. · Product Designer</div></div>
+</div>
+</section>
 
-          <button
-            id="mobile-menu-toggle"
-            class="mobile-menu-toggle"
-            aria-expanded="false"
-            aria-controls="mobile-nav"
-            aria-label="Toggle navigation menu"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-
-          <a href="/app/" class="btn btn-primary">Launch App →</a>
-        </div>
-      </div>
-    </header>
-
-    <!-- Mobile Navigation Drawer -->
-    <nav id="mobile-nav" class="mobile-nav-drawer" aria-label="Mobile Navigation">
-      <div class="mobile-drawer-links">
-        <a href="#hero" class="mobile-drawer-link">01 // Dossier Hero</a>
-        <a href="#milestones" class="mobile-drawer-link">02 // Milestone Runway</a>
-        <a href="#star-matrix" class="mobile-drawer-link">03 // STAR Assembly</a>
-        <a href="#privacy-vault" class="mobile-drawer-link">04 // Storage Vault</a>
-        <a href="#app-tour" class="mobile-drawer-link">05 // App Tour</a>
-        <a href="guide.html" class="mobile-drawer-link">Strategy & Workflow Guide</a>
-        <a href="privacy.html" class="mobile-drawer-link">Privacy Policy & Storage</a>
-        <a
-          href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
-          class="mobile-drawer-link"
-          target="_blank"
-          rel="noopener"
-          >GitHub Repository</a
-        >
-      </div>
-      <a href="/app/" class="btn btn-primary" style="width: 100%;">Launch Web App →</a>
-    </nav>
-
-    <main id="main-content">
-      <!-- Hero Section: Dramatic Asymmetrical First Viewport -->
-      <section class="hero-section" id="hero">
-        <div class="architect-ambient-glow" aria-hidden="true"></div>
-        <div class="container">
-          <div class="hero-layout-grid">
-            <!-- Left Editorial Command Briefing -->
-            <div class="hero-briefing-col">
-              <div class="status-badge hero-anim-badge" id="hero-status-badge">
-                <span class="pulse-pip" aria-hidden="true"></span>
-                <span>PRIVATE CAREER WORKSPACE • STORED SAFELY ON YOUR DEVICE</span>
-              </div>
-
-              <h1 class="hero-headline" id="hero-headline">
-                <span class="hero-line-mask"><span class="hero-line-inner line-1">Track every loop.</span></span><br>
-                <span class="hero-line-mask"><span class="hero-line-inner line-2 hero-headline-italic">Own the evidence.</span></span>
-              </h1>
-
-              <p class="hero-lead hero-anim-lead" id="hero-lead">
-                The private, offline-first command center for software engineers. Organize multi-stage application pipelines, cite quantifiable STAR metrics during technical interviews, and keep recruitment notes strictly on your machine.
-              </p>
-
-              <div class="hero-actions hero-anim-actions" id="hero-actions">
-                <a href="/app/" class="btn btn-primary btn-large">
-                  <span>Launch Web App (v1.0.1)</span>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </a>
-
-                <a
-                  href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk"
-                  class="btn btn-secondary btn-large"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                  <span>Download APK (51.0 MB)</span>
-                </a>
-
-                <a href="#milestones" class="btn btn-secondary btn-large">
-                  <span>Explore Runway ↓</span>
-                </a>
-              </div>
-
-              <div class="hero-proof-ledger hero-anim-ledger" id="hero-proof-ledger">
-                <div class="proof-item">
-                  <span class="dot"></span>
-                  <span>39 Automated Tests Passing</span>
-                </div>
-                <div class="proof-item">
-                  <span class="dot"></span>
-                  <span>Local Device Storage (JSON Backup)</span>
-                </div>
-                <div class="proof-item">
-                  <span class="dot"></span>
-                  <span>Offline-First AppShell</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right: The 3D Kinetic Candidate Dossier Folio -->
-            <div class="hero-dossier-col animating" id="hero-dossier-col-wrapper">
-              <div class="dossier-stack-container" id="hero-dossier-stack">
-                <div class="dossier-folder-tab" id="hero-dossier-tab" aria-hidden="true">SAMPLE DOSSIER // ILLUSTRATIVE PREVIEW</div>
-                <div class="dossier-underlay-sheet-2" id="hero-underlay-2" aria-hidden="true"></div>
-                <div class="dossier-underlay-sheet-1" id="hero-underlay-1" aria-hidden="true"></div>
-
-                <div class="dossier-card" id="hero-dossier-card">
-                  <div class="dossier-header">
-                    <div class="dossier-tab-group">
-                      <button type="button" class="dossier-tab active" id="tab-active-card">Sample Dossier</button>
-                      <button type="button" class="dossier-tab" id="tab-audit-trail">Activity Timeline</button>
-                      <button type="button" class="dossier-tab" id="tab-evidence-sheet">STAR Proof Sheet</button>
-                    </div>
-                    <div class="dossier-status-indicator">
-                      <span class="pulse-pip" aria-hidden="true"></span>
-                      <span>PRIVATE LOCAL STORAGE • ILLUSTRATIVE DEMO</span>
-                    </div>
-                  </div>
-
-                  <div class="dossier-body">
-                    <!-- Candidate Profile Row -->
-                    <div class="candidate-profile-row">
-                      <div class="candidate-info">
-                        <div class="candidate-company-tag" id="dossier-company">STRIPE // INFRASTRUCTURE</div>
-                        <h2 class="candidate-role-title" id="dossier-role">Staff Distributed Systems Engineer</h2>
-                        <div class="candidate-meta-chips">
-                          <span class="meta-chip">📍 San Francisco / Remote</span>
-                          <span class="meta-chip">💼 $210k - $240k + Equity</span>
-                          <span class="meta-chip" id="dossier-next-action">📅 Next: Architecture Loop (Nov 5)</span>
-                          <span class="meta-chip" style="color: var(--brass); border-color: var(--border-medium);">💡 Illustrative Example</span>
-                        </div>
-                      </div>
-
-                      <span class="stage-badge-large" id="dossier-stage-pill" style="background-color: var(--stage-interview-bg); color: var(--stage-interview);">
-                        Stage: Technical Interview
-                      </span>
-                    </div>
-
-                    <!-- Milestone Progress Rail Inside Card -->
-                    <div class="milestone-rail-block">
-                      <div class="rail-track-wrapper" aria-hidden="true">
-                        <div class="rail-track-line"></div>
-                        <div class="rail-track-fill" id="dossier-rail-fill" style="width: 0%;"></div>
-                      </div>
-
-                      <div class="milestone-stations" role="tablist" aria-label="Pipeline Stages">
-                        <button type="button" class="station-item completed" data-stage="0" role="tab" aria-selected="false">
-                          <div class="station-node">01</div>
-                          <span class="station-label">Saved</span>
-                        </button>
-                        <button type="button" class="station-item completed" data-stage="1" role="tab" aria-selected="false">
-                          <div class="station-node">02</div>
-                          <span class="station-label">Applied</span>
-                        </button>
-                        <button type="button" class="station-item completed" data-stage="2" role="tab" aria-selected="false">
-                          <div class="station-node">03</div>
-                          <span class="station-label">Screening</span>
-                        </button>
-                        <button type="button" class="station-item active" data-stage="3" role="tab" aria-selected="true">
-                          <div class="station-node">04</div>
-                          <span class="station-label">Interview</span>
-                        </button>
-                        <button type="button" class="station-item" data-stage="4" role="tab" aria-selected="false">
-                          <div class="station-node">05</div>
-                          <span class="station-label">Offer</span>
-                        </button>
-                        <button type="button" class="station-item" data-stage="5" role="tab" aria-selected="false">
-                          <div class="station-node">06</div>
-                          <span class="station-label">Rejected</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    <!-- Attached STAR Citation -->
-                    <div class="dossier-evidence-attachment" id="dossier-evidence-block">
-                      <div class="evidence-header">
-                        <span class="evidence-tag">STAR Proof Linked</span>
-                        <span style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-muted);">TAGS: Kafka, Go, Distributed-Storage</span>
-                      </div>
-                      <h3 class="evidence-citation-title" id="dossier-evidence-title">High-Throughput Ingestion Engine Optimization</h3>
-                      <p class="evidence-citation-result" id="dossier-evidence-result">
-                        "Engineered distributed Kafka event pipeline handling 22,000 req/s with under 18ms p99 latency during peak load, cutting cluster hosting costs by 32%."
-                      </p>
-                    </div>
-
-                    <!-- Interactive Scrubber Controls -->
-                    <div class="dossier-scrubber-controls">
-                      <div class="scrubber-btn-group">
-                        <button type="button" class="btn-scrubber" id="btn-prev-stage">← Previous Stage</button>
-                        <button type="button" class="btn-scrubber" id="btn-next-stage">Advance Stage →</button>
-                        <button type="button" class="btn-scrubber" id="btn-cycle-candidate">Switch Candidate Role</button>
-                      </div>
-                      <div class="scrubber-audit-log" id="dossier-audit-log">
-                        Stage: Technical Interview [Saved to local Activity History]
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Chapter 1: The Six-Stage Career Pipeline Runway -->
-      <section class="section-chapter" id="milestones">
-        <div class="container" id="chapter-pipeline">
-          <div class="section-header-block motion-header-group">
-            <span class="section-eyebrow motion-eyebrow">01 // Operational Architecture</span>
-            <h2 class="section-title motion-title"><span class="motion-title-inner">A 6-Stage Progress Rail That Physically Advances.</span></h2>
-            <p class="section-lead motion-lead">
-              Technical recruiting moves at high velocity. As you scroll down this workspace, the milestone carriage physically tracks through your application pipeline, activating each operational stage with timestamped audit durability.
-            </p>
-          </div>
-
-          <div class="pipeline-runway-container">
-            <div class="pipeline-runway-header">
-              <div>
-                <span style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--ink-primary);">
-                  APPLICATION_LIFECYCLE_RUNWAY :: 6_STAGES
-                </span>
-                <span style="font-size: 0.78rem; color: var(--ink-muted); margin-left: 0.5rem;">[Scroll Position Synchronized]</span>
-              </div>
-              <div class="runway-telemetry-badge" id="pipeline-stage-telemetry">
-                <span class="pulse-pip" aria-hidden="true"></span>
-                <span id="pipeline-telemetry-text">ACTIVE: 01 // SAVED DISCOVERY</span>
-              </div>
-            </div>
-
-            <!-- The Master Scroll-Driven Carriage Rail -->
-            <div class="pipeline-rail-track-outer" id="pipeline-rail-track-wrapper" aria-hidden="true">
-              <div class="pipeline-rail-base-line"></div>
-              <div class="pipeline-scroll-bar" id="pipeline-scroll-bar"></div>
-              <div class="pipeline-rail-carriage" id="pipeline-rail-carriage" title="Current Milestone Position">
-                ◆
-              </div>
-            </div>
-
-            <!-- Six Sequential Runway Stations -->
-            <div class="pipeline-runway-grid">
-              <div class="pipeline-runway-card motion-card active" data-stage="0">
-                <div class="runway-stage-indicator">
-                  <span class="runway-station-num">01</span>
-                  <span class="runway-stage-chip" style="background-color: var(--stage-saved-bg); color: var(--stage-saved);">Saved</span>
-                </div>
-                <h3 class="runway-stage-title">Discovery</h3>
-                <p class="runway-stage-desc">
-                  Capture target opportunities, compensation ranges, and engineering stack notes before submitting.
-                </p>
-                <div class="runway-stage-meta">
-                  <span>Velocity: 2-5 Days</span>
-                  <span>Audit: Timestamped</span>
-                </div>
-              </div>
-
-              <div class="pipeline-runway-card motion-card" data-stage="1">
-                <div class="runway-stage-indicator">
-                  <span class="runway-station-num">02</span>
-                  <span class="runway-stage-chip" style="background-color: var(--stage-applied-bg); color: var(--stage-applied);">Applied</span>
-                </div>
-                <h3 class="runway-stage-title">Submission</h3>
-                <p class="runway-stage-desc">
-                  Record exact application timestamps, contact URLs, and attach follow-up reminders.
-                </p>
-                <div class="runway-stage-meta">
-                  <span>Velocity: 5-10 Days</span>
-                  <span>In-App Badges: Active</span>
-                </div>
-              </div>
-
-              <div class="pipeline-runway-card motion-card" data-stage="2">
-                <div class="runway-stage-indicator">
-                  <span class="runway-station-num">03</span>
-                  <span class="runway-stage-chip" style="background-color: var(--stage-screening-bg); color: var(--stage-screening);">Screening</span>
-                </div>
-                <h3 class="runway-stage-title">Recruiter Loop</h3>
-                <p class="runway-stage-desc">
-                  Track recruiter screens, initial technical sizing, and role alignment parameters.
-                </p>
-                <div class="runway-stage-meta">
-                  <span>Velocity: 3-7 Days</span>
-                  <span>Checklist: 3 Items</span>
-                </div>
-              </div>
-
-              <div class="pipeline-runway-card motion-card" data-stage="3">
-                <div class="runway-stage-indicator">
-                  <span class="runway-station-num">04</span>
-                  <span class="runway-stage-chip" style="background-color: var(--stage-interview-bg); color: var(--stage-interview);">Interview</span>
-                </div>
-                <h3 class="runway-stage-title">Technical Loops</h3>
-                <p class="runway-stage-desc">
-                  Manage algorithmic rounds, systems architecture panels, and behavioral debriefs.
-                </p>
-                <div class="runway-stage-meta">
-                  <span>Velocity: 7-14 Days</span>
-                  <span>STAR Proof: Linked</span>
-                </div>
-              </div>
-
-              <div class="pipeline-runway-card motion-card" data-stage="4">
-                <div class="runway-stage-indicator">
-                  <span class="runway-station-num">05</span>
-                  <span class="runway-stage-chip" style="background-color: var(--stage-offer-bg); color: var(--stage-offer);">Offer</span>
-                </div>
-                <h3 class="runway-stage-title">Compensation</h3>
-                <p class="runway-stage-desc">
-                  Evaluate base salary, equity grants, sign-on bonuses, and decision deadlines in privacy.
-                </p>
-                <div class="runway-stage-meta">
-                  <span>Decision: 7-10 Days</span>
-                  <span>Storage: Private On-Device</span>
-                </div>
-              </div>
-
-              <div class="pipeline-runway-card motion-card" data-stage="5">
-                <div class="runway-stage-indicator">
-                  <span class="runway-station-num">06</span>
-                  <span class="runway-stage-chip" style="background-color: var(--stage-concluded-bg); color: var(--stage-concluded);">Rejected</span>
-                </div>
-                <h3 class="runway-stage-title">Archival Debrief</h3>
-                <p class="runway-stage-desc">
-                  Preserve interview debrief logs and lessons learned without cluttering active pipeline counts.
-                </p>
-                <div class="runway-stage-meta">
-                  <span>Status: Terminal</span>
-                  <span>History: Permanent</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Chapter 2: The STAR Evidence Assembly Deck & Pinned Stage -->
-      <section class="section-chapter star-pinned-section" id="star-matrix">
-        <div class="star-scroll-track" id="star-scroll-track">
-          <div class="star-sticky-viewport" id="star-sticky-viewport">
-            <div class="container" id="chapter-evidence">
-              <div class="section-header-block motion-header-group">
-                <span class="section-eyebrow motion-eyebrow">02 // Behavioral Mastery</span>
-                <h2 class="section-title motion-title"><span class="motion-title-inner">STAR Evidence Fragments Assembling into an Interview Dossier.</span></h2>
-                <p class="section-lead motion-lead">
-                  Generic resume bullets evaporate during difficult systems interviews. As you scroll, separate Situation, Task, Action, and Result paper fragments travel across a spacious drafting stage, follow dynamic connector links, and lock into an aligned candidate proof sheet with real-time citation linking.
-                </p>
-              </div>
-
-              <div class="star-assembly-workbench">
-                <div class="matrix-filter-nav motion-filter-group" id="matrix-filter-group" role="tablist" aria-label="Evidence Domains">
-                  <button type="button" class="matrix-filter-btn active" data-domain="systems" role="tab">Distributed Systems</button>
-                  <button type="button" class="matrix-filter-btn" data-domain="perf" role="tab">Performance Tuning</button>
-                  <button type="button" class="matrix-filter-btn" data-domain="security" role="tab">Security &amp; Ephemeral IAM</button>
-                  <button type="button" class="matrix-filter-btn" data-domain="frontend" role="tab">Client State Persistence</button>
-                </div>
-
-                <div class="star-scene-stage" id="star-assembly-deck">
-                  <!-- Left/Center: Spacious Paper Fragment Arena with SVG Drawn Links & Underlying Dossier Plate -->
-                  <div class="star-assembly-arena" id="star-assembly-arena">
-                    <div class="star-dossier-plate" id="star-dossier-plate">
-                      <div class="dossier-plate-corner top-left">+</div>
-                      <div class="dossier-plate-corner top-right">+</div>
-                      <div class="dossier-plate-corner bottom-left">+</div>
-                      <div class="dossier-plate-corner bottom-right">+</div>
-                      <div class="dossier-plate-title-bar">
-                        <span>INTERVIEW_PROOF_DOSSIER // CONFIDENTIAL</span>
-                        <span>GRID_ALIGN: 2x2 ARCHIVAL</span>
-                      </div>
-                    </div>
-
-                    <!-- Dynamic SVG Drawn Connector Links -->
-                    <svg class="star-drawn-svg" id="star-drawn-svg" aria-hidden="true" viewBox="0 0 640 400" preserveAspectRatio="none">
-                      <defs>
-                        <linearGradient id="link-grad-brass" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stop-color="var(--brass)" stop-opacity="0.85" />
-                          <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.85" />
-                        </linearGradient>
-                      </defs>
-                      <line id="link-s-t" x1="160" y1="100" x2="480" y2="100" class="star-connector-line" />
-                      <line id="link-s-a" x1="160" y1="100" x2="160" y2="300" class="star-connector-line" />
-                      <line id="link-t-r" x1="480" y1="100" x2="480" y2="300" class="star-connector-line" />
-                      <line id="link-a-r" x1="160" y1="300" x2="480" y2="300" class="star-connector-line" />
-                      <path id="link-cite-curve" d="M 480 300 C 560 300, 580 200, 640 200" class="star-connector-curve" />
-                    </svg>
-
-                    <!-- Central Stamped Seal -->
-                    <div class="star-assembly-seal" id="star-assembly-seal" aria-hidden="true">
-                      VERIFIED<br />PROOF
-                    </div>
-
-                    <!-- 4 Physical Assembling Paper Fragments -->
-                    <div class="star-fragments-grid" id="star-fragments-grid">
-                      <div class="star-fragment frag-s active" id="star-frag-situation" data-stage="0">
-                        <div class="star-fragment-header">
-                          <div class="star-fragment-badge">S</div>
-                          <span class="star-phase-tag">STAGE 01 // CONTEXT</span>
-                        </div>
-                        <h4 class="star-fragment-title">Situation</h4>
-                        <p class="star-fragment-body" id="star-situation">
-                          Legacy telemetry ingestion service suffered memory exhaustion and 1,800ms tail latency during peak registration spikes, causing dropped metrics and customer alerting delays.
-                        </p>
-                      </div>
-
-                      <div class="star-fragment frag-t" id="star-frag-task" data-stage="1">
-                        <div class="star-fragment-header">
-                          <div class="star-fragment-badge">T</div>
-                          <span class="star-phase-tag">STAGE 02 // SPECIFICATION</span>
-                        </div>
-                        <h4 class="star-fragment-title">Task</h4>
-                        <p class="star-fragment-body" id="star-task">
-                          Redesign the message ingestion pipeline to support 20,000+ events/sec with sub-50ms p99 latency without increasing server cluster budget.
-                        </p>
-                      </div>
-
-                      <div class="star-fragment frag-a" id="star-frag-action" data-stage="2">
-                        <div class="star-fragment-header">
-                          <div class="star-fragment-badge">A</div>
-                          <span class="star-phase-tag">STAGE 03 // ARCHITECTURE</span>
-                        </div>
-                        <h4 class="star-fragment-title">Action</h4>
-                        <p class="star-fragment-body" id="star-action">
-                          Re-architected buffer pooling in Go, migrated unbounded channels to partitioned Kafka topics, and introduced memory-mapped batching with backpressure controls.
-                        </p>
-                      </div>
-
-                      <div class="star-fragment frag-r" id="star-frag-result" data-stage="3">
-                        <div class="star-fragment-header">
-                          <div class="star-fragment-badge">R</div>
-                          <span class="star-phase-tag result-tag">STAGE 04 // VERIFIED IMPACT</span>
-                        </div>
-                        <h4 class="star-fragment-title" style="color: var(--accent);">Result (Quantifiable)</h4>
-                        <p class="star-fragment-body" id="star-result" style="color: var(--ink-primary); font-weight: 600;">
-                          Processed 22,000 events/sec with 18ms p99 latency; reduced memory footprint by 45% and cloud infrastructure bill by $14,000/month.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Right: Dynamic Citation Proof Inspector that transitions alongside scroll stages -->
-                  <div class="star-citation-panel motion-citation-panel" id="star-citation-panel">
-                    <div class="citation-telemetry-row">
-                      <span class="citation-stage-pill" id="citation-stage-pill">STAGE 1/4 // SITUATION AUDIT</span>
-                      <span class="pulse-pip" aria-hidden="true"></span>
-                    </div>
-
-                    <div class="citation-content-wrap">
-                      <div class="citation-domain-pill">Active Interview Citation</div>
-                      <h3 id="citation-title" style="font-size: 1.18rem; margin-bottom: 0.5rem; color: var(--ink-primary);">
-                        Distributed Telemetry Engine
-                      </h3>
-                      <div id="citation-tags" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-secondary); margin-bottom: 0.85rem;">
-                        TAGS: Go, Kafka, Prometheus, Zero-Allocation
-                      </div>
-                      <p id="citation-summary" style="font-size: 0.9rem; line-height: 1.55; color: var(--ink-secondary); margin-bottom: 1rem;">
-                        Use during systems architecture and concurrency rounds to demonstrate measured performance engineering under real production load.
-                      </p>
-
-                      <div class="citation-live-link-box" id="citation-live-link-box">
-                        <div class="link-box-label">LIVE CITATION TARGET:</div>
-                        <div class="link-box-content" id="citation-link-text">
-                          Linked: <strong>SITUATION</strong> → Incident Record #804 (1,800ms tail latency spike under load)
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="citation-action-box">
-                      <button type="button" class="btn btn-primary" id="btn-cite-simulation" style="width: 100%;">
-                        Simulate Citing in Interview →
-                      </button>
-                      <div id="citation-feedback" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); margin-top: 0.6rem; text-align: center; display: none;">
-                        ✓ Evidence attached to active candidate briefing!
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Chapter 3: Sovereign Dossier Vault & Dimensional Local-Backup Folding -->
-      <section class="section-chapter" id="privacy-vault">
-        <div class="container" id="chapter-vault">
-          <div class="section-header-block motion-header-group">
-            <span class="section-eyebrow motion-eyebrow">03 // Storage Architecture &amp; Tradeoffs</span>
-            <h2 class="section-title motion-title"><span class="motion-title-inner">A Dimensional Dossier Folding Into a Sovereign Local Packet.</span></h2>
-            <p class="section-lead motion-lead">
-              While centralized cloud portals retain custody of your interview logs and compensation history, Pathfolio collects your records entirely on-device, folds them into a schema-validated backup packet, and seals them under your personal custody.
-            </p>
-          </div>
-
-          <!-- Coordinated 3-Phase Stepper / Annotations -->
-          <div class="vault-stepper-bar" id="vault-stepper-bar" aria-hidden="true">
-            <div class="vault-step-pill active" data-step="0" id="vault-step-0">
-              <span class="step-num">01</span>
-              <span class="step-text">Documents Collect</span>
-            </div>
-            <div class="vault-step-arrow">→</div>
-            <div class="vault-step-pill" data-step="1" id="vault-step-1">
-              <span class="step-num">02</span>
-              <span class="step-text">Envelope Folds</span>
-            </div>
-            <div class="vault-step-arrow">→</div>
-            <div class="vault-step-pill" data-step="2" id="vault-step-2">
-              <span class="step-num">03</span>
-              <span class="step-text">Seal &amp; Export</span>
-            </div>
-          </div>
-
-          <!-- The Dimensional Dossier Folding Sequence (Focal Visual Scene) -->
-          <div class="vault-presentation-block">
-            <div class="vault-envelope-packet" id="vault-packet-envelope">
-              <!-- Three Collectable Physical Career Documents that glide into the pocket -->
-              <div class="vault-collectable-docs" id="vault-collectable-docs">
-                <div class="vault-doc-sheet sheet-pipeline" id="vault-doc-pipeline">
-                  <div class="doc-sheet-tag">DOC // 01 • APPLICATION LEDGER</div>
-                  <div class="doc-sheet-title">Stripe — Staff Distributed Systems Engineer</div>
-                  <div class="doc-sheet-meta">
-                    <span>Stage: Interview Loop</span>
-                    <span>Salary: $210k - $240k</span>
-                  </div>
-                </div>
-
-                <div class="vault-doc-sheet sheet-evidence" id="vault-doc-evidence">
-                  <div class="doc-sheet-tag">DOC // 02 • STAR EVIDENCE REPOSITORY</div>
-                  <div class="doc-sheet-title">High-Throughput Ingestion Engine Optimization</div>
-                  <div class="doc-sheet-meta">
-                    <span>Metrics: 22k events/sec</span>
-                    <span>Tail Latency: 18ms p99</span>
-                  </div>
-                </div>
-
-                <div class="vault-doc-sheet sheet-notes" id="vault-doc-notes">
-                  <div class="doc-sheet-tag">DOC // 03 • PRIVATE STRATEGY AUDIT</div>
-                  <div class="doc-sheet-title">Systems Architecture Debrief &amp; Compensation Log</div>
-                  <div class="doc-sheet-meta">
-                    <span>Storage: Private On-Device</span>
-                    <span>Cloud Sync: 0 Bytes Transferred</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Archival Portfolio Pocket Base -->
-              <div class="vault-pocket-base">
-                <div class="vault-pocket-label">ARCHIVAL CUSTODY POCKET // SCHEMA_V1</div>
-              </div>
-
-              <!-- Dimensional Envelope Flap that 3D-folds shut over the pocket -->
-              <div class="vault-envelope-flap" id="vault-envelope-flap" aria-hidden="true"></div>
-
-              <!-- Hot Brass Wax Seal that stamps down -->
-              <div class="vault-wax-seal" id="vault-wax-seal" aria-hidden="true">P</div>
-
-              <!-- Luminous Sovereign Backup Manifest & Drawer -->
-              <div class="vault-code-drawer" id="vault-code-drawer">
-                <div class="vault-manifest-status" id="vault-manifest-status">
-                  <span class="pulse-pip" aria-hidden="true"></span>
-                  <span><strong>STATUS:</strong> LOCAL BACKUP SEALED // <code>pathfolio-backup-v1.json</code> • 100% PRIVATE ON-DEVICE • 0 BYTES SENT TO CLOUD</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Sample JSON Export Inspector & Download Bar (Illustrative, Accessible via Details) -->
-            <div class="schema-inspector-panel">
-              <div class="schema-inspector-bar">
-                <div class="schema-inspector-meta">
-                  <span style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--ink-primary);">
-                    PATHFOLIO_BACKUP_SCHEMA_V1.JSON
-                  </span>
-                  <span style="font-size: 0.78rem; color: var(--ink-muted); margin-left: 0.5rem;">[Sample Illustrative Backup]</span>
-                </div>
-                <button type="button" class="btn btn-secondary" id="btn-download-sample-json">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                  <span>Download Sample Backup (JSON)</span>
-                </button>
-              </div>
-
-              <details class="schema-inspector-details" id="schema-inspector-details">
-                <summary class="schema-inspector-summary">
-                  <span class="summary-badge">INSPECT SCHEMA</span>
-                  <span class="summary-text">Inspect Raw Schema v1 JSON Format (Click to Expand / Collapse)</span>
-                  <span class="summary-chevron" aria-hidden="true">▾</span>
-                </summary>
-                <div class="schema-details-body">
-                  <div class="schema-caption-note">
-                    <strong>Note:</strong> Illustrative sample export format. In the Pathfolio app, all records are stored locally via <code>shared_preferences</code> (browser local storage on web, sandboxed app storage on Android).
-                  </div>
-                  <pre class="schema-json-body"><code>{
+<section class="sec" id="vault" aria-labelledby="h-v">
+<div class="vault">
+<div><p class="eye"><i></i>Chapter 3 · Backup and restore</p><h2 id="h-v" data-split>Your file. Your transfer.</h2><p class="lead">There is no cross-device sync. Export and import are the deliberate way to move your records, and imports replace current local data only after you confirm.</p>
+<ol class="stp" id="stp"><li>Export a versioned JSON backup</li><li>Validate size, schema version and field types</li><li>Preview counts of what will be imported</li><li>Confirm the replacement, or reject without changes</li></ol>
+<details><summary>Inspect a sample backup (illustrative shape)</summary><pre>{
   "schemaVersion": 1,
-  "exportedAt": "2026-11-04T08:00:00.000Z",
-  "appVersion": "1.0.1",
-  "opportunities": [
-    {
-      "id": "opp-stripe-001",
-      "company": "Stripe",
-      "role": "Staff Distributed Systems Engineer",
-      "stage": "interview",
-      "salaryNote": "$210k - $240k + Equity",
-      "nextActionDate": "2026-11-05T14:00:00.000Z",
-      "timeline": [
-        { "id": "t-1", "stage": "saved", "timestamp": "2026-10-14T09:00:00.000Z" },
-        { "id": "t-2", "stage": "applied", "timestamp": "2026-10-18T11:20:00.000Z" },
-        { "id": "t-3", "stage": "screening", "timestamp": "2026-10-24T16:00:00.000Z" },
-        { "id": "t-4", "stage": "interview", "timestamp": "2026-11-01T10:00:00.000Z" }
-      ],
-      "evidenceIds": ["ev-telemetry-01"]
-    }
-  ],
-  "evidence": [
-    {
-      "id": "ev-telemetry-01",
-      "title": "High-Throughput Ingestion Engine Optimization",
-      "tags": ["Go", "Kafka", "Prometheus", "Distributed-Storage"],
-      "result": "Engineered distributed Kafka pipeline processing 22k events/sec with 18ms p99 latency."
-    }
-  ]
-}</code></pre>
-                </div>
-              </details>
-            </div>
-          </div>
+  "exportedAt": "…",
+  "opportunities": [ … ],
+  "tasks": [ … ],
+  "evidence": [ … ],
+  "preferences": { "theme": "…", "motion": "…" }
+}</pre></details></div>
+<div class="env" id="env" role="img" aria-label="Illustration: three documents, a pipeline snapshot, an evidence dossier and confidential notes, slide into an envelope that is sealed with wax."><div class="doc">Pipeline snapshot</div><div class="doc">Evidence dossier</div><div class="doc">Confidential notes</div><div class="pkt">Versioned JSON backup</div><div class="flap" id="flap"></div><div class="seal" id="seal">P</div></div>
+</div>
+</section>
 
-          <!-- Neutral Architectural Comparison Grid -->
-          <div class="privacy-comparison-grid">
-            <div class="comparison-box commercial motion-compare-box">
-              <h3 class="comparison-title">Centralized Cloud Platforms</h3>
-              <ul class="comparison-list">
-                <li class="comparison-item">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-secondary)" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
-                  <span><strong>Remote Server Storage:</strong> Application records, notes, and profile details reside on external cloud databases requiring active network connectivity.</span>
-                </li>
-                <li class="comparison-item">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-secondary)" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                  <span><strong>Automatic Cross-Device Sync:</strong> Immediate synchronization across mobile, desktop, and tablet devices handled transparently by remote servers.</span>
-                </li>
-                <li class="comparison-item">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-secondary)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                  <span><strong>Account &amp; Service Dependency:</strong> Access requires valid user login credentials; availability depends on third-party service uptime and network connection.</span>
-                </li>
-                <li class="comparison-item">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-secondary)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                  <span><strong>Server-Side Data Governance:</strong> Data retention, indexing, and backup lifecycle follow host platform terms of service and infrastructure policies.</span>
-                </li>
-              </ul>
-            </div>
+<section class="sec" id="tour" aria-labelledby="h-t">
+<div class="tour"><p class="eye"><i></i>Chapter 4 · App tour</p><h2 id="h-t" data-split>One workspace on Android and the web.</h2><p class="lead">Search company, role and notes. Filter by stage and archived status. Sort by most recent, next action or company. The dashboard counts come from your own records and each one leads to the matching list.</p>
+<div class="tb" role="tablist" aria-label="Platform"><button role="tab" aria-selected="true" data-p="android">Android</button><button role="tab" aria-selected="false" data-p="web">Web</button></div>
+<div class="scene" id="scene" data-p="android">
+<div class="phone" id="phone" role="img" aria-label="Illustration of the Android dashboard with demo data"><span class="demo">Demo workspace</span><div class="mk">Dashboard</div><div class="bars"><div>Saved<i style="width:30%"></i></div><div>Applied<i style="width:55%"></i></div><div>Screening<i style="width:40%"></i></div><div>Interview<i style="width:25%"></i></div><div>Offer<i style="width:12%"></i></div></div><div class="rw"><span>Send thank-you note<small>Sample Co.</small></span><span class="od2">Due soon</span></div><div class="rw"><span>Confirm interview time<small>Demo Studio</small></span><span class="od2">Overdue</span></div></div>
+<div class="win" id="win" role="img" aria-label="Illustration of the web opportunity list with search and filters, demo data"><div class="wb"><i></i><i></i><i></i><u>/app/</u></div><div class="wc"><div class="sr">Search company, role, notes</div><div class="chips"><span>Stage: All</span><span>Archived: Hidden</span><span>Sort: Next action</span></div><div class="rw"><span>Product Designer<small>Sample Co. · Remote</small></span><span class="od2">Interview</span></div><div class="rw"><span>UX Researcher<small>Demo Studio · Hybrid</small></span><span class="od2">Screening</span></div><div class="rw"><span>Design Intern<small>Example Labs · On-site</small></span><span class="od2">Applied</span></div></div></div>
+</div></div>
+</section>
 
-            <div class="comparison-box pathfolio motion-compare-box">
-              <h3 class="comparison-title" style="color: var(--accent);">Pathfolio Local-First Workspace</h3>
-              <ul class="comparison-list">
-                <li class="comparison-item">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  <span><strong>Local Client-Side Storage:</strong> Opportunities, notes, and milestones are stored on your device using Flutter's <code>shared_preferences</code> (browser local storage on web, sandboxed app storage on Android). Note that browser data can be cleared by user action or browser profile settings.</span>
-                </li>
-                <li class="comparison-item">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                  <span><strong>No External Telemetry &amp; Offline Capability:</strong> Runs offline without network round-trips for core tracking; contains no analytics tracking pixels, beacons, or cloud databases.</span>
-                </li>
-                <li class="comparison-item">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  <span><strong>Browser Storage Limitations:</strong> Web data is scoped solely to your local browser profile. Clearing site cookies/data or using Private/Incognito windows resets unexported records.</span>
-                </li>
-                <li class="comparison-item">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  <span><strong>Portable Versioned JSON Backups:</strong> Manual cross-device transfer via validated schema v1 JSON export and restore, giving you verified file portability anytime.</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
+<section class="sec guide" aria-labelledby="h-g">
+<div class="wrap"><p class="eye"><i></i>Usage guide</p><h2 id="h-g" data-split>Five moves to a working search.</h2>
+<ol id="gl"><li><b>01</b><h3>Onboard</h3><p>Read how local storage and backup work, then land in an empty, usable workspace.</p></li><li><b>02</b><h3>Add an opportunity</h3><p>Company and role are required. A source URL is validated when present.</p></li><li><b>03</b><h3>Move its stage</h3><p>Change it from the list or the detail. The timeline records the date.</p></li><li><b>04</b><h3>Add a task</h3><p>Follow-ups with optional due dates surface on the dashboard by local date.</p></li><li><b>05</b><h3>Export and import</h3><p>Download a backup. Import previews counts and asks before replacing.</p></li></ol>
+<p style="margin-top:2rem"><a class="btn g mag" href="/guide.html">Read the full guide</a></p></div>
+</section>
 
-      <!-- Chapter 4: Product Craft & App Tour -->
-      <section class="section-chapter" id="app-tour">
-        <div class="container">
-          <div class="section-header-block motion-header-group">
-            <span class="section-eyebrow motion-eyebrow">04 // Product Craft</span>
-            <h2 class="section-title motion-title"><span class="motion-title-inner">Designed for Daily Focus. Ready Offline.</span></h2>
-            <p class="section-lead motion-lead">
-              Warm porcelain surfaces, deep ink typography, visible keyboard focus indicators, and fast task transitions. Available as a web app and native Android APK.
-            </p>
-          </div>
+<section class="sec" id="privacy" aria-labelledby="h-p">
+<div class="priv">
+<div><p class="eye"><i></i>Privacy</p><h2 id="h-p" data-split>Nothing leaves unless you send it.</h2><p class="lead">Applications, tasks, notes, preferences and evidence stay in local storage. No credentials, resumes or documents are uploaded to any server.</p>
+<div class="pl"><div><h3>Stays on this device</h3><ul><li>Opportunities and notes</li><li>Tasks and activity timeline</li><li>Evidence titles, tags and links</li><li>Theme and motion preferences</li></ul></div><div><h3>Leaves only by your choice</h3><ul><li>A backup you export</li><li>A source URL you open</li></ul></div></div>
+<p class="lim">Honest limits: browser storage is per browser profile and Android storage is per app installation. Clearing site data or uninstalling can remove records, so export a backup.</p>
+<p style="margin-top:1.6rem"><a class="btn g mag" href="/privacy.html">Read the privacy page</a></p></div>
+<div class="pv" role="img" aria-label="Illustration: records float inside a device boundary; only an export gate crosses it."><svg viewBox="0 0 400 340"><rect class="bd" id="pbd" x="20" y="20" width="300" height="300" rx="10" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><g id="recs"><rect class="rc" x="70" y="80" width="46" height="60" rx="3"/><rect class="rc" x="150" y="130" width="46" height="60" rx="3" opacity=".7"/><rect class="rc" x="90" y="200" width="46" height="60" rx="3" opacity=".5"/><rect class="rc" x="220" y="70" width="46" height="60" rx="3" opacity=".6"/><rect class="rc" x="230" y="210" width="46" height="60" rx="3" opacity=".85"/></g><path id="pgate" d="M320 170H380" stroke="var(--brass)" stroke-width="2" stroke-dasharray="6 6" fill="none"/><text x="330" y="156">Export</text><text x="40" y="312">On this device</text></svg></div>
+</div>
+</section>
 
-          <div class="app-tour-grid">
-            <div class="app-tour-card motion-gallery-card desktop-card">
-              <img
-                src="screenshots/dashboard-desktop-1440.png"
-                alt="Pathfolio Desktop Command Center showing pipeline overview, tasks, and recent timeline"
-                loading="lazy"
-              />
-              <div class="app-tour-caption">
-                <span>Desktop Workspace (1440×900)</span>
-                <span style="font-family: var(--font-mono);">FLUTTER_WEB_ENGINE</span>
-              </div>
-            </div>
-
-            <div class="app-tour-card motion-gallery-card mobile-card">
-              <img
-                src="screenshots/app-mobile-390.png"
-                alt="Pathfolio Mobile Application view at 390px width"
-                loading="lazy"
-              />
-              <div class="app-tour-caption">
-                <span>Mobile Android (390×844)</span>
-                <span style="font-family: var(--font-mono);">STANDALONE_APK</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Closing Sovereign Command CTA Section -->
-      <section class="section-chapter cta-section closing-scene-section" id="closing-cta">
-        <div class="container">
-          <!-- Part 1: Monumental Scroll-Lit Typography -->
-          <div class="closing-typography-stage motion-header-group">
-            <span class="section-eyebrow motion-eyebrow">05 // Sovereign Command</span>
-            <h2 class="closing-monumental-title">
-              <span class="scroll-lit-line line-1"><span class="lit-word">Your</span> <span class="lit-word">Loop.</span> <span class="lit-word">Your</span> <span class="lit-word">Evidence.</span></span>
-              <span class="scroll-lit-line line-2"><span class="lit-word">Sealed</span> <span class="lit-word">On</span> <span class="lit-word">Your</span> <span class="lit-word">Terms.</span></span>
-            </h2>
-            <p class="closing-editorial-lead motion-lead">
-              Take sovereign command of your engineering interview pipeline. Zero cloud databases, zero recruitment surveillance, and 100% private client-side persistence.
-            </p>
-          </div>
-
-          <!-- Part 2: 3D Archival Carrier Dossier & Launch Composition -->
-          <div class="closing-dossier-composition motion-cta-card" id="closing-dossier-composition">
-            <div class="cta-ambient-glow" aria-hidden="true"></div>
-
-            <div class="closing-carrier-deck">
-              <!-- Physical 3D Dossier Leaves Unfolding -->
-              <div class="closing-dossier-spread" id="closing-dossier-spread">
-                <div class="closing-dossier-leaf leaf-left" id="closing-leaf-left">
-                  <div class="leaf-header">
-                    <div class="leaf-seal" aria-hidden="true">P</div>
-                    <div>
-                      <div class="leaf-tag">CANDIDATE DOSSIER // MANIFEST</div>
-                      <div class="leaf-sub">VERIFIED SOVEREIGN WORKSPACE</div>
-                    </div>
-                  </div>
-                  <div class="leaf-stats-grid">
-                    <div class="leaf-stat-cell">
-                      <span class="stat-val">06</span>
-                      <span class="stat-lbl">Pipeline Stages Tracked</span>
-                    </div>
-                    <div class="leaf-stat-cell">
-                      <span class="stat-val">100%</span>
-                      <span class="stat-lbl">Client Sandbox Storage</span>
-                    </div>
-                    <div class="leaf-stat-cell">
-                      <span class="stat-val">v1.0</span>
-                      <span class="stat-lbl">Schema JSON Portability</span>
-                    </div>
-                    <div class="leaf-stat-cell">
-                      <span class="stat-val">0</span>
-                      <span class="stat-lbl">External Telemetry Pixels</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="closing-dossier-leaf leaf-right" id="closing-leaf-right">
-                  <div class="leaf-header">
-                    <div class="leaf-tag">OPERATIONAL READINESS // 2026</div>
-                    <span class="leaf-chip-active">OFFLINE READY</span>
-                  </div>
-                  <p class="leaf-body-text">
-                    Every interview debrief, salary negotiation checkpoint, and system design talking point stays locked inside your device. Own your career narrative without cloud surveillance.
-                  </p>
-                  <div class="leaf-brass-caliper">
-                    <span>ARCHIVAL SPEC: MIT_LICENSE</span>
-                    <span>FLUTTER_WEB_ENGINE</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Part 3: The Command Launchpad & Actions Deck -->
-              <div class="closing-launch-deck">
-                <div class="hero-actions motion-cta-actions" style="justify-content: center;">
-                  <a href="/app/" class="btn btn-primary btn-large btn-launch-primary">
-                    <span>Launch Web App (v1.0.1)</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M5 12h14M12 5l7 7-7 7" />
-                    </svg>
-                  </a>
-                  <a
-                    href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk"
-                    class="btn btn-secondary btn-large"
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="7 10 12 15 17 10" />
-                      <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                    <span>Download APK (51.0 MB)</span>
-                  </a>
-                  <a href="guide.html" class="btn btn-secondary btn-large">
-                    <span>Read Strategy Guide</span>
-                  </a>
-                </div>
-
-                <div class="hero-proof-ledger motion-cta-ledger" style="justify-content: center; margin-top: 2rem;">
-                  <div class="proof-item">
-                    <span class="dot"></span>
-                    <span>100% Client-Side Storage</span>
-                  </div>
-                  <div class="proof-item">
-                    <span class="dot"></span>
-                    <span>Zero Telemetry or Trackers</span>
-                  </div>
-                  <div class="proof-item">
-                    <span class="dot"></span>
-                    <span>Free &amp; Open Source (MIT)</span>
-                  </div>
-                  <div class="proof-item">
-                    <span class="dot"></span>
-                    <span>Schema v1 Backup Portability</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- Universal Site Footer -->
-    <footer class="site-footer">
-      <div class="container">
-        <div class="footer-grid motion-footer-grid">
-          <div class="footer-brand-col motion-footer-col">
-            <a href="/" class="brand-link">
-              <div class="brand-seal" aria-hidden="true">P</div>
-              <span class="brand-title">Pathfolio</span>
-            </a>
-            <p>
-              A private, offline-first career workspace for ambitious engineers. Built with Flutter and deployed to Cloudflare Pages.
-            </p>
-          </div>
-
-          <div class="motion-footer-col">
-            <div class="footer-col-title">Navigation</div>
-            <ul class="footer-links">
-              <li><a href="#hero">Candidate Dossier</a></li>
-              <li><a href="#milestones">Milestone Runway</a></li>
-              <li><a href="#star-matrix">STAR Assembly</a></li>
-              <li><a href="#privacy-vault">Storage Vault</a></li>
-              <li><a href="#app-tour">Product Screenshots</a></li>
-            </ul>
-          </div>
-
-          <div class="motion-footer-col">
-            <div class="footer-col-title">Documentation</div>
-            <ul class="footer-links">
-              <li><a href="guide.html">Strategy & Workflow Guide</a></li>
-              <li><a href="privacy.html">Privacy Policy & Storage</a></li>
-              <li><a href="/app/">Launch Web Application</a></li>
-              <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk">Download Android APK</a></li>
-            </ul>
-          </div>
-
-          <div class="motion-footer-col">
-            <div class="footer-col-title">Architecture</div>
-            <ul class="footer-links">
-              <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio" target="_blank" rel="noopener">GitHub Repository</a></li>
-              <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/blob/main/LICENSE" target="_blank" rel="noopener">MIT Open Source License</a></li>
-              <li><span>Flutter 3.47.7 & Dart 3.13</span></li>
-              <li><span>Schema Version 1 JSON</span></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="footer-bottom-row">
-          <div>© 2026 Pathfolio. Crafted for private, local-first career management. Open source under MIT License.</div>
-          <div style="font-family: var(--font-mono); font-size: 0.78rem;">
-            LOCAL CLIENT STORAGE • ZERO ANALYTICS TRACKERS • OFFLINE CAPABLE
-          </div>
-        </div>
-      </div>
-    </footer>
-
-    <!-- Unified JavaScript Application -->
-    <script src="app.js"></script>
-  </body>
+<section class="close" id="launch" aria-labelledby="h-c">
+<div class="cin" id="cin"><div class="lf l" id="closing-leaf-left" aria-hidden="true"></div><div class="lf r" id="closing-leaf-right" aria-hidden="true"></div>
+<div class="cc"><p class="eye"><i></i>Section 05 · Launch</p><h2 class="lit" id="h-c" aria-label="Keep the search. Own the file."><span class="lw">Keep</span> <span class="lw">the</span> <span class="lw i">search.</span><br><span class="lw">Own</span> <span class="lw">the</span> <span class="lw i">file.</span></h2><p class="lead">Open the web app now, or install the Android release APK from GitHub Releases. Your workspace starts empty and stays yours.</p>
+<div class="acts"><a class="btn mag" href="/app/">Launch App</a><a class="btn g mag" href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest">Download Android APK</a></div></div></div>
+</section>
+</main>
+<footer>
+<p class="fw" aria-label="Pathfolio" data-split>Pathfolio</p><div class="fl" id="fl"></div>
+<div class="fc"><div><h4>Pathfolio</h4><p>A local-first job-application command center for students and early-career professionals.</p></div>
+<div><h4>Product</h4><ul><li><a href="#pipeline">Pipeline</a></li><li><a href="#evidence">Evidence bank</a></li><li><a href="#vault">Backup</a></li><li><a href="#tour">App tour</a></li></ul></div>
+<div><h4>Trust</h4><ul><li><a href="/privacy.html">Privacy</a></li><li><a href="/guide.html">Usage guide</a></li><li><a href="#privacy">Storage limits</a></li></ul></div>
+<div><h4>Source</h4><ul><li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio">GitHub</a></li><li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest">Android APK</a></li><li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/blob/main/LICENSE">MIT license</a></li></ul></div></div>
+<div class="fb"><span>No analytics. No tracking. No sign-in.</span><span>MIT licensed · Built by Sayantan Sinha</span></div>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>window.gsap||document.write('<script src="/vendor/gsap.min.js"><\/script>')</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>window.ScrollTrigger||document.write('<script src="/vendor/ScrollTrigger.min.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>window.Lenis||document.write('<script src="/vendor/lenis.min.js"><\/script>')</script>
+<script src="app.js"></script>
+</body>
 </html>

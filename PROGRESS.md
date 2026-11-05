@@ -81,6 +81,19 @@
     - Preserved accepted hero, background, other sections, and 3D occlusion fix (front cards strictly in front of backing planes across all offsets and light/dark themes).
     - Verified phone fluid flow: zero sticky traps, zero text obstruction, seal never intersects text blocks (>35px clearance at 390px, >23px at 320px).
     - 100% automated Playwright gate pass locally and on live production Cloudflare Pages (`https://pathfolio.pages.dev/`). [COMPLETE]
+13. **Faithful Owner-Supplied Design Implementation (`my-design/home.html`)**:
+    - Kept `my-design/home.html` byte-for-byte untouched (43,390 bytes) and git-ignored.
+    - Preserved original kit prompt D in `originals/CLAUDE_HOME_PROMPT.txt` and `START_HERE.txt`.
+    - Vendored GSAP 3.12.5, ScrollTrigger, and Lenis dependencies in `site/vendor/` and `dist/vendor/` with local fallbacks.
+    - Authored production stylesheet `site/styles.css` with authored design styles, font definitions, sticky anchor scroll clearance (`scroll-margin-top: 5rem`), overflow containment (`overflow-x: clip; contain: paint;`), and reduced-motion overrides.
+    - Authored production script `site/app.js` with clean GSAP/ScrollTrigger/Lenis motion engine, canvas background, 3D dossier parallax, interactive pipeline scrubber, STAR evidence assembly, vault envelope 3D folding and wax seal, platform tabs, and closing CTA reveal.
+    - Updated `site/index.html` referencing production styles/scripts, local vendor fallbacks, and production links.
+    - Adapted `site/guide.html` and `site/privacy.html` to the new design system with embedded real product screenshots.
+    - Modernized `test-scroll-gate.js` with side-by-side composite comparison against untouched reference at 1440 desktop and 390 mobile in both dark and light themes at 6 matched scene phases (24 composite PNGs).
+    - Tested and verified real motion amplitude and state transitions across all scenes.
+    - Verified responsive containment (zero overflow across 1440, 1024, 768, 390, 320), sticky clearance, reduced motion, no-JS fallback, reverse scroll, direct midpage reload, and Flutter web app mounting.
+    - Fixed `_redirects` configuration for Cloudflare Pages clean URLs to eliminate redirect loops (`/app/* /app/index.html 200`).
+    - Deployed via Wrangler to Cloudflare Pages (`https://pathfolio.pages.dev`); verified 100% PASS on remote production gate. [COMPLETE]
 
 ## Feature Ledger (PRD Must Behaviors)
 

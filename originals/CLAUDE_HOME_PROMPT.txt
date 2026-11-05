@@ -1,0 +1,32 @@
+Design the home page of the product in the attached PRD as ONE complete HTML file: inline
+CSS and JavaScript; GSAP, ScrollTrigger and Lenis from cdnjs.cloudflare.com and Google
+Fonts are allowed. An AI coding agent will rebuild it exactly, so make it the finished
+design, not a sketch:
+- The header, a hero built around the PRD's signature moment (really animated), every
+  section the home page needs to tell the product's story, and the footer.
+- Real content from the PRD. No lorem ipsum, no invented numbers, no customer logos, no
+  testimonials, no "trusted by" lines.
+- Light AND dark themes as CSS variables with a working theme switch. A phone layout that
+  works at 390px wide. Readable contrast everywhere (WCAG AA) in both themes.
+- Cinematic motion (the PRD's motion intensity, 10 if it doesn't say): something moves in
+  every section, from the hero down to the footer. Use 2-3 big scroll moments (pinned
+  steps, a scene that builds while you scroll, a section that opens to full width) and,
+  everywhere else, motion with character: headline letters or lines rising, marks drawn
+  while scrolling, a marquee that reacts to scroll speed, numbers rolling into place,
+  magnetic buttons, a footer moment. Smooth, never janky. Respect prefers-reduced-motion
+  (then show everything in its final state).
+- No empty space, ever: a living background behind the whole page (a canvas of drifting
+  particles, or a slowly turning scene made of the product's own things) and, in every
+  empty area, something that belongs to the product: a scene, a real screenshot or photo,
+  a moving detail. Dark first and cinematic unless the PRD's audience needs light. The
+  quality bar: spacex.com, apple.com product pages, linear.app.
+- It must look like a top design studio made it for this exact product, with an aesthetic
+  vibe of its own: one bold, specific visual idea; a display font with real character at
+  big sizes (for example a sharp serif or an expressive wide or condensed face, mixed with
+  an italic or mono accent); varied layouts. Not a SaaS template: no rows of identical
+  cards, no boxes inside boxes, no purple-blue gradients, no glassmorphism, no emoji, no
+  gradient text, no Inter, Roboto or Space Grotesk.
+- If I attached screenshots, take their feel, not their content.
+Keep the file compact so it fits in one answer (about 1,000 lines at most): shared CSS
+classes, no comments. If your answer gets cut off, I'll type "continue": carry on exactly
+where you stopped.

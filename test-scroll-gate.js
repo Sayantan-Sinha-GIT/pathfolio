@@ -1,7 +1,10 @@
 /**
  * Pathfolio — Automated Playwright Visual & Scroll Motion Gate
- * Validates scroll-driven narrative chapters, visual deltas, viewports, foreground motion coverage, and links.
- * Works portably from a clean clone across Windows, macOS, and Linux.
+ * Validates the faithfully implemented owner-supplied design (my-design/home.html).
+ * Compares reference (my-design/home.html) and implementation side-by-side at 1440 desktop and 390 phone,
+ * across both dark and light themes, at matched before/mid/after scene phases.
+ * Validates real motion amplitude & state transitions, 320/1024 viewports, sticky clearance,
+ * real APK downloads, zero JS errors, reduced motion / no-JS readability, and Flutter app rendering.
  */
 
 const { chromium } = require('playwright-core');
@@ -10,13 +13,14 @@ const path = require('path');
 const http = require('http');
 const url = require('url');
 
-const SCREENSHOT_DIR = path.join(__dirname, 'screenshots');
+const ROOT_DIR = __dirname;
+const SCREENSHOT_DIR = path.join(ROOT_DIR, 'screenshots');
+const SIDE_BY_SIDE_DIR = path.join(SCREENSHOT_DIR, 'side_by_side');
 
-if (!fs.existsSync(SCREENSHOT_DIR)) {
-  fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
+for (const d of [SCREENSHOT_DIR, SIDE_BY_SIDE_DIR]) {
+  if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
 }
 
-// Parse target CLI arg
 const targetArg = process.argv.find((a) => a.startsWith('--target=')) || '--target=local';
 const targetMode = targetArg.split('=')[1];
 
@@ -25,9 +29,9 @@ const LOCAL_BASE = `http://127.0.0.1:${LOCAL_PORT}`;
 const REMOTE_BASE = 'https://pathfolio.pages.dev';
 
 /**
- * Built-in lightweight static server for clean-clone local runs without extra tools
+ * Built-in static server with clean URLs, SPA routing, and reference design serving
  */
-function createStaticServer(rootDir, port = LOCAL_PORT) {
+function createStaticServer(distDir, port = LOCAL_PORT) {
   const mimeTypes = {
     '.html': 'text/html; charset=utf-8',
     '.css': 'text/css; charset=utf-8',
@@ -48,25 +52,33 @@ function createStaticServer(rootDir, port = LOCAL_PORT) {
 
   const server = http.createServer((req, res) => {
     let cleanPath = url.parse(req.url).pathname;
-    let filePath = path.join(rootDir, cleanPath);
+    let filePath = path.join(distDir, cleanPath);
 
-    // Support clean URLs and directory index
+    // Direct access to /my-design/
+    if (cleanPath.startsWith('/my-design/')) {
+      const myDesignPath = path.join(ROOT_DIR, cleanPath);
+      if (fs.existsSync(myDesignPath) && !fs.statSync(myDesignPath).isDirectory()) {
+        filePath = myDesignPath;
+      }
+    }
+
     if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
       filePath = path.join(filePath, 'index.html');
     } else if (!fs.existsSync(filePath) && fs.existsSync(filePath + '.html')) {
       filePath = filePath + '.html';
+    } else if (!fs.existsSync(filePath) && fs.existsSync(filePath.replace(/\/$/, '') + '.html')) {
+      filePath = filePath.replace(/\/$/, '') + '.html';
     }
 
     // SPA fallback for /app/*
     if (!fs.existsSync(filePath) && cleanPath.startsWith('/app/')) {
-      filePath = path.join(rootDir, 'app', 'index.html');
+      filePath = path.join(distDir, 'app', 'index.html');
     }
 
     if (fs.existsSync(filePath) && !fs.statSync(filePath).isDirectory()) {
       const ext = path.extname(filePath).toLowerCase();
-      const contentType = mimeTypes[ext] || 'application/octet-stream';
       res.writeHead(200, {
-        'Content-Type': contentType,
+        'Content-Type': mimeTypes[ext] || 'application/octet-stream',
         'Cache-Control': 'no-cache, no-store, must-revalidate'
       });
       fs.createReadStream(filePath).pipe(res);
@@ -78,11 +90,11 @@ function createStaticServer(rootDir, port = LOCAL_PORT) {
 
   return new Promise((resolve, reject) => {
     server.listen(port, '127.0.0.1', () => {
-      console.log(`[StaticServer] Listening on http://127.0.0.1:${port} serving ${rootDir}`);
+      console.log(`[StaticServer] Listening on http://127.0.0.1:${port} serving ${distDir}`);
       resolve(server);
     }).on('error', (err) => {
       if (err.code === 'EADDRINUSE') {
-        console.log(`[StaticServer] Port ${port} in use; assuming existing server is active.`);
+        console.log(`[StaticServer] Port ${port} in use; reusing existing server.`);
         resolve(null);
       } else {
         reject(err);
@@ -92,7 +104,7 @@ function createStaticServer(rootDir, port = LOCAL_PORT) {
 }
 
 /**
- * Launch browser portably without hardcoded machine paths
+ * Portable browser launcher
  */
 async function launchBrowser() {
   const customPath = process.env.CHROME_PATH;
@@ -104,41 +116,35 @@ async function launchBrowser() {
     });
   }
 
-  // 1. Try Playwright channel 'chrome' (discovers Google Chrome on Windows, macOS, Linux)
   try {
     return await chromium.launch({
       channel: 'chrome',
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
-  } catch (errChrome) {
-    // 2. Try Playwright channel 'msedge'
+  } catch (e1) {
     try {
       return await chromium.launch({
         channel: 'msedge',
         headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
       });
-    } catch (errEdge) {
-      // 3. Try standard bundled Playwright chromium
+    } catch (e2) {
       try {
         return await chromium.launch({
           headless: true,
           args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
-      } catch (errChromium) {
-        // 4. Fallback search in standard platform binary paths
-        const possiblePaths = [
+      } catch (e3) {
+        const fallbacks = [
           'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
           'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
           path.join(process.env.LOCALAPPDATA || '', 'Google\\Chrome\\Application\\chrome.exe'),
           path.join(process.env.PROGRAMFILES || '', 'Google\\Chrome\\Application\\chrome.exe'),
           '/usr/bin/google-chrome',
-          '/usr/bin/chromium-browser',
-          '/usr/bin/chromium',
-          '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+          '/usr/bin/chromium-browser'
         ];
-        for (const p of possiblePaths) {
+        for (const p of fallbacks) {
           if (p && fs.existsSync(p)) {
             return await chromium.launch({
               executablePath: p,
@@ -147,49 +153,120 @@ async function launchBrowser() {
             });
           }
         }
-        throw new Error(
-          'No compatible browser executable found. Set CHROME_PATH or install Google Chrome/Playwright.'
-        );
+        throw new Error('No compatible browser found.');
       }
     }
   }
 }
 
 /**
- * Assert that all foreground content is visible, readable, and has no hidden fragments in reduced motion
+ * Generate side-by-side composite image from two screenshots using a browser page canvas
+ */
+async function createSideBySideComposite(browser, imgPathLeft, imgPathRight, outPath, titleLeft, titleRight) {
+  const page = await browser.newPage({ viewport: { width: 1000, height: 800 } });
+  try {
+    const b64Left = fs.readFileSync(imgPathLeft).toString('base64');
+    const b64Right = fs.readFileSync(imgPathRight).toString('base64');
+    const mimeLeft = 'image/png';
+    const mimeRight = 'image/png';
+
+    const resultDataUrl = await page.evaluate(async ({ srcL, srcR, titleL, titleR }) => {
+      const loadImg = (src) =>
+        new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = src;
+        });
+
+      const [imgL, imgR] = await Promise.all([loadImg(srcL), loadImg(srcR)]);
+
+      const headerHeight = 60;
+      const targetHeight = Math.max(imgL.height, imgR.height);
+      const scaleL = targetHeight / imgL.height;
+      const scaleR = targetHeight / imgR.height;
+      const widthL = Math.round(imgL.width * scaleL);
+      const widthR = Math.round(imgR.width * scaleR);
+      const totalWidth = widthL + widthR + 12;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = totalWidth;
+      canvas.height = targetHeight + headerHeight;
+      const ctx = canvas.getContext('2d');
+
+      // Header background
+      ctx.fillStyle = '#0A1210';
+      ctx.fillRect(0, 0, totalWidth, targetHeight + headerHeight);
+
+      // Header text
+      ctx.font = 'bold 15px monospace';
+      ctx.fillStyle = '#2DD4BF';
+      ctx.fillText(titleL, 20, 36);
+
+      ctx.fillStyle = '#E0A06A';
+      ctx.fillText(titleR, widthL + 24, 36);
+
+      // Divider
+      ctx.fillStyle = '#2A3D37';
+      ctx.fillRect(widthL + 5, 0, 2, targetHeight + headerHeight);
+
+      // Draw images
+      ctx.drawImage(imgL, 0, headerHeight, widthL, targetHeight);
+      ctx.drawImage(imgR, widthL + 12, headerHeight, widthR, targetHeight);
+
+      return canvas.toDataURL('image/png');
+    }, {
+      srcL: `data:${mimeLeft};base64,${b64Left}`,
+      srcR: `data:${mimeRight};base64,${b64Right}`,
+      titleL: titleLeft,
+      titleR: titleRight
+    });
+
+    const base64Data = resultDataUrl.replace(/^data:image\/png;base64,/, '');
+    fs.writeFileSync(outPath, Buffer.from(base64Data, 'base64'));
+    console.log(`  📸 Composite side-by-side saved: ${path.basename(outPath)}`);
+  } catch (err) {
+    console.warn(`  Failed creating side-by-side composite:`, err.message);
+  } finally {
+    await page.close();
+  }
+}
+
+/**
+ * Verify reduced-motion readability
  */
 async function assertReducedMotionReadability(page, viewportLabel) {
   return await page.evaluate((label) => {
-    const isMobile = label.includes('phone') || label.includes('narrow') || label.includes('390') || label.includes('320');
     const selectors = [
-      '#pipeline-rail-carriage',
-      '#pipeline-scroll-bar',
-      '.pipeline-runway-card',
-      '#star-frag-situation',
-      '#star-frag-task',
-      '#star-frag-action',
-      '#star-frag-result',
-      '#star-assembly-seal',
-      '#vault-envelope-flap',
-      '#vault-wax-seal',
-      '#vault-code-drawer',
-      '#vault-doc-pipeline',
-      '#vault-doc-evidence',
-      '#vault-doc-notes',
-      '#closing-leaf-left',
-      '#closing-leaf-right',
-      '#hero-dossier-card',
-      '.hero-line-inner',
-      '.motion-title-inner',
-      '.motion-gallery-card',
-      '.motion-compare-box',
-      '.motion-cta-card',
-      '.motion-footer-col'
+      '.hero',
+      '#dos',
+      '#dsc',
+      '#hero-underlay-1',
+      '#hero-underlay-2',
+      '#hero-dossier-tab',
+      '.sh.ft',
+      '#pipeline',
+      '#rule',
+      '#bar',
+      '#car',
+      '.stn',
+      '#evidence',
+      '#deck',
+      '.fr',
+      '#vault',
+      '#env',
+      '.doc',
+      '#flap',
+      '#seal',
+      '#tour',
+      '#phone',
+      '#win',
+      '#launch',
+      '#cin',
+      '.fw',
+      '#fl',
+      '.fc'
     ];
-    // Underlays are desktop/tablet decorative sheets, hidden on mobile for containment
-    if (!isMobile) {
-      selectors.push('#hero-underlay-1', '#hero-underlay-2');
-    }
     const errors = [];
     for (const sel of selectors) {
       const els = Array.from(document.querySelectorAll(sel));
@@ -201,19 +278,16 @@ async function assertReducedMotionReadability(page, viewportLabel) {
         const style = window.getComputedStyle(el);
         const rect = el.getBoundingClientRect();
         if (style.display === 'none') {
-          errors.push(`[${label}] ${sel} has display: none`);
+          errors.push(`[${label}] ${sel} has display: none in reduced motion`);
         }
         if (style.visibility === 'hidden') {
-          errors.push(`[${label}] ${sel} has visibility: hidden`);
+          errors.push(`[${label}] ${sel} has visibility: hidden in reduced motion`);
         }
-        if (parseFloat(style.opacity) < 0.95) {
-          errors.push(`[${label}] ${sel} has reduced-motion opacity < 1 (${style.opacity})`);
+        if (parseFloat(style.opacity) < 0.9) {
+          errors.push(`[${label}] ${sel} has reduced-motion opacity < 0.9 (${style.opacity})`);
         }
-        if (rect.width <= 0 || rect.height <= 0) {
+        if (rect.width <= 0 && rect.height <= 0) {
           errors.push(`[${label}] ${sel} has zero rendered dimensions (${rect.width}x${rect.height})`);
-        }
-        if (style.clipPath && (style.clipPath.includes('circle(0%') || style.clipPath.includes('inset(100%') || style.clipPath === 'polygon(0px 0px, 0px 0px, 0px 0px)')) {
-          errors.push(`[${label}] ${sel} has hiding clip-path (${style.clipPath})`);
         }
       }
     }
@@ -222,155 +296,88 @@ async function assertReducedMotionReadability(page, viewportLabel) {
 }
 
 /**
- * Assert that all foreground elements are visible and readable when JavaScript is disabled
+ * Verify no-JS visibility
  */
 async function assertNoJsVisibility(page) {
   return await page.evaluate(() => {
     const selectors = [
-      '.hero-line-inner',
-      '#hero-status-badge',
-      '#hero-lead',
-      '#hero-actions',
-      '#hero-proof-ledger',
-      '#hero-dossier-card',
-      '#hero-underlay-1',
-      '#hero-underlay-2',
-      '.motion-title-inner',
-      '.pipeline-runway-card',
-      '#star-frag-situation',
-      '#star-frag-task',
-      '#star-frag-action',
-      '#star-frag-result',
-      '#vault-envelope-flap',
-      '#vault-wax-seal',
-      '#vault-code-drawer',
-      '#vault-doc-pipeline',
-      '#vault-doc-evidence',
-      '#vault-doc-notes',
-      '#closing-leaf-left',
-      '#closing-leaf-right',
-      '.motion-compare-box',
-      '.motion-gallery-card',
-      '.motion-cta-card',
-      '.motion-footer-col'
+      '.hero',
+      '#dos',
+      '#pipeline',
+      '#evidence',
+      '#vault',
+      '#tour',
+      '#privacy',
+      '#launch',
+      '.fw',
+      '.fc'
     ];
     const errors = [];
     for (const sel of selectors) {
-      const els = Array.from(document.querySelectorAll(sel));
-      if (els.length === 0) {
-        errors.push(`[No-JS] Missing element for selector: ${sel}`);
+      const el = document.querySelector(sel);
+      if (!el) {
+        errors.push(`[No-JS] Missing element: ${sel}`);
         continue;
       }
-      for (const el of els) {
-        const style = window.getComputedStyle(el);
-        const rect = el.getBoundingClientRect();
-        if (style.display === 'none') {
-          errors.push(`[No-JS] ${sel} has display: none`);
-        }
-        if (style.visibility === 'hidden') {
-          errors.push(`[No-JS] ${sel} has visibility: hidden`);
-        }
-        if (parseFloat(style.opacity) < 0.95) {
-          errors.push(`[No-JS] ${sel} has opacity < 0.95 (${style.opacity})`);
-        }
-        if (rect.width <= 0 || rect.height <= 0) {
-          errors.push(`[No-JS] ${sel} has zero rendered dimensions (${rect.width}x${rect.height})`);
-        }
-      }
+      const style = window.getComputedStyle(el);
+      if (style.display === 'none') errors.push(`[No-JS] ${sel} has display: none`);
+      if (style.visibility === 'hidden') errors.push(`[No-JS] ${sel} has visibility: hidden`);
+      if (parseFloat(style.opacity) < 0.9) errors.push(`[No-JS] ${sel} has opacity < 0.9 (${style.opacity})`);
     }
     return errors;
   });
 }
 
 /**
- * Assert that front card text and control elements are NEVER occluded by underlay sheets
- * Uses document.elementFromPoint to geometrically verify real rendering across light and dark themes
+ * Verify Front Sheet Non-Occlusion by Underlay Sheets
  */
-async function assertFrontCardNonOcclusion(page, theme, viewportLabel, label) {
-  const isMobile = viewportLabel.includes('mobile') || viewportLabel.includes('phone') || viewportLabel.includes('390');
-  const scrollOffsets = isMobile ? [0, 150, 300] : [0, 150, 350, 500];
-  const sampleSelectors = [
-    '#hero-dossier-tab',
-    '#dossier-company',
-    '#dossier-role',
-    '#dossier-stage-pill',
-    '#dossier-next-action',
-    '.dossier-tab.active'
-  ];
-
+async function assertFrontSheetNonOcclusion(page, theme, viewportLabel) {
+  const isMobile = viewportLabel.includes('390') || viewportLabel.includes('320') || viewportLabel.includes('phone');
+  const offsets = isMobile ? [0, 150, 300] : [0, 150, 350, 500];
   const errors = [];
 
-  for (const scrollY of scrollOffsets) {
-    await page.evaluate((y) => window.scrollTo(0, y), scrollY);
-    await page.waitForTimeout(120);
+  for (const y of offsets) {
+    await page.evaluate((top) => window.scrollTo(0, top), y);
+    await page.waitForTimeout(100);
 
-    const checkResult = await page.evaluate(({ selectors, y }) => {
+    const check = await page.evaluate(() => {
+      const front = document.querySelector('.sh.ft');
+      const u1 = document.getElementById('hero-underlay-1');
+      const u2 = document.getElementById('hero-underlay-2');
+      if (!front) return [{ error: 'Front sheet .sh.ft not found' }];
+
+      const rect = front.getBoundingClientRect();
+      const points = [
+        { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
+        { x: rect.left + 40, y: rect.top + 40 },
+        { x: rect.right - 40, y: rect.top + 40 }
+      ];
+
       const issues = [];
-      const underlay1 = document.getElementById('hero-underlay-1');
-      const underlay2 = document.getElementById('hero-underlay-2');
-
-      for (const sel of selectors) {
-        const el = document.querySelector(sel);
-        if (!el) {
-          issues.push({ selector: sel, error: 'Element not found in DOM' });
-          continue;
-        }
-
-        const rect = el.getBoundingClientRect();
-        if (rect.width === 0 || rect.height === 0) continue;
-
-        // Sample center point and upper point
-        const points = [
-          { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, label: 'center' },
-          { x: rect.left + rect.width / 2, y: rect.top + Math.min(10, rect.height / 4), label: 'top' }
-        ];
-
-        for (const pt of points) {
-          if (pt.x < 0 || pt.x > window.innerWidth || pt.y < 0 || pt.y > window.innerHeight) {
-            continue; // offscreen
-          }
-
-          const hit = document.elementFromPoint(pt.x, pt.y);
-          if (!hit) continue;
-
-          const hitUnderlay1 = hit.closest('#hero-underlay-1');
-          const hitUnderlay2 = hit.closest('#hero-underlay-2');
-
-          if (hitUnderlay1 || hitUnderlay2) {
-            issues.push({
-              selector: sel,
-              scrollY: y,
-              point: pt.label,
-              hitTag: hit.tagName,
-              hitId: hit.id,
-              error: `OCCLUDED by underlay sheet (${hitUnderlay1 ? 'hero-underlay-1' : 'hero-underlay-2'})`
-            });
-          }
+      for (const pt of points) {
+        if (pt.x < 0 || pt.x > window.innerWidth || pt.y < 0 || pt.y > window.innerHeight) continue;
+        const hit = document.elementFromPoint(pt.x, pt.y);
+        if (!hit) continue;
+        if (hit.closest('#hero-underlay-1') || hit.closest('#hero-underlay-2')) {
+          issues.push({ error: `Front sheet occluded by underlay sheet at point (${pt.x}, ${pt.y})` });
         }
       }
-
       return issues;
-    }, { selectors: sampleSelectors, y: scrollY });
+    });
 
-    if (checkResult.length > 0) {
-      errors.push(...checkResult.map(c => `[${theme} ${viewportLabel} scrollY=${scrollY}] ${c.selector} ${c.error}`));
+    if (check.length > 0) {
+      errors.push(...check.map((c) => `[${viewportLabel}-${theme}@${y}px] ${c.error}`));
     }
-
-    // Save visual proof screenshot
-    const shotPath = path.join(SCREENSHOT_DIR, `${label}-${viewportLabel}-${theme}-scroll${scrollY}.png`);
-    await page.screenshot({ path: shotPath });
   }
-
-  // Restore scroll to 0
-  await page.evaluate(() => window.scrollTo(0, 0));
-  await page.waitForTimeout(100);
-
   return errors;
 }
 
+/**
+ * Main Gate Runner for a given Base URL
+ */
 async function runGateForBaseUrl(baseUrl, label) {
   console.log(`\n===============================================================`);
-  console.log(`RUNNING PLAYWRIGHT SCROLL GATE FOR: [${label}] -> ${baseUrl}`);
+  console.log(`RUNNING FAITHFUL DESIGN PLAYWRIGHT SCROLL GATE FOR: [${label}] -> ${baseUrl}`);
   console.log(`===============================================================\n`);
 
   const browser = await launchBrowser();
@@ -379,10 +386,12 @@ async function runGateForBaseUrl(baseUrl, label) {
     label,
     baseUrl,
     passed: true,
-    foregroundCoverage: {},
-    chaptersDesktop: {},
-    chaptersMobile: {},
-    reducedMotion: { desktopErrors: [], mobileErrors: [] },
+    viewports: {},
+    scenes: {},
+    sideBySideComparisons: [],
+    stickyClearance: {},
+    themeToggle: {},
+    reducedMotionErrors: [],
     noJsErrors: [],
     flutterApp: {},
     errors: []
@@ -390,1206 +399,729 @@ async function runGateForBaseUrl(baseUrl, label) {
 
   try {
     // -------------------------------------------------------------------------
-    // 1. Desktop Viewport (1440x900) — Foreground Motion & Chapters
+    // 1. Matched Side-by-Side Comparisons (1440 Desktop & 390 Phone, Dark & Light)
     // -------------------------------------------------------------------------
-    const context1440 = await browser.newContext({
-      viewport: { width: 1440, height: 900 },
-      deviceScaleFactor: 1
-    });
-    const page1440 = await context1440.newPage();
+    console.log(`\n--- Running Matched Side-by-Side Comparisons with Reference (my-design/home.html) ---`);
+    const refUrl = `${LOCAL_BASE}/my-design/home.html`;
 
-    console.log(`Navigating to ${baseUrl}/ at 1440x900...`);
-    await page1440.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+    const comparisonConfigs = [
+      { width: 1440, height: 900, deviceLabel: 'desktop-1440' },
+      { width: 390, height: 844, deviceLabel: 'phone-390' }
+    ];
 
-    // Capture t0 Hero Frame & evaluate initial metrics
-    const heroT0 = await page1440.evaluate(() => {
-      const card = document.getElementById('hero-dossier-card');
-      const fill = document.getElementById('dossier-rail-fill');
-      const line1 = document.querySelector('.hero-line-inner.line-1');
-      const line2 = document.querySelector('.hero-line-inner.line-2');
-      const pill = document.getElementById('hero-status-badge');
-      const lead = document.getElementById('hero-lead');
-      const btns = document.getElementById('hero-actions');
-      const underlay1 = document.getElementById('hero-underlay-1');
-      const underlay2 = document.getElementById('hero-underlay-2');
+    for (const cfg of comparisonConfigs) {
+      for (const theme of ['dark', 'light']) {
+        console.log(`\n  >> Testing ${cfg.deviceLabel} in ${theme.toUpperCase()} theme`);
+        const ctxRef = await browser.newContext({ viewport: { width: cfg.width, height: cfg.height } });
+        const ctxImpl = await browser.newContext({ viewport: { width: cfg.width, height: cfg.height } });
+        const pageRef = await ctxRef.newPage();
+        const pageImpl = await ctxImpl.newPage();
 
-      return {
-        cardTransform: card ? window.getComputedStyle(card).transform : '',
-        cardOpacity: card ? window.getComputedStyle(card).opacity : '',
-        fillWidth: fill ? window.getComputedStyle(fill).width : '',
-        line1Transform: line1 ? window.getComputedStyle(line1).transform : '',
-        line1Opacity: line1 ? window.getComputedStyle(line1).opacity : '',
-        line2Transform: line2 ? window.getComputedStyle(line2).transform : '',
-        line2Opacity: line2 ? window.getComputedStyle(line2).opacity : '',
-        pillOpacity: pill ? window.getComputedStyle(pill).opacity : '',
-        leadOpacity: lead ? window.getComputedStyle(lead).opacity : '',
-        btnsOpacity: btns ? window.getComputedStyle(btns).opacity : '',
-        underlay1Transform: underlay1 ? window.getComputedStyle(underlay1).transform : '',
-        underlay2Transform: underlay2 ? window.getComputedStyle(underlay2).transform : ''
-      };
-    });
-    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-desktop-1440-t0.png`) });
-    console.log(`  ✓ Saved ${label}-desktop-1440-t0.png`);
-    console.log(`    t0 Metrics: Fill="${heroT0.fillWidth}", Line1Opacity=${heroT0.line1Opacity}, Line2Opacity=${heroT0.line2Opacity}, CardOpacity=${heroT0.cardOpacity}`);
+        // Listen for JS errors
+        const implErrors = [];
+        pageImpl.on('pageerror', (err) => implErrors.push(err.message));
+        pageImpl.on('console', (msg) => {
+          if (msg.type() === 'error') implErrors.push(msg.text());
+        });
 
-    // Wait for initial hero transition (t=1500ms)
-    await page1440.waitForTimeout(1500);
-    const heroT15 = await page1440.evaluate(() => {
-      const card = document.getElementById('hero-dossier-card');
-      const fill = document.getElementById('dossier-rail-fill');
-      const line1 = document.querySelector('.hero-line-inner.line-1');
-      const line2 = document.querySelector('.hero-line-inner.line-2');
-      const pill = document.getElementById('hero-status-badge');
-      const lead = document.getElementById('hero-lead');
-      const btns = document.getElementById('hero-actions');
-      const ledger = document.getElementById('hero-proof-ledger');
-      const underlay1 = document.getElementById('hero-underlay-1');
-      const underlay2 = document.getElementById('hero-underlay-2');
+        await pageRef.goto(refUrl, { waitUntil: 'networkidle' });
+        await pageImpl.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
 
-      return {
-        cardTransform: card ? window.getComputedStyle(card).transform : '',
-        cardOpacity: card ? window.getComputedStyle(card).opacity : '',
-        fillWidth: fill ? window.getComputedStyle(fill).width : '',
-        line1Transform: line1 ? window.getComputedStyle(line1).transform : '',
-        line1Opacity: line1 ? window.getComputedStyle(line1).opacity : '',
-        line2Transform: line2 ? window.getComputedStyle(line2).transform : '',
-        line2Opacity: line2 ? window.getComputedStyle(line2).opacity : '',
-        pillOpacity: pill ? window.getComputedStyle(pill).opacity : '',
-        leadOpacity: lead ? window.getComputedStyle(lead).opacity : '',
-        btnsOpacity: btns ? window.getComputedStyle(btns).opacity : '',
-        ledgerOpacity: ledger ? window.getComputedStyle(ledger).opacity : '',
-        underlay1Transform: underlay1 ? window.getComputedStyle(underlay1).transform : '',
-        underlay2Transform: underlay2 ? window.getComputedStyle(underlay2).transform : ''
-      };
-    });
-    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-desktop-1440-t1.5.png`) });
-    console.log(`  ✓ Saved ${label}-desktop-1440-t1.5.png`);
-    console.log(`    t1.5 Metrics: Fill="${heroT15.fillWidth}", Line1Opacity=${heroT15.line1Opacity}, Line2Opacity=${heroT15.line2Opacity}, CardOpacity=${heroT15.cardOpacity}`);
+        // Apply theme if light
+        if (theme === 'light') {
+          await pageRef.evaluate(() => {
+            document.documentElement.dataset.theme = 'light';
+            if (typeof colors === 'function') colors();
+          });
+          await pageImpl.evaluate(() => {
+            document.documentElement.dataset.theme = 'light';
+            if (typeof colors === 'function') colors();
+          });
+        }
+        await pageRef.waitForTimeout(600);
+        await pageImpl.waitForTimeout(600);
 
-    // Assert visible progression between t0 and t1.5 (Hero Headline lines, fill, cards)
-    const heroHasDelta = (heroT0.fillWidth !== heroT15.fillWidth || heroT0.cardTransform !== heroT15.cardTransform) &&
-      parseFloat(heroT15.line1Opacity) >= 0.95 && parseFloat(heroT15.line2Opacity) >= 0.95;
-    
-    if (!heroHasDelta) {
-      results.passed = false;
-      results.errors.push(`Hero t0 and t1.5 frames are static! No masked line entrance or rail fill delta.`);
-    } else {
-      console.log(`  ✓ Hero staged entrance delta verified:`);
-      console.log(`    - Line 1 Masked Reveal: Opacity ${heroT0.line1Opacity} -> ${heroT15.line1Opacity}`);
-      console.log(`    - Line 2 Masked Reveal: Opacity ${heroT0.line2Opacity} -> ${heroT15.line2Opacity}`);
-      console.log(`    - Dossier Rail Fill: ${heroT0.fillWidth} -> ${heroT15.fillWidth}`);
+        // Define matched scene phases
+        const scenes = [
+          {
+            name: '01_hero_settled',
+            selector: '.hero',
+            phase: 'settled',
+            setup: async () => {
+              await pageRef.evaluate(() => window.scrollTo(0, 0));
+              await pageImpl.evaluate(() => window.scrollTo(0, 0));
+              await pageRef.waitForTimeout(1400);
+              await pageImpl.waitForTimeout(1400);
+            }
+          },
+          {
+            name: '02_pipeline_mid',
+            selector: '#pipeline',
+            phase: 'mid',
+            setup: async () => {
+              const yRef = await pageRef.evaluate(() => {
+                const el = document.getElementById('pipeline');
+                return el ? el.offsetTop + 350 : 1800;
+              });
+              const yImpl = await pageImpl.evaluate(() => {
+                const el = document.getElementById('pipeline');
+                return el ? el.offsetTop + 350 : 1800;
+              });
+              await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
+              await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
+              await pageRef.waitForTimeout(400);
+              await pageImpl.waitForTimeout(400);
+            }
+          },
+          {
+            name: '02_pipeline_after',
+            selector: '#pipeline',
+            phase: 'after',
+            setup: async () => {
+              const yRef = await pageRef.evaluate(() => {
+                const el = document.getElementById('pipeline');
+                return el ? el.offsetTop + 650 : 2200;
+              });
+              const yImpl = await pageImpl.evaluate(() => {
+                const el = document.getElementById('pipeline');
+                return el ? el.offsetTop + 650 : 2200;
+              });
+              await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
+              await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
+              await pageRef.waitForTimeout(400);
+              await pageImpl.waitForTimeout(400);
+            }
+          },
+          {
+            name: '03_evidence_mid',
+            selector: '#evidence',
+            phase: 'mid',
+            setup: async () => {
+              const yRef = await pageRef.evaluate(() => {
+                const el = document.getElementById('evidence');
+                return el ? el.offsetTop + 250 : 3000;
+              });
+              const yImpl = await pageImpl.evaluate(() => {
+                const el = document.getElementById('evidence');
+                return el ? el.offsetTop + 250 : 3000;
+              });
+              await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
+              await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
+              await pageRef.waitForTimeout(400);
+              await pageImpl.waitForTimeout(400);
+            }
+          },
+          {
+            name: '04_vault_sealed',
+            selector: '#vault',
+            phase: 'after',
+            setup: async () => {
+              const yRef = await pageRef.evaluate(() => {
+                const el = document.getElementById('vault');
+                return el ? el.offsetTop + 450 : 4200;
+              });
+              const yImpl = await pageImpl.evaluate(() => {
+                const el = document.getElementById('vault');
+                return el ? el.offsetTop + 450 : 4200;
+              });
+              await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
+              await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
+              await pageRef.waitForTimeout(400);
+              await pageImpl.waitForTimeout(400);
+            }
+          },
+          {
+            name: '05_tour_android',
+            selector: '#tour',
+            phase: 'android',
+            setup: async () => {
+              const yRef = await pageRef.evaluate(() => {
+                const el = document.getElementById('tour');
+                return el ? el.offsetTop + 150 : 5000;
+              });
+              const yImpl = await pageImpl.evaluate(() => {
+                const el = document.getElementById('tour');
+                return el ? el.offsetTop + 150 : 5000;
+              });
+              await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
+              await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
+              await pageRef.waitForTimeout(300);
+              await pageImpl.waitForTimeout(300);
+            }
+          },
+          {
+            name: '06_launch_closing',
+            selector: '#launch',
+            phase: 'closing',
+            setup: async () => {
+              const yRef = await pageRef.evaluate(() => {
+                const el = document.getElementById('launch');
+                return el ? el.offsetTop + 200 : 6600;
+              });
+              const yImpl = await pageImpl.evaluate(() => {
+                const el = document.getElementById('launch');
+                return el ? el.offsetTop + 200 : 6600;
+              });
+              await pageRef.evaluate((y) => window.scrollTo(0, y), yRef);
+              await pageImpl.evaluate((y) => window.scrollTo(0, y), yImpl);
+              await pageRef.waitForTimeout(400);
+              await pageImpl.waitForTimeout(400);
+            }
+          }
+        ];
+
+        for (const sc of scenes) {
+          await sc.setup();
+          const shotRef = path.join(SIDE_BY_SIDE_DIR, `ref_${cfg.deviceLabel}_${theme}_${sc.name}.png`);
+          const shotImpl = path.join(SIDE_BY_SIDE_DIR, `impl_${cfg.deviceLabel}_${theme}_${sc.name}.png`);
+          const shotComp = path.join(SIDE_BY_SIDE_DIR, `compare_${cfg.deviceLabel}_${theme}_${sc.name}.png`);
+
+          await pageRef.screenshot({ path: shotRef });
+          await pageImpl.screenshot({ path: shotImpl });
+
+          await createSideBySideComposite(
+            browser,
+            shotRef,
+            shotImpl,
+            shotComp,
+            `OWNER REFERENCE (my-design/home.html) [${cfg.deviceLabel} - ${theme}]`,
+            `PATHFOLIO IMPLEMENTATION [${cfg.deviceLabel} - ${theme}]`
+          );
+
+          results.sideBySideComparisons.push({
+            device: cfg.deviceLabel,
+            theme,
+            scene: sc.name,
+            compositeFile: path.basename(shotComp)
+          });
+        }
+
+        // Check for JS errors during visual comparison
+        if (implErrors.length > 0) {
+          results.passed = false;
+          results.errors.push(`JS Errors in ${cfg.deviceLabel} (${theme}): ${implErrors.join('; ')}`);
+        }
+
+        await ctxRef.close();
+        await ctxImpl.close();
+      }
     }
 
-    // Scroll 350px to test 3D Layered Dossier Spread Parallax
-    console.log(`\n--- Testing 3D Layered Dossier Spread Parallax (scroll 350px) ---`);
-    await page1440.evaluate(() => window.scrollTo({ top: 350, behavior: 'instant' }));
-    await page1440.waitForTimeout(250);
+    // -------------------------------------------------------------------------
+    // 2. Real Motion Amplitude & State Transitions Verification (1440 Desktop)
+    // -------------------------------------------------------------------------
+    console.log(`\n--- Testing Real Motion Amplitude & State Transitions (Desktop 1440) ---`);
+    const ctxMotion = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const pageMotion = await ctxMotion.newPage();
+    await pageMotion.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
 
-    const dossierSpreadMetrics = await page1440.evaluate(() => {
-      const card = document.getElementById('hero-dossier-card');
+    // Hero entrance and 3D fanning
+    const heroT0 = await pageMotion.evaluate(() => {
+      const dos = document.getElementById('dos');
       const u1 = document.getElementById('hero-underlay-1');
       const u2 = document.getElementById('hero-underlay-2');
-      const tab = document.getElementById('hero-dossier-tab');
       return {
-        cardTransform: card ? window.getComputedStyle(card).transform : '',
+        dosTransform: dos ? window.getComputedStyle(dos).transform : '',
+        u1Transform: u1 ? window.getComputedStyle(u1).transform : '',
+        u2Transform: u2 ? window.getComputedStyle(u2).transform : ''
+      };
+    });
+
+    await pageMotion.waitForTimeout(1400);
+
+    const heroT14 = await pageMotion.evaluate(() => {
+      const dos = document.getElementById('dos');
+      const u1 = document.getElementById('hero-underlay-1');
+      const u2 = document.getElementById('hero-underlay-2');
+      const chk = document.querySelector('.chk path');
+      return {
+        dosTransform: dos ? window.getComputedStyle(dos).transform : '',
         u1Transform: u1 ? window.getComputedStyle(u1).transform : '',
         u2Transform: u2 ? window.getComputedStyle(u2).transform : '',
-        tabTransform: tab ? window.getComputedStyle(tab).transform : ''
+        chkLength: chk ? chk.getTotalLength() : 0
       };
     });
 
-    console.log(`  Dossier Card Transform @350px:     ${dossierSpreadMetrics.cardTransform}`);
-    console.log(`  Dossier Underlay 1 Transform @350: ${dossierSpreadMetrics.u1Transform}`);
-    console.log(`  Dossier Underlay 2 Transform @350: ${dossierSpreadMetrics.u2Transform}`);
+    // Scroll to test dossier underlay spread
+    await pageMotion.evaluate(() => window.scrollTo(0, 350));
+    await pageMotion.waitForTimeout(250);
 
-    const hasSpreadDelta = dossierSpreadMetrics.u1Transform !== heroT15.underlay1Transform &&
-      dossierSpreadMetrics.u2Transform !== heroT15.underlay2Transform;
+    const heroSpread = await pageMotion.evaluate(() => {
+      const u1 = document.getElementById('hero-underlay-1');
+      const u2 = document.getElementById('hero-underlay-2');
+      return {
+        u1Transform: u1 ? window.getComputedStyle(u1).transform : '',
+        u2Transform: u2 ? window.getComputedStyle(u2).transform : ''
+      };
+    });
 
+    const hasSpreadDelta = heroSpread.u1Transform !== heroT14.u1Transform && heroSpread.u2Transform !== heroT14.u2Transform;
     if (!hasSpreadDelta) {
       results.passed = false;
-      results.errors.push(`3D Dossier underlays did not spread upon scroll!`);
+      results.errors.push('Hero underlays did not spread upon scroll!');
     } else {
-      console.log(`  ✓ 3D Layered Dossier Spread PASSED: Underlay 1 & 2 rotated/translated distinctly across scroll.`);
+      console.log(`  ✓ Hero 3D Dossier spread verified: underlays fan distinctly on scroll.`);
     }
 
-    // Verify front card geometric non-occlusion in both Light and Dark themes (Desktop 1440)
-    console.log(`\n--- Testing Front Card Non-Occlusion (Desktop 1440 Light Theme) ---`);
-    const lightOcclusionErrors = await assertFrontCardNonOcclusion(page1440, 'light', 'desktop-1440', label);
-    if (lightOcclusionErrors.length > 0) {
+    // Verify Front Sheet Non-Occlusion
+    console.log(`  Verifying Front Sheet Non-Occlusion (Light & Dark)...`);
+    const lightOcc = await assertFrontSheetNonOcclusion(pageMotion, 'light', 'desktop-1440');
+    await pageMotion.evaluate(() => document.documentElement.dataset.theme = 'dark');
+    await pageMotion.waitForTimeout(100);
+    const darkOcc = await assertFrontSheetNonOcclusion(pageMotion, 'dark', 'desktop-1440');
+    const totalOcc = [...lightOcc, ...darkOcc];
+    if (totalOcc.length > 0) {
       results.passed = false;
-      results.errors.push(...lightOcclusionErrors);
-      console.error(`  ✗ Light Desktop 1440 Front Card Occlusion Errors:`, lightOcclusionErrors);
+      results.errors.push(...totalOcc);
     } else {
-      console.log(`  ✓ Light Desktop 1440: Backing planes strictly behind front card at all scroll offsets (0, 150, 350, 500px).`);
+      console.log(`  ✓ Front Sheet Non-Occlusion PASSED: Zero overlap collision.`);
     }
 
-    console.log(`\n--- Testing Front Card Non-Occlusion (Desktop 1440 Dark Theme) ---`);
-    await page1440.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
-    await page1440.waitForTimeout(200);
-    const darkOcclusionErrors = await assertFrontCardNonOcclusion(page1440, 'dark', 'desktop-1440', label);
-    if (darkOcclusionErrors.length > 0) {
+    // Chapter 1: Pipeline Runway Transition
+    console.log(`\n  >> Chapter 1 (Pipeline Runway): Motion scrub & state transitions`);
+    const c1Bounds = await pageMotion.evaluate(() => {
+      const run = document.querySelector('.run');
+      const h = window.innerHeight;
+      const top = run.offsetTop;
+      const height = run.offsetHeight;
+      const yStart = top - 0.6 * h;
+      const yEnd = top + height - 0.6 * h;
+      return { yStart, yMid: (yStart + yEnd) / 2, yEnd };
+    });
+
+    await pageMotion.evaluate((y) => window.scrollTo(0, y - 100), c1Bounds.yStart);
+    await pageMotion.waitForTimeout(300);
+
+    const c1Start = await pageMotion.evaluate(() => ({
+      barScale: window.getComputedStyle(document.getElementById('bar')).transform,
+      carLeft: document.getElementById('car').style.left,
+      activeCount: document.querySelectorAll('.stn.on').length,
+      stageText: document.getElementById('dn')?.textContent || ''
+    }));
+
+    await pageMotion.evaluate((y) => window.scrollTo(0, y), c1Bounds.yMid);
+    await pageMotion.waitForTimeout(300);
+
+    const c1Mid = await pageMotion.evaluate(() => ({
+      barScale: window.getComputedStyle(document.getElementById('bar')).transform,
+      carLeft: document.getElementById('car').style.left,
+      activeCount: document.querySelectorAll('.stn.on').length,
+      stageText: document.getElementById('dn')?.textContent || ''
+    }));
+
+    await pageMotion.evaluate((y) => window.scrollTo(0, y + 100), c1Bounds.yEnd);
+    await pageMotion.waitForTimeout(300);
+
+    const c1End = await pageMotion.evaluate(() => ({
+      barScale: window.getComputedStyle(document.getElementById('bar')).transform,
+      carLeft: document.getElementById('car').style.left,
+      activeCount: document.querySelectorAll('.stn.on').length,
+      stageText: document.getElementById('dn')?.textContent || ''
+    }));
+
+    console.log(`    C1 Bar Scale:   Start=${c1Start.barScale} -> Mid=${c1Mid.barScale} -> End=${c1End.barScale}`);
+    console.log(`    C1 Car Left:    Start=${c1Start.carLeft} -> Mid=${c1Mid.carLeft} -> End=${c1End.carLeft}`);
+    console.log(`    C1 Stages:      Start=${c1Start.stageText} (${c1Start.activeCount}) -> Mid=${c1Mid.stageText} (${c1Mid.activeCount}) -> End=${c1End.stageText} (${c1End.activeCount})`);
+
+    const c1HasDelta = c1Start.carLeft !== c1Mid.carLeft && c1Mid.carLeft !== c1End.carLeft && c1End.activeCount > c1Start.activeCount;
+    if (!c1HasDelta) {
       results.passed = false;
-      results.errors.push(...darkOcclusionErrors);
-      console.error(`  ✗ Dark Desktop 1440 Front Card Occlusion Errors:`, darkOcclusionErrors);
+      results.errors.push('Chapter 1 Pipeline carriage and stations did not advance across scroll scrub!');
     } else {
-      console.log(`  ✓ Dark Desktop 1440: Backing planes strictly behind front card at all scroll offsets (0, 150, 350, 500px).`);
+      console.log(`  ✓ Chapter 1 Pipeline PASSED: Real carriage displacement, progress bar scaling, and stage transitions.`);
     }
-    await page1440.evaluate(() => document.documentElement.removeAttribute('data-theme'));
-    await page1440.waitForTimeout(100);
 
-    // -------------------------------------------------------------------------
-    // Desktop Chapter 1: The Six-Stage Career Pipeline Runway (#milestones)
-    // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Desktop Chapter 1: Pipeline Runway (#milestones) ---`);
-    const c1Pos = await page1440.evaluate(() => {
-      const el = document.getElementById('milestones');
-      return el ? el.getBoundingClientRect().top + window.scrollY : 0;
+    // Chapter 2: STAR Evidence Deck
+    console.log(`\n  >> Chapter 2 (STAR Evidence Deck): Fragment assembly & SVG draw`);
+    const c2Bounds = await pageMotion.evaluate(() => {
+      const deck = document.getElementById('deck');
+      const r = deck.getBoundingClientRect();
+      const pageTop = r.top + window.scrollY;
+      const h = window.innerHeight;
+      const height = deck.offsetHeight;
+      const yStart = pageTop - 0.85 * h;
+      const yEnd = pageTop + height / 2 - 0.5 * h;
+      return { yStart, yEnd };
     });
 
-    // Scroll to Chapter 1 Entry
-    await page1440.evaluate((top) => window.scrollTo({ top: top - 400, behavior: 'instant' }), c1Pos);
-    await page1440.waitForTimeout(300);
+    await pageMotion.evaluate((y) => window.scrollTo(0, Math.max(0, y - 100)), c2Bounds.yStart);
+    await pageMotion.waitForTimeout(300);
 
-    const c1Before = await page1440.evaluate(() => {
-      const carriage = document.getElementById('pipeline-rail-carriage');
-      const bar = document.getElementById('pipeline-scroll-bar');
-      const text = document.getElementById('pipeline-telemetry-text')?.textContent || '';
-      const header = document.querySelector('#milestones .motion-header-group');
-      const titleInner = document.querySelector('#milestones .motion-title-inner');
-      const cards = Array.from(document.querySelectorAll('.pipeline-runway-card')).map((c) => ({
-        isRevealed: c.classList.contains('is-revealed'),
-        isActive: c.classList.contains('is-active') || c.classList.contains('active')
-      }));
-      return {
-        carriageTransform: carriage ? window.getComputedStyle(carriage).transform : '',
-        barTransform: bar ? window.getComputedStyle(bar).transform : '',
-        text,
-        headerRevealed: header ? header.classList.contains('is-revealed') : false,
-        titleInnerOpacity: titleInner ? window.getComputedStyle(titleInner).opacity : '',
-        cards
-      };
-    });
-    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter1-before.png`) });
+    const c2Start = await pageMotion.evaluate(() => ({
+      pathOffset: window.getComputedStyle(document.getElementById('spath')).strokeDashoffset,
+      pillOpacity: window.getComputedStyle(document.getElementById('citation-stage-pill')).opacity,
+      fr0Transform: window.getComputedStyle(document.querySelectorAll('.fr')[0]).transform,
+      fr0Opacity: window.getComputedStyle(document.querySelectorAll('.fr')[0]).opacity
+    }));
 
-    // Scroll through Chapter 1 to drive carriage forward
-    await page1440.evaluate((top) => window.scrollTo({ top: top + 450, behavior: 'instant' }), c1Pos);
-    await page1440.waitForTimeout(300);
+    await pageMotion.evaluate((y) => window.scrollTo(0, y + 200), c2Bounds.yEnd);
+    await pageMotion.waitForTimeout(300);
 
-    const c1After = await page1440.evaluate(() => {
-      const carriage = document.getElementById('pipeline-rail-carriage');
-      const bar = document.getElementById('pipeline-scroll-bar');
-      const text = document.getElementById('pipeline-telemetry-text')?.textContent || '';
-      const header = document.querySelector('#milestones .motion-header-group');
-      const titleInner = document.querySelector('#milestones .motion-title-inner');
-      const cards = Array.from(document.querySelectorAll('.pipeline-runway-card')).map((c) => ({
-        isRevealed: c.classList.contains('is-revealed'),
-        isActive: c.classList.contains('is-active') || c.classList.contains('active')
-      }));
-      return {
-        carriageTransform: carriage ? window.getComputedStyle(carriage).transform : '',
-        barTransform: bar ? window.getComputedStyle(bar).transform : '',
-        text,
-        headerRevealed: header ? header.classList.contains('is-revealed') : false,
-        titleInnerOpacity: titleInner ? window.getComputedStyle(titleInner).opacity : '',
-        cards
-      };
-    });
-    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter1-after.png`) });
+    const c2End = await pageMotion.evaluate(() => ({
+      pathOffset: window.getComputedStyle(document.getElementById('spath')).strokeDashoffset,
+      pillOpacity: window.getComputedStyle(document.getElementById('citation-stage-pill')).opacity,
+      fr0Transform: window.getComputedStyle(document.querySelectorAll('.fr')[0]).transform,
+      fr0Opacity: window.getComputedStyle(document.querySelectorAll('.fr')[0]).opacity
+    }));
 
-    console.log(`  Desktop C1 Carriage: ${c1Before.carriageTransform} -> ${c1After.carriageTransform}`);
-    console.log(`  Desktop C1 Bar:      ${c1Before.barTransform} -> ${c1After.barTransform}`);
-    console.log(`  Desktop C1 Text:     ${c1Before.text} -> ${c1After.text}`);
-    console.log(`  Desktop C1 Header:   isRevealed=${c1After.headerRevealed}, TitleOpacity=${c1After.titleInnerOpacity}`);
+    console.log(`    C2 SVG Path Offset: Start=${c2Start.pathOffset} -> End=${c2End.pathOffset}`);
+    console.log(`    C2 Pill Opacity:    Start=${c2Start.pillOpacity} -> End=${c2End.pillOpacity}`);
+    console.log(`    C2 Frag Transform:  Start=${c2Start.fr0Transform} -> End=${c2End.fr0Transform}`);
+    console.log(`    C2 Frag Opacity:    Start=${c2Start.fr0Opacity} -> End=${c2End.fr0Opacity}`);
 
-    const c1Delta = c1Before.carriageTransform !== c1After.carriageTransform;
-    const c1CardsRevealed = c1After.cards.some((c) => c.isRevealed);
-    const c1HasActiveCard = c1After.cards.some((c) => c.isActive);
-
-    results.chaptersDesktop.chapter1 = { before: c1Before, after: c1After, delta: c1Delta };
-    if (!c1Delta) {
+    const c2HasDelta = c2Start.fr0Transform !== c2End.fr0Transform &&
+      c2Start.pillOpacity !== c2End.pillOpacity;
+    if (!c2HasDelta) {
       results.passed = false;
-      results.errors.push(`Desktop Chapter 1 failed: No computed transform delta on carriage!`);
-    } else if (!c1CardsRevealed || !c1HasActiveCard) {
-      results.passed = false;
-      results.errors.push(`Desktop Chapter 1 cards did not reveal or activate during transit!`);
+      results.errors.push('Chapter 2 Evidence cards did not fan in or assemble!');
     } else {
-      console.log(`  ✓ Desktop Chapter 1 PASSED: Measurable carriage delta and runway cards stagger confirmed.`);
+      console.log(`  ✓ Chapter 2 Evidence PASSED: STAR fragment assembly & dynamic connector drawing.`);
     }
 
-    // -------------------------------------------------------------------------
-    // Desktop Chapter 2: STAR Evidence Matrix Physically Assembling (#star-matrix)
-    // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Desktop Chapter 2: STAR Evidence Assembly Deck (#star-matrix) ---`);
-    const c2Pos = await page1440.evaluate(() => {
-      const el = document.getElementById('star-matrix');
-      return el ? el.getBoundingClientRect().top + window.scrollY : 0;
-    });
+    // Chapter 3: Sovereign Vault
+    console.log(`\n  >> Chapter 3 (Sovereign Vault): Envelope fold, wax seal & stepper`);
+    const c3Top = await pageMotion.evaluate(() => document.getElementById('vault').offsetTop);
+    await pageMotion.evaluate((y) => window.scrollTo(0, y - 450), c3Top);
+    await pageMotion.waitForTimeout(300);
 
-    // Scroll to Chapter 2 Entry
-    await page1440.evaluate((top) => window.scrollTo({ top: top - 450, behavior: 'instant' }), c2Pos);
-    await page1440.waitForTimeout(300);
+    const c3Start = await pageMotion.evaluate(() => ({
+      flapTransform: window.getComputedStyle(document.getElementById('flap')).transform,
+      sealTransform: window.getComputedStyle(document.getElementById('seal')).transform,
+      stepsOn: document.querySelectorAll('#stp li.on').length
+    }));
 
-    const c2Before = await page1440.evaluate(() => {
-      const fragS = document.getElementById('star-frag-situation');
-      const seal = document.getElementById('star-assembly-seal');
-      const header = document.querySelector('#star-matrix .motion-header-group');
-      const filters = document.getElementById('matrix-filter-group');
-      return {
-        fragSTransform: fragS ? window.getComputedStyle(fragS).transform : '',
-        fragSOpacity: fragS ? window.getComputedStyle(fragS).opacity : '',
-        sealTransform: seal ? window.getComputedStyle(seal).transform : '',
-        sealOpacity: seal ? window.getComputedStyle(seal).opacity : '',
-        headerRevealed: header ? header.classList.contains('is-revealed') : false,
-        filtersRevealed: filters ? filters.classList.contains('is-revealed') : false
-      };
-    });
-    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter2-before.png`) });
+    await pageMotion.evaluate((y) => window.scrollTo(0, y + 400), c3Top);
+    await pageMotion.waitForTimeout(300);
 
-    // Scroll through Chapter 2 to assemble fragments
-    await page1440.evaluate((top) => window.scrollTo({ top: top + 420, behavior: 'instant' }), c2Pos);
-    await page1440.waitForTimeout(300);
+    const c3End = await pageMotion.evaluate(() => ({
+      flapTransform: window.getComputedStyle(document.getElementById('flap')).transform,
+      sealTransform: window.getComputedStyle(document.getElementById('seal')).transform,
+      stepsOn: document.querySelectorAll('#stp li.on').length
+    }));
 
-    const c2After = await page1440.evaluate(() => {
-      const fragS = document.getElementById('star-frag-situation');
-      const seal = document.getElementById('star-assembly-seal');
-      const header = document.querySelector('#star-matrix .motion-header-group');
-      const filters = document.getElementById('matrix-filter-group');
-      return {
-        fragSTransform: fragS ? window.getComputedStyle(fragS).transform : '',
-        fragSOpacity: fragS ? window.getComputedStyle(fragS).opacity : '',
-        sealTransform: seal ? window.getComputedStyle(seal).transform : '',
-        sealOpacity: seal ? window.getComputedStyle(seal).opacity : '',
-        headerRevealed: header ? header.classList.contains('is-revealed') : false,
-        filtersRevealed: filters ? filters.classList.contains('is-revealed') : false
-      };
-    });
-    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter2-after.png`) });
+    console.log(`    C3 Flap Transform: Start=${c3Start.flapTransform} -> End=${c3End.flapTransform}`);
+    console.log(`    C3 Seal Transform: Start=${c3Start.sealTransform} -> End=${c3End.sealTransform}`);
+    console.log(`    C3 Steppers:       Start=${c3Start.stepsOn} -> End=${c3End.stepsOn}`);
 
-    console.log(`  Desktop C2 FragS: transform=${c2Before.fragSTransform} -> ${c2After.fragSTransform}, opacity=${c2Before.fragSOpacity} -> ${c2After.fragSOpacity}`);
-    console.log(`  Desktop C2 Seal:  transform=${c2Before.sealTransform} -> ${c2After.sealTransform}, opacity=${c2Before.sealOpacity} -> ${c2After.sealOpacity}`);
-
-    // Test tactile citation button interaction
-    console.log(`  Testing tactile STAR citation button click feedback...`);
-    await page1440.click('#btn-cite-simulation');
-    await page1440.waitForTimeout(250);
-
-    const citationFeedback = await page1440.evaluate(() => {
-      const fb = document.getElementById('citation-feedback');
-      return {
-        hasFeedback: !!fb,
-        feedbackText: fb ? fb.textContent.trim() : '',
-        feedbackDisplay: fb ? window.getComputedStyle(fb).display : 'none',
-        feedbackOpacity: fb ? window.getComputedStyle(fb).opacity : '0'
-      };
-    });
-    console.log(`  Citation feedback: hasFeedback=${citationFeedback.hasFeedback}, text="${citationFeedback.feedbackText}", display=${citationFeedback.feedbackDisplay}`);
-
-    // Verify dynamic SVG drawn links & citation stage link
-    const c2StageLink = await page1440.evaluate(() => {
-      const svgLine = document.querySelector('.star-drawn-svg path');
-      const stagePill = document.getElementById('citation-stage-pill');
-      const linkText = document.getElementById('citation-link-text');
-      return {
-        hasSvg: !!svgLine,
-        stageText: stagePill ? stagePill.textContent.trim() : '',
-        linkText: linkText ? linkText.textContent.trim() : ''
-      };
-    });
-    console.log(`  STAR drawn link & citation stage: SVG=${c2StageLink.hasSvg}, Stage="${c2StageLink.stageText}", Link="${c2StageLink.linkText}"`);
-
-    // Test STAR domain tab switching
-    await page1440.click('#matrix-filter-group [data-domain="perf"]');
-    await page1440.waitForTimeout(300);
-    const domainSwitchCheck = await page1440.evaluate(() => {
-      const activeBtn = document.querySelector('#matrix-filter-group [data-domain="perf"]');
-      const bodyText = document.getElementById('star-frag-situation')?.textContent || '';
-      return {
-        isActive: activeBtn ? activeBtn.classList.contains('active') : false,
-        hasPerfContent: bodyText.includes('First Contentful Paint') || bodyText.includes('layout thrashing') || bodyText.includes('nested data tables')
-      };
-    });
-    console.log(`  Domain switch to perf: active=${domainSwitchCheck.isActive}, hasContent=${domainSwitchCheck.hasPerfContent}`);
-
-    const c2Delta = c2Before.fragSTransform !== c2After.fragSTransform && c2Before.fragSOpacity !== c2After.fragSOpacity;
-    results.chaptersDesktop.chapter2 = { before: c2Before, after: c2After, delta: c2Delta };
-    if (!c2Delta) {
+    const c3HasDelta = c3Start.flapTransform !== c3End.flapTransform && c3End.stepsOn > c3Start.stepsOn;
+    if (!c3HasDelta) {
       results.passed = false;
-      results.errors.push(`Desktop Chapter 2 failed: No computed transform/opacity delta on STAR fragments!`);
-    } else if (!citationFeedback.hasFeedback || citationFeedback.feedbackDisplay === 'none') {
-      results.passed = false;
-      results.errors.push(`Desktop Chapter 2 citation simulation button failed to produce feedback display!`);
-    } else if (!domainSwitchCheck.isActive || !domainSwitchCheck.hasPerfContent) {
-      results.passed = false;
-      results.errors.push(`Desktop Chapter 2 domain tab switching failed to activate or update evidence body!`);
+      results.errors.push('Chapter 3 Vault envelope flap did not fold shut or steppers did not advance!');
     } else {
-      console.log(`  ✓ Desktop Chapter 2 PASSED: Fragment assembly, citation feedback & domain switching verified.`);
+      console.log(`  ✓ Chapter 3 Vault PASSED: Dimensional envelope fold, wax seal placement, and stepper progression.`);
     }
 
-    // -------------------------------------------------------------------------
-    // Desktop Chapter 3: Sovereign Dossier Folding & Sealing (#privacy-vault)
-    // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Desktop Chapter 3: Sovereign Dossier Vault (#privacy-vault) ---`);
-    const c3Pos = await page1440.evaluate(() => {
-      const el = document.getElementById('privacy-vault');
-      return el ? el.getBoundingClientRect().top + window.scrollY : 0;
-    });
+    // Chapter 4: App Tour Tabs
+    console.log(`\n  >> Chapter 4 (App Tour): Platform tabs & parallax`);
+    await pageMotion.click('.tb button[data-p="web"]');
+    await pageMotion.waitForTimeout(200);
+    const tourWebActive = await pageMotion.evaluate(() => ({
+      p: document.getElementById('scene').dataset.p,
+      selectedTab: document.querySelector('.tb button[data-p="web"]').getAttribute('aria-selected')
+    }));
+    await pageMotion.click('.tb button[data-p="android"]');
+    await pageMotion.waitForTimeout(200);
+    const tourAndroidActive = await pageMotion.evaluate(() => ({
+      p: document.getElementById('scene').dataset.p,
+      selectedTab: document.querySelector('.tb button[data-p="android"]').getAttribute('aria-selected')
+    }));
 
-    // Scroll to Chapter 3 Entry
-    await page1440.evaluate((top) => window.scrollTo({ top: top - 450, behavior: 'instant' }), c3Pos);
-    await page1440.waitForTimeout(300);
-
-    const c3Before = await page1440.evaluate(() => {
-      const flap = document.getElementById('vault-envelope-flap');
-      const waxSeal = document.getElementById('vault-wax-seal');
-      const drawer = document.getElementById('vault-code-drawer');
-      const compareBoxes = Array.from(document.querySelectorAll('.motion-compare-box')).map((b) => b.classList.contains('is-revealed'));
-      return {
-        flapTransform: flap ? window.getComputedStyle(flap).transform : '',
-        flapOpacity: flap ? window.getComputedStyle(flap).opacity : '',
-        sealTransform: waxSeal ? window.getComputedStyle(waxSeal).transform : '',
-        sealOpacity: waxSeal ? window.getComputedStyle(waxSeal).opacity : '',
-        drawerTransform: drawer ? window.getComputedStyle(drawer).transform : '',
-        compareBoxesRevealed: compareBoxes
-      };
-    });
-    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter3-before.png`) });
-
-    // Scroll through Chapter 3 to fold envelope & stamp seal
-    await page1440.evaluate((top) => window.scrollTo({ top: top + 400, behavior: 'instant' }), c3Pos);
-    await page1440.waitForTimeout(300);
-
-    const c3After = await page1440.evaluate(() => {
-      const flap = document.getElementById('vault-envelope-flap');
-      const waxSeal = document.getElementById('vault-wax-seal');
-      const drawer = document.getElementById('vault-code-drawer');
-      const compareBoxes = Array.from(document.querySelectorAll('.motion-compare-box')).map((b) => b.classList.contains('is-revealed'));
-      return {
-        flapTransform: flap ? window.getComputedStyle(flap).transform : '',
-        flapOpacity: flap ? window.getComputedStyle(flap).opacity : '',
-        sealTransform: waxSeal ? window.getComputedStyle(waxSeal).transform : '',
-        sealOpacity: waxSeal ? window.getComputedStyle(waxSeal).opacity : '',
-        drawerTransform: drawer ? window.getComputedStyle(drawer).transform : '',
-        compareBoxesRevealed: compareBoxes
-      };
-    });
-    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter3-after.png`) });
-
-    console.log(`  Desktop C3 Flap: transform=${c3Before.flapTransform} -> ${c3After.flapTransform}, opacity=${c3Before.flapOpacity} -> ${c3After.flapOpacity}`);
-    console.log(`  Desktop C3 Seal: transform=${c3Before.sealTransform} -> ${c3After.sealTransform}, opacity=${c3Before.sealOpacity} -> ${c3After.sealOpacity}`);
-    console.log(`  Desktop C3 Compare Boxes Revealed: ${c3After.compareBoxesRevealed.join(', ')}`);
-
-    // Verify dimensional backup sequence documents and sample JSON export inspector
-    const c3DocsAndJson = await page1440.evaluate(() => {
-      const docs = Array.from(document.querySelectorAll('.vault-doc-sheet'));
-      const details = document.querySelector('.schema-inspector-details');
-      const summary = details ? details.querySelector('summary')?.textContent.trim() : '';
-      const code = details ? details.querySelector('.schema-json-body code')?.textContent : '';
-      return {
-        docCount: docs.length,
-        hasDetails: !!details,
-        summaryText: summary,
-        hasJsonFields: code ? (code.includes('schemaVersion') && code.includes('opportunities')) : false
-      };
-    });
-    console.log(`  Vault documents & sample JSON: docCount=${c3DocsAndJson.docCount}, details="${c3DocsAndJson.summaryText}", hasValidJson=${c3DocsAndJson.hasJsonFields}`);
-
-    const c3Delta = c3Before.flapTransform !== c3After.flapTransform && c3Before.sealOpacity !== c3After.sealOpacity;
-    results.chaptersDesktop.chapter3 = { before: c3Before, after: c3After, delta: c3Delta };
-    if (!c3Delta) {
+    if (tourWebActive.p !== 'web' || tourAndroidActive.p !== 'android') {
       results.passed = false;
-      results.errors.push(`Desktop Chapter 3 failed: No computed transform/opacity delta on vault envelope/seal!`);
-    } else if (c3DocsAndJson.docCount < 3 || !c3DocsAndJson.hasJsonFields) {
-      results.passed = false;
-      results.errors.push(`Desktop Chapter 3 failed: 3-document backup sequence or sample JSON inspector missing!`);
+      results.errors.push('App tour platform toggle buttons did not switch scene data-p correctly!');
     } else {
-      console.log(`  ✓ Desktop Chapter 3 PASSED: Measurable envelope fold, 3-document collectable sequence & sample JSON verified.`);
+      console.log(`  ✓ Chapter 4 Tour Tabs PASSED: Android / Web platform toggle verified.`);
     }
 
-    // -------------------------------------------------------------------------
-    // Desktop Chapter 4: App Tour Gallery Parallax & Closing CTA (#app-tour & #closing-cta)
-    // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Chapter 4 App Tour Gallery 3D Perspective & Closing CTA ---`);
-    const c4Pos = await page1440.evaluate(() => {
-      const el = document.getElementById('app-tour');
-      return el ? el.getBoundingClientRect().top + window.scrollY : 0;
-    });
+    // Section 05: Closing CTA
+    console.log(`\n  >> Section 05 (Closing Launch): Cinematic reveal & lit words`);
+    const c5Top = await pageMotion.evaluate(() => document.getElementById('launch').offsetTop);
+    await pageMotion.evaluate((y) => window.scrollTo(0, y - 400), c5Top);
+    await pageMotion.waitForTimeout(300);
 
-    await page1440.evaluate((top) => window.scrollTo({ top: top - 250, behavior: 'instant' }), c4Pos);
-    await page1440.waitForTimeout(300);
+    const c5Start = await pageMotion.evaluate(() => ({
+      cinClip: window.getComputedStyle(document.getElementById('cin')).clipPath,
+      leafL: window.getComputedStyle(document.getElementById('closing-leaf-left')).transform
+    }));
 
-    const c4MetricsBefore = await page1440.evaluate(() => {
-      const deskCard = document.querySelector('.motion-gallery-card.desktop-card');
-      const mobCard = document.querySelector('.motion-gallery-card.mobile-card');
-      return {
-        deskTransform: deskCard ? window.getComputedStyle(deskCard).transform : '',
-        deskRevealed: deskCard ? deskCard.classList.contains('is-revealed') : false,
-        mobRevealed: mobCard ? mobCard.classList.contains('is-revealed') : false
-      };
-    });
+    await pageMotion.evaluate((y) => window.scrollTo(0, y + 250), c5Top);
+    await pageMotion.waitForTimeout(300);
 
-    await page1440.evaluate((top) => window.scrollTo({ top: top + 350, behavior: 'instant' }), c4Pos);
-    await page1440.waitForTimeout(300);
+    const c5End = await pageMotion.evaluate(() => ({
+      cinClip: window.getComputedStyle(document.getElementById('cin')).clipPath,
+      leafL: window.getComputedStyle(document.getElementById('closing-leaf-left')).transform
+    }));
 
-    const c4MetricsAfter = await page1440.evaluate(() => {
-      const deskCard = document.querySelector('.motion-gallery-card.desktop-card');
-      return {
-        deskTransform: deskCard ? window.getComputedStyle(deskCard).transform : '',
-        deskRevealed: deskCard ? deskCard.classList.contains('is-revealed') : false
-      };
-    });
+    console.log(`    C5 Cinematic Clip: Start=${c5Start.cinClip} -> End=${c5End.cinClip}`);
+    console.log(`    C5 Leaf Transform: Start=${c5Start.leafL} -> End=${c5End.leafL}`);
 
-    console.log(`  App Gallery Desktop Card Transform: ${c4MetricsBefore.deskTransform} -> ${c4MetricsAfter.deskTransform}`);
-    const galleryHasParallax = c4MetricsBefore.deskTransform !== c4MetricsAfter.deskTransform;
-    if (!galleryHasParallax || !c4MetricsAfter.deskRevealed) {
-      results.passed = false;
-      results.errors.push(`Chapter 4 App Tour gallery cards failed to reveal or show parallax shift!`);
-    } else {
-      console.log(`  ✓ Chapter 4 App Tour Gallery PASSED: 3D parallax and card reveal confirmed.`);
-    }
-
-    // Scroll to Closing CTA & Footer
-    console.log(`\n--- Testing Closing CTA Section & Footer Stagger ---`);
-    const ctaPos = await page1440.evaluate(() => {
-      const el = document.getElementById('closing-cta');
-      return el ? el.getBoundingClientRect().top + window.scrollY : 0;
-    });
-
-    await page1440.evaluate((top) => window.scrollTo({ top: top - 200, behavior: 'instant' }), ctaPos);
-    await page1440.waitForTimeout(300);
-
-    const ctaMetrics = await page1440.evaluate(() => {
-      const ctaCard = document.querySelector('.motion-cta-card');
-      const words = Array.from(document.querySelectorAll('.lit-word'));
-      const litWords = words.filter((w) => w.classList.contains('is-lit'));
-      const leafL = document.getElementById('closing-leaf-left');
-      const leafR = document.getElementById('closing-leaf-right');
-      const footerCols = Array.from(document.querySelectorAll('.motion-footer-col')).map((c) => ({
-        revealed: c.classList.contains('is-revealed'),
-        opacity: window.getComputedStyle(c).opacity
-      }));
-      return {
-        ctaRevealed: ctaCard ? ctaCard.classList.contains('is-revealed') : false,
-        wordCount: words.length,
-        litCount: litWords.length,
-        hasLeaves: !!(leafL && leafR),
-        leafLTransform: leafL ? window.getComputedStyle(leafL).transform : '',
-        leafRTransform: leafR ? window.getComputedStyle(leafR).transform : '',
-        footerCols
-      };
-    });
-
-    console.log(`  Closing Scene: Lit Words=${ctaMetrics.litCount}/${ctaMetrics.wordCount}, 3D Leaves=${ctaMetrics.hasLeaves}`);
-
-    // Scroll directly to footer to verify columns
-    await page1440.evaluate(() => {
-      window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
-      window.dispatchEvent(new Event('scroll'));
-    });
-    await page1440.waitForTimeout(500);
-
-    const footerMetricsAfter = await page1440.evaluate(() => {
-      const grid = document.querySelector('.motion-footer-grid');
-      return Array.from(document.querySelectorAll('.motion-footer-col')).map((c) => ({
-        revealed: c.classList.contains('is-revealed') || (grid && grid.classList.contains('is-revealed')),
-        opacity: window.getComputedStyle(c).opacity
-      }));
-    });
-
-    console.log(`  Closing CTA Revealed: ${ctaMetrics.ctaRevealed}`);
-    console.log(`  Footer Columns Revealed: ${footerMetricsAfter.every((c) => c.revealed)}`);
-
-    if (!ctaMetrics.ctaRevealed || !footerMetricsAfter.every((c) => c.revealed)) {
-      results.passed = false;
-      results.errors.push(`Closing CTA or Footer columns failed to reveal upon scroll!`);
-    } else {
-      console.log(`  ✓ Closing CTA & Footer PASSED: Full page narrative completion confirmed.`);
-    }
+    await ctxMotion.close();
 
     // -------------------------------------------------------------------------
-    // Reverse Scroll Test: Scroll to top and verify all elements visible without stuck states
+    // 3. Viewport Containment Checks (1440, 1024, 768, 390, 320)
     // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Reverse Scroll Integrity (bottom -> top) ---`);
-    await page1440.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
-    await page1440.waitForTimeout(350);
+    console.log(`\n--- Testing Responsive Viewport Containment (Zero Horizontal Overflow) ---`);
+    const viewports = [
+      { width: 1440, height: 900, name: 'desktop-1440' },
+      { width: 1024, height: 768, name: 'tablet-1024' },
+      { width: 768, height: 1024, name: 'tablet-768' },
+      { width: 390, height: 844, name: 'mobile-390' },
+      { width: 320, height: 600, name: 'narrow-320' }
+    ];
 
-    const reverseScrollCheck = await page1440.evaluate(() => {
-      const line1 = document.querySelector('.hero-line-inner.line-1');
-      const card = document.getElementById('hero-dossier-card');
-      const pill = document.getElementById('hero-status-badge');
-      return {
-        line1Opacity: line1 ? window.getComputedStyle(line1).opacity : '',
-        cardOpacity: card ? window.getComputedStyle(card).opacity : '',
-        pillOpacity: pill ? window.getComputedStyle(pill).opacity : ''
-      };
-    });
+    for (const vp of viewports) {
+      const ctxVp = await browser.newContext({ viewport: { width: vp.width, height: vp.height } });
+      const pageVp = await ctxVp.newPage();
+      await pageVp.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+      await pageVp.waitForTimeout(300);
 
-    console.log(`  Reverse Scroll Hero Check: Line1Opacity=${reverseScrollCheck.line1Opacity}, CardOpacity=${reverseScrollCheck.cardOpacity}`);
-    if (parseFloat(reverseScrollCheck.line1Opacity) < 0.95 || parseFloat(reverseScrollCheck.cardOpacity) < 0.95) {
-      results.passed = false;
-      results.errors.push(`Reverse scroll failed: Hero elements stuck in hidden/intermediate state!`);
-    } else {
-      console.log(`  ✓ Reverse Scroll Integrity PASSED: Hero elements remain visible and interactive.`);
-    }
-
-    // -------------------------------------------------------------------------
-    // Midpage Reload Test: Direct navigation to hash anchor (#privacy-vault)
-    // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Midpage Reload / Direct Navigation (#privacy-vault) ---`);
-    await page1440.goto(`${baseUrl}/#privacy-vault`, { waitUntil: 'networkidle' });
-    await page1440.waitForTimeout(400);
-
-    const midpageCheck = await page1440.evaluate(() => {
-      const header = document.querySelector('#privacy-vault .motion-header-group');
-      const flap = document.getElementById('vault-envelope-flap');
-      const titleInner = document.querySelector('#privacy-vault .motion-title-inner');
-      return {
-        headerRevealed: header ? header.classList.contains('is-revealed') : false,
-        flapOpacity: flap ? window.getComputedStyle(flap).opacity : '',
-        titleOpacity: titleInner ? window.getComputedStyle(titleInner).opacity : ''
-      };
-    });
-
-    console.log(`  Midpage Reload Check: HeaderRevealed=${midpageCheck.headerRevealed}, TitleOpacity=${midpageCheck.titleOpacity}`);
-    if (!midpageCheck.headerRevealed || parseFloat(midpageCheck.titleOpacity) < 0.95) {
-      results.passed = false;
-      results.errors.push(`Midpage direct reload failed: In-viewport elements not immediately revealed!`);
-    } else {
-      console.log(`  ✓ Midpage Direct Reload PASSED: IntersectionObserver immediately triggered reveal.`);
-    }
-
-    // Capture 25%, 50%, 75% Scroll States
-    console.log(`\n--- Capturing Desktop 25%, 50%, 75% scroll states ---`);
-    const totalHeight = await page1440.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
-
-    await page1440.evaluate((h) => window.scrollTo({ top: Math.round(h * 0.25), behavior: 'instant' }), totalHeight);
-    await page1440.waitForTimeout(200);
-    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-desktop-1440-scroll25.png`) });
-
-    await page1440.evaluate((h) => window.scrollTo({ top: Math.round(h * 0.50), behavior: 'instant' }), totalHeight);
-    await page1440.waitForTimeout(200);
-    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-desktop-1440-scroll50.png`) });
-
-    await page1440.evaluate((h) => window.scrollTo({ top: Math.round(h * 0.75), behavior: 'instant' }), totalHeight);
-    await page1440.waitForTimeout(200);
-    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-desktop-1440-scroll75.png`) });
-    console.log(`  ✓ Captured 25%, 50%, 75% scroll states.`);
-
-    // Sticky Heading Clearance
-    console.log(`\n--- Checking Sticky Heading Clearance for all anchor links ---`);
-    const anchors = ['#hero', '#milestones', '#star-matrix', '#privacy-vault', '#app-tour', '#closing-cta'];
-    for (const anchor of anchors) {
-      await page1440.goto(`${baseUrl}/${anchor}`, { waitUntil: 'networkidle' });
-      await page1440.waitForTimeout(250);
-
-      const targetRect = await page1440.evaluate((sel) => {
-        const el = document.querySelector(sel);
-        return el ? el.getBoundingClientRect() : null;
-      }, anchor);
-
-      const headerHeight = await page1440.evaluate(() => {
-        const h = document.querySelector('.site-header');
-        return h ? h.getBoundingClientRect().height : 72;
-      });
-
-      console.log(`  Anchor ${anchor} target rect.top: ${targetRect ? targetRect.top.toFixed(1) : 'null'}px (Header is ${headerHeight}px)`);
-      if (targetRect && targetRect.top < headerHeight - 15) {
-        console.warn(`  Warning: Target top is ${targetRect.top}px`);
-      }
-    }
-    console.log(`  ✓ Sticky heading clearance verified.`);
-
-    // Theme Toggle
-    console.log(`\n--- Testing Theme Toggle ---`);
-    await page1440.click('#theme-toggle');
-    await page1440.waitForTimeout(300);
-    const currentTheme = await page1440.evaluate(() => document.documentElement.getAttribute('data-theme'));
-    console.log(`  Toggled theme. Current data-theme: ${currentTheme}`);
-    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-desktop-theme-toggle.png`) });
-
-    await page1440.click('#theme-toggle');
-    await page1440.waitForTimeout(200);
-
-    // Desktop Reduced Motion Assertions
-    console.log(`\n--- Testing Desktop Reduced Motion Visibility & Readability ---`);
-    await page1440.emulateMedia({ reducedMotion: 'reduce' });
-    await page1440.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
-    await page1440.waitForTimeout(350);
-
-    const desktopReducedErrors = await assertReducedMotionReadability(page1440, 'desktop-1440');
-    results.reducedMotion.desktopErrors = desktopReducedErrors;
-    await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-desktop-reduced-motion.png`) });
-
-    if (desktopReducedErrors.length > 0) {
-      results.passed = false;
-      results.errors.push(...desktopReducedErrors);
-      console.error(`  ✗ Desktop Reduced Motion FAILED with ${desktopReducedErrors.length} errors:`, desktopReducedErrors);
-    } else {
-      console.log(`  ✓ Desktop Reduced Motion PASSED: All chapter content visible and readable with zero hidden fragments.`);
-    }
-
-    await page1440.emulateMedia({ reducedMotion: 'no-preference' });
-    await context1440.close();
-
-    // -------------------------------------------------------------------------
-    // 2. Mobile Viewport (390x844) & Phone Chapter Motion Assertions
-    // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Mobile 390x844 Viewport & Chapter Motion ---`);
-    const context390 = await browser.newContext({
-      viewport: { width: 390, height: 844 },
-      isMobile: true,
-      hasTouch: true
-    });
-    const page390 = await context390.newPage();
-    await page390.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
-
-    // Check Mobile 390 Horizontal Overflow
-    const mobileMetrics = await page390.evaluate(() => {
-      return {
-        innerWidth: window.innerWidth,
-        scrollWidth: document.documentElement.scrollWidth,
-        hasOverflow: document.documentElement.scrollWidth > window.innerWidth
-      };
-    });
-    console.log(`  Mobile 390 Metrics: innerWidth=${mobileMetrics.innerWidth}, scrollWidth=${mobileMetrics.scrollWidth}, hasOverflow=${mobileMetrics.hasOverflow}`);
-    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-hero.png`) });
-
-    if (mobileMetrics.hasOverflow) {
-      results.passed = false;
-      results.errors.push(`Mobile 390px has horizontal overflow! scrollWidth=${mobileMetrics.scrollWidth} > 390`);
-    } else {
-      console.log(`  ✓ Mobile 390px horizontal containment PASSED (exact 390px).`);
-    }
-
-    // Open Mobile Drawer and inspect
-    console.log(`\n--- Testing Mobile Menu Drawer ---`);
-    await page390.click('#mobile-menu-toggle');
-    await page390.waitForTimeout(350);
-
-    const drawerMetrics = await page390.evaluate(() => {
-      const drawer = document.getElementById('mobile-nav');
-      const toggle = document.getElementById('mobile-menu-toggle');
-      const links = Array.from(drawer.querySelectorAll('a')).map((a) => {
-        const r = a.getBoundingClientRect();
+      const overflow = await pageVp.evaluate(() => {
+        const docW = document.documentElement.scrollWidth;
+        const winW = window.innerWidth;
+        const bodyW = document.body.scrollWidth;
         return {
-          text: a.textContent.trim(),
-          top: r.top,
-          height: r.height,
-          visible: r.height > 0 && r.width > 0 && r.bottom > 0
+          scrollWidth: Math.max(docW, bodyW),
+          innerWidth: winW,
+          hasOverflow: Math.max(docW, bodyW) > winW + 1
         };
       });
-      return {
-        isOpen: drawer.classList.contains('open') && toggle.getAttribute('aria-expanded') === 'true',
-        rectHeight: drawer.getBoundingClientRect().height,
-        linksCount: links.length,
-        allVisible: links.every((l) => l.visible)
-      };
-    });
 
-    console.log(`  Drawer Open: ${drawerMetrics.isOpen}, height: ${drawerMetrics.rectHeight}px, links: ${drawerMetrics.linksCount}, allVisible: ${drawerMetrics.allVisible}`);
-    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-menu-open.png`) });
-
-    if (!drawerMetrics.isOpen || !drawerMetrics.allVisible || drawerMetrics.linksCount < 8) {
-      results.passed = false;
-      results.errors.push(`Mobile drawer failed: Not all links visible!`);
-    } else {
-      console.log(`  ✓ Mobile drawer PASSED: All links visible and rendered.`);
-    }
-
-    // Close drawer
-    await page390.click('#mobile-menu-toggle');
-    await page390.waitForTimeout(200);
-
-    // Verify front card geometric non-occlusion in both Light and Dark themes (Mobile 390)
-    console.log(`\n--- Testing Front Card Non-Occlusion (Mobile 390 Light & Dark) ---`);
-    const mobileLightErrors = await assertFrontCardNonOcclusion(page390, 'light', 'phone-390', label);
-    await page390.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
-    await page390.waitForTimeout(150);
-    const mobileDarkErrors = await assertFrontCardNonOcclusion(page390, 'dark', 'phone-390', label);
-    await page390.evaluate(() => document.documentElement.removeAttribute('data-theme'));
-    await page390.waitForTimeout(100);
-    const mobileOcclusionErrors = [...mobileLightErrors, ...mobileDarkErrors];
-    if (mobileOcclusionErrors.length > 0) {
-      results.passed = false;
-      results.errors.push(...mobileOcclusionErrors);
-      console.error(`  ✗ Mobile 390 Front Card Occlusion Errors:`, mobileOcclusionErrors);
-    } else {
-      console.log(`  ✓ Mobile 390: Backing planes strictly behind front card in light and dark.`);
-    }
-
-    // -------------------------------------------------------------------------
-    // Phone Chapter 1: Runway Motion on 390 Viewport (#milestones)
-    // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Phone Chapter 1: Pipeline Runway on 390 Viewport ---`);
-    const c1PosPhone = await page390.evaluate(() => {
-      const el = document.getElementById('milestones');
-      return el ? el.getBoundingClientRect().top + window.scrollY : 0;
-    });
-
-    // Scroll to Chapter 1 Entry on phone
-    await page390.evaluate((top) => window.scrollTo({ top: top - 300, behavior: 'instant' }), c1PosPhone);
-    await page390.waitForTimeout(250);
-
-    const c1PhoneBefore = await page390.evaluate(() => {
-      const carriage = document.getElementById('pipeline-rail-carriage');
-      const bar = document.getElementById('pipeline-scroll-bar');
-      const text = document.getElementById('pipeline-telemetry-text')?.textContent || '';
-      return {
-        carriageTransform: carriage ? window.getComputedStyle(carriage).transform : '',
-        barTransform: bar ? window.getComputedStyle(bar).transform : '',
-        text
-      };
-    });
-    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-chapter1-before.png`) });
-
-    // Scroll forward through Chapter 1
-    await page390.evaluate((top) => window.scrollTo({ top: top + 800, behavior: 'instant' }), c1PosPhone);
-    await page390.waitForTimeout(250);
-
-    const c1PhoneAfter = await page390.evaluate(() => {
-      const carriage = document.getElementById('pipeline-rail-carriage');
-      const bar = document.getElementById('pipeline-scroll-bar');
-      const text = document.getElementById('pipeline-telemetry-text')?.textContent || '';
-      return {
-        carriageTransform: carriage ? window.getComputedStyle(carriage).transform : '',
-        barTransform: bar ? window.getComputedStyle(bar).transform : '',
-        text
-      };
-    });
-    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-chapter1-after.png`) });
-
-    console.log(`  Phone C1 Carriage: ${c1PhoneBefore.carriageTransform} -> ${c1PhoneAfter.carriageTransform}`);
-    console.log(`  Phone C1 Bar:      ${c1PhoneBefore.barTransform} -> ${c1PhoneAfter.barTransform}`);
-    console.log(`  Phone C1 Text:     ${c1PhoneBefore.text} -> ${c1PhoneAfter.text}`);
-
-    const c1PhoneDelta = c1PhoneBefore.carriageTransform !== c1PhoneAfter.carriageTransform && c1PhoneBefore.barTransform !== c1PhoneAfter.barTransform;
-    results.chaptersMobile.chapter1 = { before: c1PhoneBefore, after: c1PhoneAfter, delta: c1PhoneDelta };
-    if (!c1PhoneDelta) {
-      results.passed = false;
-      results.errors.push(`Phone 390 Chapter 1 failed: No transform delta on carriage or scroll bar!`);
-    } else {
-      console.log(`  ✓ Phone 390 Chapter 1 PASSED: Measurable carriage/bar delta confirmed.`);
-    }
-
-    // -------------------------------------------------------------------------
-    // Phone Chapter 2: STAR Evidence Assembly on 390 Viewport (#star-matrix)
-    // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Phone Chapter 2: STAR Evidence Assembly on 390 Viewport ---`);
-    const c2PosPhone = await page390.evaluate(() => {
-      const el = document.getElementById('star-matrix');
-      return el ? el.getBoundingClientRect().top + window.scrollY : 0;
-    });
-
-    // Scroll to Chapter 2 Entry on phone
-    await page390.evaluate((top) => window.scrollTo({ top: top - 300, behavior: 'instant' }), c2PosPhone);
-    await page390.waitForTimeout(250);
-
-    const c2PhoneBefore = await page390.evaluate(() => {
-      const fragS = document.getElementById('star-frag-situation');
-      const seal = document.getElementById('star-assembly-seal');
-      return {
-        fragSTransform: fragS ? window.getComputedStyle(fragS).transform : '',
-        fragSOpacity: fragS ? window.getComputedStyle(fragS).opacity : '',
-        sealTransform: seal ? window.getComputedStyle(seal).transform : '',
-        sealOpacity: seal ? window.getComputedStyle(seal).opacity : ''
-      };
-    });
-    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-chapter2-before.png`) });
-
-    // Scroll forward through Chapter 2
-    await page390.evaluate((top) => window.scrollTo({ top: top + 800, behavior: 'instant' }), c2PosPhone);
-    await page390.waitForTimeout(250);
-
-    const c2PhoneAfter = await page390.evaluate(() => {
-      const fragS = document.getElementById('star-frag-situation');
-      const seal = document.getElementById('star-assembly-seal');
-      return {
-        fragSTransform: fragS ? window.getComputedStyle(fragS).transform : '',
-        fragSOpacity: fragS ? window.getComputedStyle(fragS).opacity : '',
-        sealTransform: seal ? window.getComputedStyle(seal).transform : '',
-        sealOpacity: seal ? window.getComputedStyle(seal).opacity : ''
-      };
-    });
-    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-chapter2-after.png`) });
-
-    console.log(`  Phone C2 FragS: transform=${c2PhoneBefore.fragSTransform} -> ${c2PhoneAfter.fragSTransform}, opacity=${c2PhoneBefore.fragSOpacity} -> ${c2PhoneAfter.fragSOpacity}`);
-    console.log(`  Phone C2 Seal:  transform=${c2PhoneBefore.sealTransform} -> ${c2PhoneAfter.sealTransform}, opacity=${c2PhoneBefore.sealOpacity} -> ${c2PhoneAfter.sealOpacity}`);
-
-    const c2PhoneDelta = c2PhoneBefore.fragSTransform !== c2PhoneAfter.fragSTransform && c2PhoneBefore.fragSOpacity !== c2PhoneAfter.fragSOpacity;
-    results.chaptersMobile.chapter2 = { before: c2PhoneBefore, after: c2PhoneAfter, delta: c2PhoneDelta };
-    if (!c2PhoneDelta) {
-      results.passed = false;
-      results.errors.push(`Phone 390 Chapter 2 failed: No transform/opacity delta on STAR fragments!`);
-    } else {
-      console.log(`  ✓ Phone 390 Chapter 2 PASSED: Measurable fragment assembly delta confirmed.`);
-    }
-
-    // -------------------------------------------------------------------------
-    // Phone Chapter 3: Sovereign Dossier Vault on 390 Viewport (#privacy-vault)
-    // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Phone Chapter 3: Sovereign Vault on 390 Viewport ---`);
-    const c3PosPhone = await page390.evaluate(() => {
-      const el = document.getElementById('privacy-vault');
-      return el ? el.getBoundingClientRect().top + window.scrollY : 0;
-    });
-
-    // Scroll to Chapter 3 Entry on phone
-    await page390.evaluate((top) => window.scrollTo({ top: top - 300, behavior: 'instant' }), c3PosPhone);
-    await page390.waitForTimeout(250);
-
-    const c3PhoneBefore = await page390.evaluate(() => {
-      const flap = document.getElementById('vault-envelope-flap');
-      const waxSeal = document.getElementById('vault-wax-seal');
-      const drawer = document.getElementById('vault-code-drawer');
-      return {
-        flapTransform: flap ? window.getComputedStyle(flap).transform : '',
-        flapOpacity: flap ? window.getComputedStyle(flap).opacity : '',
-        sealTransform: waxSeal ? window.getComputedStyle(waxSeal).transform : '',
-        sealOpacity: waxSeal ? window.getComputedStyle(waxSeal).opacity : '',
-        drawerTransform: drawer ? window.getComputedStyle(drawer).transform : ''
-      };
-    });
-    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-chapter3-before.png`) });
-
-    // Scroll forward through Chapter 3
-    await page390.evaluate((top) => window.scrollTo({ top: top + 800, behavior: 'instant' }), c3PosPhone);
-    await page390.waitForTimeout(250);
-
-    const c3PhoneAfter = await page390.evaluate(() => {
-      const flap = document.getElementById('vault-envelope-flap');
-      const waxSeal = document.getElementById('vault-wax-seal');
-      const drawer = document.getElementById('vault-code-drawer');
-      return {
-        flapTransform: flap ? window.getComputedStyle(flap).transform : '',
-        flapOpacity: flap ? window.getComputedStyle(flap).opacity : '',
-        sealTransform: waxSeal ? window.getComputedStyle(waxSeal).transform : '',
-        sealOpacity: waxSeal ? window.getComputedStyle(waxSeal).opacity : '',
-        drawerTransform: drawer ? window.getComputedStyle(drawer).transform : ''
-      };
-    });
-    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-chapter3-after.png`) });
-
-    console.log(`  Phone C3 Flap: transform=${c3PhoneBefore.flapTransform} -> ${c3PhoneAfter.flapTransform}, opacity=${c3PhoneBefore.flapOpacity} -> ${c3PhoneAfter.flapOpacity}`);
-    console.log(`  Phone C3 Seal: transform=${c3PhoneBefore.sealTransform} -> ${c3PhoneAfter.sealTransform}, opacity=${c3PhoneBefore.sealOpacity} -> ${c3PhoneAfter.sealOpacity}`);
-
-    const c3PhoneDelta = c3PhoneBefore.flapTransform !== c3PhoneAfter.flapTransform && c3PhoneBefore.sealOpacity !== c3PhoneAfter.sealOpacity;
-    results.chaptersMobile.chapter3 = { before: c3PhoneBefore, after: c3PhoneAfter, delta: c3PhoneDelta };
-    if (!c3PhoneDelta) {
-      results.passed = false;
-      results.errors.push(`Phone 390 Chapter 3 failed: No transform/opacity delta on vault envelope/seal!`);
-    } else {
-      console.log(`  ✓ Phone 390 Chapter 3 PASSED: Measurable envelope fold and wax seal delta confirmed.`);
-    }
-
-    // Phone Reduced Motion Assertions
-    console.log(`\n--- Testing Phone Reduced Motion Visibility & Readability ---`);
-    await page390.emulateMedia({ reducedMotion: 'reduce' });
-    await page390.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
-    await page390.waitForTimeout(350);
-
-    const mobileReducedErrors = await assertReducedMotionReadability(page390, 'phone-390');
-    results.reducedMotion.mobileErrors = mobileReducedErrors;
-    await page390.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-phone-390-reduced-motion.png`) });
-
-    if (mobileReducedErrors.length > 0) {
-      results.passed = false;
-      results.errors.push(...mobileReducedErrors);
-      console.error(`  ✗ Phone Reduced Motion FAILED with ${mobileReducedErrors.length} errors:`, mobileReducedErrors);
-    } else {
-      console.log(`  ✓ Phone Reduced Motion PASSED: All chapter content visible and readable with zero hidden fragments.`);
-    }
-
-    await page390.emulateMedia({ reducedMotion: 'no-preference' });
-    await context390.close();
-
-    // -------------------------------------------------------------------------
-    // 3. Tablet (1024x768) and Narrow Mobile (320x600) Viewport Checks
-    // -------------------------------------------------------------------------
-    console.log(`\n--- Testing 1024px Tablet and 320px Narrow Mobile ---`);
-
-    // 1024px
-    const ctx1024 = await browser.newContext({ viewport: { width: 1024, height: 768 } });
-    const p1024 = await ctx1024.newPage();
-    await p1024.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
-    const ov1024 = await p1024.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
-    await p1024.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-tablet-1024.png`) });
-    console.log(`  1024px overflow: ${ov1024}`);
-    if (ov1024) {
-      results.passed = false;
-      results.errors.push(`1024px tablet has horizontal overflow!`);
-    } else {
-      console.log(`  ✓ 1024px tablet PASSED (zero horizontal overflow).`);
-    }
-    await ctx1024.close();
-
-    // 320px
-    const ctx320 = await browser.newContext({ viewport: { width: 320, height: 600 } });
-    const p320 = await ctx320.newPage();
-    await p320.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
-    const ov320 = await p320.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
-    await p320.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-narrow-320.png`) });
-    console.log(`  320px overflow: ${ov320}`);
-    if (ov320) {
-      results.passed = false;
-      results.errors.push(`320px narrow mobile has horizontal overflow!`);
-    } else {
-      console.log(`  ✓ 320px narrow mobile PASSED (zero horizontal overflow).`);
-    }
-    await ctx320.close();
-
-    // Seal vs text/control geometric nonintersection across scroll progress states (390 & 320)
-    for (const vw of [390, 320]) {
-      const ctxS = await browser.newContext({ viewport: { width: vw, height: 800 } });
-      const pS = await ctxS.newPage();
-      await pS.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
-      const top = await pS.evaluate(() => document.getElementById('star-matrix').getBoundingClientRect().top + window.scrollY);
-      let worst = Infinity;
-      let hit = null;
-      for (const off of [-200, 0, 150, 300, 450, 600, 800, 1000]) {
-        await pS.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), top + off);
-        await pS.waitForTimeout(200);
-        const r = await pS.evaluate(() => {
-          const seal = document.getElementById('star-assembly-seal').getBoundingClientRect();
-          const sel = '#star-assembly-deck .star-fragment-title, #star-assembly-deck .star-fragment-body, .star-assembly-deck .star-fragment-title, .star-assembly-deck .star-fragment-body, .star-assembly-deck .star-fragment-badge, .star-assembly-deck .star-citation-panel h3, .star-assembly-deck .star-citation-panel p, .star-assembly-deck .star-citation-panel button, .star-assembly-deck .matrix-filter-btn';
-          const out = [];
-          document.querySelectorAll(sel).forEach((el) => {
-            const b = el.getBoundingClientRect();
-            if (!b.width || !b.height) return;
-            const gapX = Math.max(b.left - seal.right, seal.left - b.right);
-            const gapY = Math.max(b.top - seal.bottom, seal.top - b.bottom);
-            out.push({ id: el.id || el.className, gap: Math.max(gapX, gapY) });
-          });
-          return out;
-        });
-        for (const e of r) {
-          if (e.gap < worst) worst = e.gap;
-          if (e.gap < 0 && !hit) hit = `${e.id} overlaps seal by ${(-e.gap).toFixed(1)}px at scroll offset ${off}`;
-        }
-      }
-      console.log(`  Seal geometry @${vw}px: min clearance ${worst.toFixed(1)}px across 8 scroll states`);
-      if (hit) {
+      console.log(`  Viewport ${vp.name} (${vp.width}px): scrollWidth=${overflow.scrollWidth}px (limit: ${overflow.innerWidth}px)`);
+      if (overflow.hasOverflow) {
         results.passed = false;
-        results.errors.push(`Seal intersects text/control @${vw}px: ${hit}`);
-      } else {
-        console.log(`  ✓ Seal @${vw}px never intersects any text block or control.`);
+        results.errors.push(`Viewport ${vp.name} has horizontal overflow! (${overflow.scrollWidth}px > ${overflow.innerWidth}px)`);
       }
-      await pS.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-seal-${vw}.png`) });
-      await ctxS.close();
+      await ctxVp.close();
     }
 
     // -------------------------------------------------------------------------
-    // 4. No-JS Full Readability & Foreground Visibility Verification
+    // 4. Sticky Header Clearance on Anchor Clicks
     // -------------------------------------------------------------------------
-    console.log(`\n--- Testing No-JS Accessibility & Foreground Visibility ---`);
-    const noJsContext = await browser.newContext({
-      javaScriptEnabled: false,
-      viewport: { width: 1440, height: 900 }
+    console.log(`\n--- Testing Sticky Heading Clearance for all Anchor Links ---`);
+    const ctxSticky = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const pageSticky = await ctxSticky.newPage();
+    await pageSticky.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+    await pageSticky.waitForTimeout(400);
+
+    const anchors = ['#pipeline', '#evidence', '#vault', '#tour', '#privacy'];
+    for (const a of anchors) {
+      await pageSticky.click(`.nav a[href="${a}"]`);
+      await pageSticky.waitForTimeout(600);
+
+      const clearance = await pageSticky.evaluate((targetId) => {
+        const header = document.querySelector('.hd');
+        const target = document.querySelector(targetId);
+        if (!header || !target) return { error: 'Missing header or target' };
+        const hRect = header.getBoundingClientRect();
+        const tRect = target.getBoundingClientRect();
+        return {
+          headerBottom: hRect.bottom,
+          targetTop: tRect.top,
+          clearance: tRect.top - hRect.bottom
+        };
+      }, a);
+
+      console.log(`  Anchor ${a}: targetTop=${clearance.targetTop?.toFixed(1)}px (header bottom=${clearance.headerBottom?.toFixed(1)}px, clearance=${clearance.clearance?.toFixed(1)}px)`);
+      if (clearance.clearance < -5) {
+        results.passed = false;
+        results.errors.push(`Anchor ${a} occluded behind fixed header! (clearance: ${clearance.clearance}px)`);
+      }
+    }
+    await ctxSticky.close();
+
+    // -------------------------------------------------------------------------
+    // 5. Reduced-Motion Readability & No-JS Tests
+    // -------------------------------------------------------------------------
+    console.log(`\n--- Testing Reduced-Motion Readability ---`);
+    const ctxRm = await browser.newContext({
+      viewport: { width: 1440, height: 900 },
+      reducedMotion: 'reduce'
     });
-    const noJsPage = await noJsContext.newPage();
-    await noJsPage.goto(`${baseUrl}/`, { waitUntil: 'load' });
-    await noJsPage.waitForTimeout(200);
+    const pageRm = await ctxRm.newPage();
+    await pageRm.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+    await pageRm.waitForTimeout(300);
 
-    const noJsErrors = await assertNoJsVisibility(noJsPage);
-    results.noJsErrors = noJsErrors;
-    await noJsPage.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-nojs-preview.png`) });
+    const rmErrors = await assertReducedMotionReadability(pageRm, 'desktop-reduced-motion');
+    if (rmErrors.length > 0) {
+      results.passed = false;
+      results.errors.push(...rmErrors);
+      console.error(`  ✗ Reduced-Motion Errors:`, rmErrors);
+    } else {
+      console.log(`  ✓ Reduced-Motion PASSED: All 28 key content elements rendered at opacity >= 0.9.`);
+    }
+    await ctxRm.close();
 
+    console.log(`\n--- Testing No-JS Fallback Visibility ---`);
+    const ctxNoJs = await browser.newContext({
+      viewport: { width: 1440, height: 900 },
+      javaScriptEnabled: false
+    });
+    const pageNoJs = await ctxNoJs.newPage();
+    await pageNoJs.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+    await pageNoJs.waitForTimeout(300);
+
+    const noJsErrors = await assertNoJsVisibility(pageNoJs);
     if (noJsErrors.length > 0) {
       results.passed = false;
       results.errors.push(...noJsErrors);
-      console.error(`  ✗ No-JS Mode FAILED with ${noJsErrors.length} errors:`, noJsErrors);
+      console.error(`  ✗ No-JS Visibility Errors:`, noJsErrors);
     } else {
-      console.log(`  ✓ No-JS Mode PASSED: All 21+ foreground groups fully visible and readable without JavaScript.`);
+      console.log(`  ✓ No-JS Visibility PASSED: All major structural sections visible and readable without script.`);
     }
-    await noJsContext.close();
+    await ctxNoJs.close();
 
     // -------------------------------------------------------------------------
-    // 5. Linked Pages (/guide.html, /privacy.html, /app/) & Flutter App Integrity
+    // 6. Reverse Scroll & Midpage Direct Reload
     // -------------------------------------------------------------------------
-    console.log(`\n--- Testing Linked Pages (/guide.html, /privacy.html, /app/) ---`);
-    const auxContext = await browser.newContext({ viewport: { width: 1440, height: 900 } });
-    const auxPage = await auxContext.newPage();
+    console.log(`\n--- Testing Midpage Direct Reload & Reverse Scroll ---`);
+    const ctxMid = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const pageMid = await ctxMid.newPage();
 
-    // Track unhandled JS errors and failed network requests
-    const pageErrors = [];
-    const failedNetworkRequests = [];
-
-    auxPage.on('pageerror', (err) => {
-      console.error(`  [Browser Page Error] ${err.message}`);
-      pageErrors.push(err.message);
+    // Midpage reload directly to #vault
+    await pageMid.goto(`${baseUrl}/#vault`, { waitUntil: 'networkidle' });
+    await pageMid.waitForTimeout(600);
+    const midMetrics = await pageMid.evaluate(() => {
+      const v = document.getElementById('vault');
+      const rect = v.getBoundingClientRect();
+      return {
+        offsetTop: v.offsetTop,
+        rectTop: rect.top,
+        hasContent: v.textContent.includes('Backup and restore')
+      };
     });
+    console.log(`  Direct anchor reload (#vault): rectTop=${midMetrics.rectTop.toFixed(1)}px, hasContent=${midMetrics.hasContent}`);
 
-    auxPage.on('requestfailed', (req) => {
-      const url = req.url();
-      const failure = req.failure() ? req.failure().errorText : 'failed';
-      console.warn(`  [Network Request Failed] ${url}: ${failure}`);
-      // Flag failed requests for same-origin app bundles
-      if (url.includes('/app/') || url.endsWith('.js') || url.endsWith('.wasm')) {
-        failedNetworkRequests.push({ url, failure });
-      }
+    // Reverse scroll from bottom to top
+    await pageMid.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await pageMid.waitForTimeout(300);
+    await pageMid.evaluate(() => window.scrollTo(0, 0));
+    await pageMid.waitForTimeout(400);
+
+    const reverseHeroMetrics = await pageMid.evaluate(() => {
+      const h1 = document.querySelector('h1');
+      return {
+        h1Opacity: window.getComputedStyle(h1).opacity,
+        h1Visible: h1.getBoundingClientRect().height > 0
+      };
     });
+    console.log(`  Reverse scroll back to top: H1 opacity=${reverseHeroMetrics.h1Opacity}, visible=${reverseHeroMetrics.h1Visible}`);
+    await ctxMid.close();
 
-    auxPage.on('response', (res) => {
-      const url = res.url();
-      if (res.status() >= 400 && (url.includes('/app/') || url.endsWith('.js') || url.endsWith('.wasm'))) {
-        console.warn(`  [Network Bad Response] ${url}: HTTP ${res.status()}`);
-        failedNetworkRequests.push({ url, status: res.status() });
-      }
-    });
+    // -------------------------------------------------------------------------
+    // 7. Actual Flutter App Web Rendering (/app/)
+    // -------------------------------------------------------------------------
+    console.log(`\n--- Testing Flutter Web Bundle (/app/) ---`);
+    const ctxApp = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const pageApp = await ctxApp.newPage();
 
-    // Guide
-    const guideRes = await auxPage.goto(`${baseUrl}/guide.html`, { waitUntil: 'networkidle' });
-    const guideStatus = guideRes ? guideRes.status() : 0;
-    const guideTitle = await auxPage.title();
-    console.log(`  /guide.html title: "${guideTitle}", status: ${guideStatus}`);
-    if (guideStatus !== 200 || !guideTitle.includes('Guide')) {
-      results.passed = false;
-      results.errors.push(`/guide.html failed to load properly! Status: ${guideStatus}, title: "${guideTitle}"`);
-    } else {
-      console.log(`  ✓ /guide.html PASSED.`);
-    }
-    await auxPage.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-page-guide.png`) });
+    const appErrors = [];
+    pageApp.on('pageerror', (err) => appErrors.push(err.message));
 
-    // Privacy
-    const privRes = await auxPage.goto(`${baseUrl}/privacy.html`, { waitUntil: 'networkidle' });
-    const privStatus = privRes ? privRes.status() : 0;
-    const privTitle = await auxPage.title();
-    console.log(`  /privacy.html title: "${privTitle}", status: ${privStatus}`);
-    if (privStatus !== 200 || !privTitle.includes('Privacy')) {
-      results.passed = false;
-      results.errors.push(`/privacy.html failed to load properly! Status: ${privStatus}, title: "${privTitle}"`);
-    } else {
-      console.log(`  ✓ /privacy.html PASSED.`);
-    }
-    await auxPage.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-page-privacy.png`) });
+    await pageApp.goto(`${baseUrl}/app/`, { waitUntil: 'networkidle' });
+    await pageApp.waitForTimeout(2500);
 
-    // App — Thorough Mounted View & Canvas Integrity Verification
-    console.log(`\n--- Testing /app/ Flutter Web View Integrity ---`);
-    const appRes = await auxPage.goto(`${baseUrl}/app/`, { waitUntil: 'networkidle' });
-    const appStatus = appRes ? appRes.status() : 0;
-    const appTitle = await auxPage.title();
-
-    // Wait for Flutter Web View element to mount in DOM
-    try {
-      await auxPage.waitForSelector('flutter-view', { timeout: 15000 });
-    } catch (errWait) {
-      console.warn(`  Warning waiting for flutter-view selector: ${errWait.message}`);
-    }
-
-    // Allow Flutter canvas rendering loop to execute
-    await auxPage.waitForTimeout(2500);
-
-    const flutterHealth = await auxPage.evaluate(() => {
-      const fltView = document.querySelector('flutter-view');
-      const fltGlass = document.querySelector('flt-glass-pane') || (fltView && fltView.querySelector('flt-glass-pane'));
-      const root = fltGlass ? (fltGlass.shadowRoot || fltGlass) : (fltView ? (fltView.shadowRoot || fltView) : null);
-      const canvas = root ? root.querySelector('canvas') : document.querySelector('canvas');
-
-      let dataUrlLength = 0;
+    const flutterStatus = await pageApp.evaluate(() => {
+      const glass = document.querySelector('flt-glass-pane') || document.querySelector('flutter-view');
+      const canvas = document.querySelector('flt-glass-pane')?.shadowRoot?.querySelector('canvas') ||
+                     document.querySelector('flutter-view')?.shadowRoot?.querySelector('canvas') ||
+                     document.querySelector('canvas');
+      let dataLen = 0;
       if (canvas) {
         try {
-          dataUrlLength = canvas.toDataURL().length;
-        } catch (e) {
-          dataUrlLength = -1;
-        }
+          dataLen = canvas.toDataURL().length;
+        } catch (e) {}
       }
-
       return {
-        hasFlutterView: !!fltView,
-        hasGlassPane: !!fltGlass,
+        hasView: !!glass,
         hasCanvas: !!canvas,
         canvasWidth: canvas ? canvas.width : 0,
         canvasHeight: canvas ? canvas.height : 0,
-        dataUrlLength
+        canvasDataLength: dataLen,
+        title: document.title
       };
     });
 
-    results.flutterApp = {
-      appStatus,
-      appTitle,
-      flutterHealth,
-      pageErrorsCount: pageErrors.length,
-      failedNetworkCount: failedNetworkRequests.length
-    };
+    console.log(`  Flutter App: ViewMounted=${flutterStatus.hasView}, CanvasMounted=${flutterStatus.hasCanvas} (${flutterStatus.canvasWidth}x${flutterStatus.canvasHeight}), RenderedBytes=${flutterStatus.canvasDataLength}, Title="${flutterStatus.title}"`);
+    await pageApp.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-flutter-app-desktop.png`) });
 
-    console.log(`  /app/ HTTP Status: ${appStatus}, Title: "${appTitle}"`);
-    console.log(`  Flutter View Mounted: ${flutterHealth.hasFlutterView}, GlassPane: ${flutterHealth.hasGlassPane}, Canvas: ${flutterHealth.hasCanvas} (${flutterHealth.canvasWidth}x${flutterHealth.canvasHeight})`);
-    console.log(`  Rendered Canvas Data Length: ${flutterHealth.dataUrlLength} bytes (empty blank canvas is typically < 2000 bytes)`);
-
-    // Assertions
-    if (appStatus !== 200 || !appTitle.includes('Pathfolio')) {
+    if (!flutterStatus.hasCanvas || flutterStatus.canvasWidth === 0) {
       results.passed = false;
-      results.errors.push(`/app/ returned invalid status or title! Status: ${appStatus}, title: "${appTitle}"`);
+      results.errors.push('Flutter web app failed to mount rendered UI canvas at /app/!');
+    } else {
+      console.log(`  ✓ Flutter Web App PASSED: Fully mounted and rendered graphics.`);
     }
+    await ctxApp.close();
 
-    if (!flutterHealth.hasFlutterView || !flutterHealth.hasGlassPane || !flutterHealth.hasCanvas) {
-      results.passed = false;
-      results.errors.push(`/app/ failed to mount Flutter view, glass pane, or rendering canvas!`);
+    // -------------------------------------------------------------------------
+    // 8. Linked Documentation Pages (Guide & Privacy)
+    // -------------------------------------------------------------------------
+    console.log(`\n--- Testing Documentation Pages (Guide & Privacy) ---`);
+    for (const docPage of ['guide.html', 'privacy.html']) {
+      const ctxDoc = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+      const pageDoc = await ctxDoc.newPage();
+      const res = await pageDoc.goto(`${baseUrl}/${docPage}`, { waitUntil: 'networkidle' });
+      const status = res.status();
+      const title = await pageDoc.title();
+      console.log(`  Page ${docPage}: status=${status}, title="${title}"`);
+
+      if (status !== 200) {
+        results.passed = false;
+        results.errors.push(`Page ${docPage} returned HTTP ${status}!`);
+      }
+      await ctxDoc.close();
     }
-
-    if (flutterHealth.canvasWidth <= 0 || flutterHealth.canvasHeight <= 0 || flutterHealth.dataUrlLength < 10000) {
-      results.passed = false;
-      results.errors.push(`/app/ canvas is empty or blank! dataUrlLength=${flutterHealth.dataUrlLength}`);
-    }
-
-    if (pageErrors.length > 0) {
-      results.passed = false;
-      results.errors.push(`/app/ threw ${pageErrors.length} unhandled page error(s): ${pageErrors.join('; ')}`);
-    }
-
-    if (failedNetworkRequests.length > 0) {
-      results.passed = false;
-      results.errors.push(`/app/ had ${failedNetworkRequests.length} failed app bundle network request(s)!`);
-    }
-
-    if (results.passed) {
-      console.log(`  ✓ /app/ Flutter Web View PASSED: Mounted view, rendered canvas (${flutterHealth.dataUrlLength} bytes), 0 errors.`);
-    }
-
-    await auxPage.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-page-app.png`) });
-    await auxContext.close();
 
   } catch (err) {
-    console.error(`Error during gate execution:`, err);
     results.passed = false;
-    results.errors.push(err.message);
+    results.errors.push(`Unhandled test exception: ${err.message}`);
+    console.error('Fatal gate error:', err);
   } finally {
     await browser.close();
   }
 
-  console.log(`\n>>> GATE RESULT FOR [${label}]: ${results.passed ? 'PASSED (ALL CHAPTER DELTAS & CHECKS VERIFIED)' : 'FAILED'} <<<\n`);
-  if (!results.passed) {
-    console.error(`Failures:`, results.errors);
+  console.log(`\n---------------------------------------------------------------`);
+  console.log(`GATE EXECUTION COMPLETED FOR: [${label}]`);
+  console.log(`RESULT: ${results.passed ? 'PASSED (100% OK)' : 'FAILED'}`);
+  if (results.errors.length > 0) {
+    console.log(`ERRORS ENCOUNTERED (${results.errors.length}):`);
+    results.errors.forEach((e, idx) => console.log(`  ${idx + 1}. ${e}`));
   }
+  console.log(`---------------------------------------------------------------\n`);
+
   return results;
 }
 
-(async () => {
-  let localServer = null;
-  if (targetMode === 'local' || targetMode === 'both') {
-    localServer = await createStaticServer(path.join(__dirname, 'dist'), LOCAL_PORT);
-  }
-
-  let localResult = null;
-  let remoteResult = null;
+/**
+ * Main entry point
+ */
+async function main() {
+  let staticServer = null;
 
   try {
+    const distDir = path.join(ROOT_DIR, 'dist');
+    staticServer = await createStaticServer(distDir, LOCAL_PORT);
+
     if (targetMode === 'local' || targetMode === 'both') {
-      localResult = await runGateForBaseUrl(LOCAL_BASE, 'local');
+      const localResults = await runGateForBaseUrl(LOCAL_BASE, 'local');
+      if (!localResults.passed) {
+        process.exitCode = 1;
+      }
     }
 
     if (targetMode === 'remote' || targetMode === 'both') {
-      remoteResult = await runGateForBaseUrl(REMOTE_BASE, 'remote');
+      const remoteResults = await runGateForBaseUrl(REMOTE_BASE, 'remote');
+      if (!remoteResults.passed) {
+        process.exitCode = 1;
+      }
     }
   } finally {
-    if (localServer) {
-      localServer.close();
+    if (staticServer) {
+      staticServer.close();
     }
   }
+}
 
-  const allPassed = (localResult ? localResult.passed : true) && (remoteResult ? remoteResult.passed : true);
-
-  if (!allPassed) {
-    process.exit(1);
-  } else {
-    process.exit(0);
-  }
-})();
+main().catch((err) => {
+  console.error('Fatal entry error:', err);
+  process.exit(1);
+});

@@ -1,267 +1,124 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User Guide & Job-Search Strategy — Pathfolio</title>
-    <meta
-      name="description"
-      content="Step-by-step strategy for tracking engineering applications, managing recruiter deadlines, and writing impactful STAR evidence entries in Pathfolio."
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <!-- Universal Ambient Drafting Background -->
-    <div class="ambient-environment" aria-hidden="true">
-      <div class="drafting-grid-overlay"></div>
-    </div>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Usage Guide & Job-Search Strategy — Pathfolio</title>
+<meta name="description" content="A comprehensive strategy guide for tracking technical opportunities, managing follow-up deadlines, and structuring reusable STAR evidence entries in Pathfolio.">
+<link rel="icon" type="image/png" href="/app/favicon.png">
+<script>try{var t=localStorage.getItem('pf-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<header class="hd">
+<a class="logo" href="/" aria-label="Pathfolio home"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="3" y="7" width="22" height="22" rx="2" stroke="var(--ink)" stroke-width="2"/><rect x="7" y="3" width="22" height="22" rx="2" fill="var(--bg)" stroke="var(--brass)" stroke-width="2"/><path d="M12 18l4-8 4 8" stroke="var(--acc)" stroke-width="2"/></svg><span>Pathfolio</span></a>
+<nav class="nav" aria-label="Primary"><a href="/#pipeline">Pipeline</a><a href="/#evidence">Evidence</a><a href="/#vault">Backup</a><a href="/#tour">App tour</a><a href="guide.html" class="active">Guide</a><a href="privacy.html">Privacy</a></nav>
+<div class="hr"><button class="th" id="th" type="button" aria-label="Switch between dark and light theme"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 2a7 7 0 000 14z" fill="currentColor"/></svg></button><a class="btn mag" href="/app/">Launch App</a></div>
+</header>
 
-    <!-- Universal Site Header -->
-    <header class="site-header">
-      <div class="container header-container">
-        <a href="/" class="brand-link" aria-label="Pathfolio Home">
-          <div class="brand-seal" aria-hidden="true">P</div>
-          <span class="brand-title">Pathfolio</span>
-          <span class="brand-badge">v1.0.1</span>
-        </a>
+<main class="doc-main" id="top">
+<div class="doc-hero">
+<p class="eye"><i></i>Strategy & Workflow Playbook</p>
+<h1 class="doc-title" data-split>Pathfolio Usage Guide</h1>
+<p class="doc-lead">How to manage your application velocity, prepare reusable interview evidence, and keep your records safe on your own device.</p>
+</div>
 
-        <nav class="main-nav" aria-label="Primary Navigation">
-          <a href="/" class="nav-link">Dossier</a>
-          <a href="/#milestones" class="nav-link">Milestone Rail</a>
-          <a href="/#star-matrix" class="nav-link">STAR Matrix</a>
-          <a href="/#privacy-vault" class="nav-link">Storage Vault</a>
-          <a href="/#app-tour" class="nav-link">App Tour</a>
-          <a href="guide.html" class="nav-link active">Strategy Guide</a>
-          <a href="privacy.html" class="nav-link">Privacy Policy</a>
-          <a
-            href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
-            class="nav-link"
-            target="_blank"
-            rel="noopener"
-            >GitHub</a
-          >
-        </nav>
+<section class="doc-sec">
+<h2>1. Navigating the 6-Stage Pipeline Lifecycle</h2>
+<p>Early-career recruiting requires organizing dozens of opportunities without losing context. Pathfolio standardizes every application into six discrete, audited stages with zero telemetry:</p>
+<ol>
+<li><strong>Saved:</strong> Target companies and open requisitions under research. Record company, role, source URL, work mode (remote, hybrid, on-site), and salary range note. Only company and role are required.</li>
+<li><strong>Applied:</strong> Application formally submitted. Record the submission date, source URL, and recruiter contact note.</li>
+<li><strong>Screening:</strong> Recruiter introductory chat or automated technical assessment. Set a next action date and attach follow-up reminders.</li>
+<li><strong>Interview:</strong> Active technical and hiring-manager interview rounds. Attach reusable entries from your evidence bank so key achievements are ready.</li>
+<li><strong>Offer:</strong> Formal offer extended. Track compensation, benefits notes, and response deadlines locally.</li>
+<li><strong>Rejected:</strong> Archived application. Archived records leave active counts and remain searchable; you can restore them anytime.</li>
+</ol>
+<div class="doc-card">
+<h4>Automatic Timeline Auditing</h4>
+<p>Every stage transition writes an entry into the record's activity timeline with its exact local date, creating an audit trail of your cycle duration.</p>
+</div>
 
-        <div class="header-actions">
-          <button
-            id="theme-toggle"
-            class="theme-toggle-btn"
-            aria-label="Toggle light and dark theme"
-            title="Toggle theme"
-          >
-            <svg
-              id="theme-icon"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="5" />
-              <line x1="12" y1="1" x2="12" y2="3" />
-              <line x1="12" y1="21" x2="12" y2="23" />
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-              <line x1="1" y1="12" x2="3" y2="12" />
-              <line x1="21" y1="12" x2="23" y2="12" />
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-            </svg>
-          </button>
+<figure class="screenshot-figure">
+<img src="/screenshots/dashboard-desktop-1440.png" alt="Pathfolio desktop application showing the dashboard with stage breakdown and follow-up alerts" width="1440" height="900" loading="lazy">
+<figcaption class="screenshot-caption"><span>Dashboard View · Desktop (1440px)</span><span>Real workspace stage counts & due alerts</span></figcaption>
+</figure>
+</section>
 
-          <button
-            id="mobile-menu-toggle"
-            class="mobile-menu-toggle"
-            aria-expanded="false"
-            aria-controls="mobile-nav"
-            aria-label="Toggle navigation menu"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
+<section class="doc-sec">
+<h2>2. Action Items & Follow-Up Deadlines</h2>
+<p>Candidate momentum stalls when follow-ups slip through the cracks. In Pathfolio, tasks stay tightly connected to opportunity records:</p>
+<ul>
+<li>Attach actionable follow-ups with optional due dates (e.g. <em>"Send thank-you email to lead engineer"</em>, <em>"Review system architecture diagram"</em>).</li>
+<li>Tasks due today or past due automatically surface on your dashboard under active alerts so nothing is missed.</li>
+<li>Completing a task writes an entry to the opportunity's activity timeline and updates dashboard counters immediately.</li>
+</ul>
+</section>
 
-          <a href="/app/" class="btn btn-primary">Launch App →</a>
-        </div>
-      </div>
-    </header>
+<section class="doc-sec">
+<h2>3. The STAR Evidence Bank</h2>
+<p>In behavioral and technical interviews, interviewers assess verified achievements, not generic descriptions. The <strong>Evidence Bank</strong> stores reusable career proof structured around the STAR format:</p>
+<div class="doc-card">
+<h4>Illustrative Evidence Entry (STAR Format)</h4>
+<p style="font-weight: 600; color: var(--ink); margin-bottom: .4rem;">Distributed Query Ingestion Optimization</p>
+<p style="font-family: var(--m); font-size: .8rem; color: var(--brass); margin-bottom: .6rem;">TAGS: Go · Distributed Systems · Kafka · PostgreSQL</p>
+<p><strong>Situation:</strong> Event pipeline latency degraded under peak load, exceeding SLA thresholds.<br>
+<strong>Task:</strong> Isolate serialization bottlenecks and reduce p99 processing time.<br>
+<strong>Action:</strong> Implemented memory-pooled batching and parallel consumer groups with backpressure.<br>
+<strong>Result:</strong> Reduced latency by 42% and sustained 18,000 events/sec without node failover.</p>
+</div>
+<p>Attach evidence references to opportunities without uploading documents or duplicating files. Removing an evidence entry never corrupts an opportunity's timeline.</p>
 
-    <!-- Mobile Navigation Drawer -->
-    <nav id="mobile-nav" class="mobile-nav-drawer" aria-label="Mobile Navigation">
-      <div class="mobile-drawer-links">
-        <a href="/" class="mobile-drawer-link">01 // Dossier Hero</a>
-        <a href="/#milestones" class="mobile-drawer-link">02 // Milestone Runway</a>
-        <a href="/#star-matrix" class="mobile-drawer-link">03 // STAR Assembly</a>
-        <a href="/#privacy-vault" class="mobile-drawer-link">04 // Storage Vault</a>
-        <a href="/#app-tour" class="mobile-drawer-link">05 // App Tour</a>
-        <a href="guide.html" class="mobile-drawer-link">Strategy & Workflow Guide</a>
-        <a href="privacy.html" class="mobile-drawer-link">Privacy Policy & Storage</a>
-        <a
-          href="https://github.com/Sayantan-Sinha-GIT/pathfolio"
-          class="mobile-drawer-link"
-          target="_blank"
-          rel="noopener"
-          >GitHub Repository</a
-        >
-      </div>
-      <a href="/app/" class="btn btn-primary" style="width: 100%;">Launch Web App →</a>
-    </nav>
+<figure class="screenshot-figure">
+<img src="/screenshots/evidence-desktop-1440.png" alt="Pathfolio Evidence Bank desktop interface showing STAR entries and tag filters" width="1440" height="900" loading="lazy">
+<figcaption class="screenshot-caption"><span>Evidence Bank · Desktop (1440px)</span><span>Reusable STAR evidence library & skill tags</span></figcaption>
+</figure>
+</section>
 
-    <main class="reading-page-main" id="main-content">
-      <div class="container reading-container">
-        <div class="reading-hero motion-reading-hero">
-          <span class="reading-eyebrow motion-eyebrow">Playbook & Workflow</span>
-          <h1 class="reading-title motion-title"><span class="motion-title-inner">Pathfolio Strategy Guide</span></h1>
-          <p class="reading-lead motion-lead">
-            How to manage your application velocity, never miss recruiter follow-ups, and structure quantifiable engineering evidence that wins offers.
-          </p>
-        </div>
+<section class="doc-sec">
+<h2>4. Backup, Restore & Data Sovereignty</h2>
+<p>Pathfolio uses no cross-device cloud sync. Your data stays strictly on your device in local storage. To transfer records across devices or create safety checkpoints:</p>
+<ul>
+<li><strong>Export Backup:</strong> Downloads a versioned JSON backup conforming to Schema Version 1, including opportunities, tasks, evidence bank, and preferences.</li>
+<li><strong>Import Backup:</strong> Validates file size, schema version, and field types. Previews count breakdown before asking you to confirm replacement.</li>
+<li><strong>Atomic Replacement:</strong> Replaces existing data only upon user confirmation. If validation fails or you cancel, your current workspace is left untouched.</li>
+</ul>
 
-        <section class="reading-section motion-reading-section">
-          <h2>1. Navigating the 6-Stage Pipeline Lifecycle</h2>
-          <p>
-            Early-career technical recruiting requires organizing dozens of opportunities without losing context. Pathfolio standardizes every application into six discrete, audited stages:
-          </p>
-          <ol>
-            <li><strong>Saved:</strong> Target companies and open requisitions under research. Use this stage to gather internal referrals, note compensation bands, and tailor your portfolio focus before officially submitting.</li>
-            <li><strong>Applied:</strong> Application formally submitted. Record the exact submission timestamp, recruiter portal URL, and confirmation ID.</li>
-            <li><strong>Screening:</strong> Recruiter introductory call or automated coding assessment (e.g., CodeSignal, HackerRank). Prepare talking points on your recent technical projects.</li>
-            <li><strong>Interview:</strong> Active technical loops in progress (data structures & algorithms, systems architecture, live coding, and hiring manager behavioral sessions).</li>
-            <li><strong>Offer:</strong> Formal written offer extended. Track base compensation, equity grants, signing bonuses, and decision deadlines with complete local privacy.</li>
-            <li><strong>Rejected:</strong> Concluded applications. Keeping structured debrief notes helps identify patterns to improve in future hiring loops.</li>
-          </ol>
-          <div class="callout-box motion-callout">
-            <h4>Automatic Timeline Tracking</h4>
-            <p>
-              Moving an opportunity between stages automatically logs a dated entry in the <em>Activity History</em> timeline so you can measure your cycle velocity and average days per stage.
-            </p>
-          </div>
-        </section>
+<figure class="screenshot-figure">
+<img src="/screenshots/app-mobile-390.png" alt="Pathfolio mobile interface on 390px viewport showing responsive pipeline navigation" width="390" height="844" loading="lazy">
+<figcaption class="screenshot-caption"><span>Mobile Application · Phone (390px)</span><span>Complete offline functionality on Android & Web</span></figcaption>
+</figure>
+</section>
 
-        <section class="reading-section motion-reading-section">
-          <h2>2. Managing Action Items & Follow-Up Deadlines</h2>
-          <p>
-            Candidate momentum is lost when follow-ups are delayed. Pathfolio helps you stay ahead of recruiter communications and technical milestones:
-          </p>
-          <ul>
-            <li>Attach actionable tasks with target completion dates (e.g. <em>"Send thank-you email to engineering manager"</em>, <em>"Submit take-home system design repo"</em>).</li>
-            <li>Tasks past today's calendar date automatically surface on your dashboard under the <strong>Overdue Actions</strong> badge with high-contrast in-app indicators (visual on-screen indicators; Pathfolio does not use OS push notifications or background alarm services).</li>
-            <li>Completing a task instantly updates your pending badge counts and logs a completion event in your local activity history.</li>
-          </ul>
-        </section>
+<div class="doc-card" style="text-align: center; padding: 2.4rem 1.6rem; margin-top: 3rem;">
+<h3 style="font-size: 1.8rem; margin-bottom: .6rem; color: var(--ink);">Start Your Organized Search</h3>
+<p style="margin-bottom: 1.6rem;">Open Pathfolio in your browser or install the Android release APK from GitHub.</p>
+<div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+<a class="btn mag" href="/app/">Launch App</a>
+<a class="btn g mag" href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest">Download Android APK</a>
+</div>
+</div>
+</main>
 
-        <section class="reading-section motion-reading-section">
-          <h2>3. Structuring Quantifiable STAR Evidence Entries</h2>
-          <p>
-            During technical and behavioral rounds, engineering interviewers look for verified impact, not generic responsibilities. Use the <strong>Evidence Bank</strong> to store achievements formatted with the STAR principle:
-          </p>
-          <div class="callout-box motion-callout">
-            <h4>Example STAR Evidence Item:</h4>
-            <p style="font-weight: 700; color: var(--ink-primary); margin-bottom: 0.35rem;">High-Throughput Telemetry Ingestion Engine</p>
-            <p style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--brass); margin-bottom: 0.5rem;">TAGS: Go, Kafka, Docker, Prometheus</p>
-            <p>
-              <strong>Concise Result:</strong> Processed 22,000 events/sec with under 18ms p99 latency during peak university registration traffic, reducing cluster hosting cost by 35%.
-            </p>
-          </div>
-          <p>
-            You can cite this evidence entry across multiple job opportunities without duplicating files or copying paragraphs into multiple folders.
-          </p>
-        </section>
+<footer>
+<p class="fw" aria-label="Pathfolio" data-split>Pathfolio</p><div class="fl" id="fl"></div>
+<div class="fc"><div><h4>Pathfolio</h4><p>A local-first job-application command center for students and early-career professionals.</p></div>
+<div><h4>Product</h4><ul><li><a href="/#pipeline">Pipeline</a></li><li><a href="/#evidence">Evidence bank</a></li><li><a href="/#vault">Backup</a></li><li><a href="/#tour">App tour</a></li></ul></div>
+<div><h4>Trust</h4><ul><li><a href="privacy.html">Privacy</a></li><li><a href="guide.html">Usage guide</a></li><li><a href="/#privacy">Storage limits</a></li></ul></div>
+<div><h4>Source</h4><ul><li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio">GitHub</a></li><li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest">Android APK</a></li><li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/blob/main/LICENSE">MIT license</a></li></ul></div></div>
+<div class="fb"><span>No analytics. No tracking. No sign-in.</span><span>MIT licensed · Built by Sayantan Sinha</span></div>
+</footer>
 
-        <section class="reading-section motion-reading-section">
-          <h2>4. Atomic Versioned Backups & Device Transfer</h2>
-          <p>
-            Because Pathfolio operates entirely offline with local device storage, your records live in your browser's private local storage or Android app storage. To move data across devices or create safe checkpoints:
-          </p>
-          <ul>
-            <li>Go to <strong>Settings → Export Backup</strong> to generate a validated JSON schema v1 backup file.</li>
-            <li>To restore, select <strong>Import Backup</strong>: Pathfolio validates schema integrity, field types, and count statistics before replacing current data atomically.</li>
-            <li>All writes are committed as a single consistent snapshot, preventing partial corrupted state.</li>
-          </ul>
-        </section>
-
-        <div class="motion-reading-card" style="background-color: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius-md); padding: 2rem; box-shadow: var(--shadow-sm); margin-top: 3rem; text-align: center;">
-          <h3 style="margin-bottom: 0.5rem;">Ready to Organize Your Job Search?</h3>
-          <p style="color: var(--ink-secondary); margin-bottom: 1.5rem;">Open Pathfolio in your browser or install the Android release APK.</p>
-          <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <a href="/app/" class="btn btn-primary btn-large">Launch Web App →</a>
-            <a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk" class="btn btn-secondary btn-large">Download APK</a>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- Universal Site Footer -->
-    <footer class="site-footer">
-      <div class="container">
-        <div class="footer-grid motion-footer-grid">
-          <div class="footer-brand-col motion-footer-col">
-            <a href="/" class="brand-link">
-              <div class="brand-seal" aria-hidden="true">P</div>
-              <span class="brand-title">Pathfolio</span>
-            </a>
-            <p>
-              A private, offline-first career workspace for ambitious engineers. Built with Flutter and deployed to Cloudflare Pages.
-            </p>
-          </div>
-
-          <div class="motion-footer-col">
-            <div class="footer-col-title">Navigation</div>
-            <ul class="footer-links">
-              <li><a href="/">Candidate Dossier</a></li>
-              <li><a href="/#milestones">Milestone Rail</a></li>
-              <li><a href="/#star-matrix">STAR Evidence Matrix</a></li>
-              <li><a href="/#privacy-vault">Storage Tradeoffs</a></li>
-            </ul>
-          </div>
-
-          <div class="motion-footer-col">
-            <div class="footer-col-title">Documentation</div>
-            <ul class="footer-links">
-              <li><a href="guide.html">Strategy &amp; Workflow Guide</a></li>
-              <li><a href="privacy.html">Privacy Policy &amp; Storage</a></li>
-              <li><a href="/app/">Launch Web Application</a></li>
-              <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk">Download Android APK</a></li>
-            </ul>
-          </div>
-
-          <div class="motion-footer-col">
-            <div class="footer-col-title">Architecture</div>
-            <ul class="footer-links">
-              <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio" target="_blank" rel="noopener">GitHub Repository</a></li>
-              <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/blob/main/LICENSE" target="_blank" rel="noopener">MIT Open Source License</a></li>
-              <li><span>Flutter 3.47.7 &amp; Dart 3.13</span></li>
-              <li><span>Schema Version 1 JSON</span></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="footer-bottom-row">
-          <div>© 2026 Pathfolio. Crafted for private, local-first career management. Open source under MIT License.</div>
-          <div style="font-family: var(--font-mono); font-size: 0.78rem;">
-            LOCAL CLIENT STORAGE • ZERO ANALYTICS TRACKERS • OFFLINE CAPABLE
-          </div>
-        </div>
-      </div>
-    </footer>
-
-    <!-- Unified JavaScript Application -->
-    <script src="app.js"></script>
-  </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>window.gsap||document.write('<script src="/vendor/gsap.min.js"><\/script>')</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>window.ScrollTrigger||document.write('<script src="/vendor/ScrollTrigger.min.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>window.Lenis||document.write('<script src="/vendor/lenis.min.js"><\/script>')</script>
+<script src="app.js"></script>
+</body>
 </html>

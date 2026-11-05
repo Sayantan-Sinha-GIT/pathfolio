@@ -98,63 +98,49 @@ In response to the owner's request matching the foreground motion density of Cod
 
 ---
 
-## 4. Scroll Narrative: Three Large Physical Chapters
+## 4. Authoritative Scroll Narrative: Five Physical Scenes
 
-Pathfolio features THREE large, distinct scroll-driven narrative chapters using actual scroll position, measured computed style transforms, and verified before/after deltas:
+Pathfolio implements the exact scene choreography and kinematic structures defined in `my-design/home.html`:
 
-### Chapter 1: The Milestone Pipeline Runway (`#chapter-pipeline` / `#milestones`)
-- **Visual Concept**: The multi-stage application journey physically progressing along an architectural runway track.
+### Scene 1: The Pipeline Runway (`#s-pipe`)
+- **Visual Concept**: The six-stage candidate journey along a high-precision caliper track with dynamic step scrubbers and stage detail cards.
 - **Scroll Transform Choreography**:
-  - As the user scrolls into and through the chapter ($p \in [0, 1]$), the progress rail carriage (`#pipeline-rail-carriage`) translates along the physical track:
-    $$\text{translateX} = p \times (\text{trackWidth} - \text{carriageWidth})$$
-    Measured delta: $x = 258\text{px} \rightarrow 787\text{px}$.
-  - The runway progress track (`#pipeline-scroll-bar`) physically grows via 2D scale transform:
-    $$\text{transform: scaleX}(0.15 + p \times 0.85)$$
-    Measured delta: $\text{scaleX} = 0.243 \rightarrow 0.741$.
-  - The live telemetry badge (`#pipeline-live-telemetry`) synchronizes with the active station:
-    Measured delta: `ACTIVE: 02 // APPLIED TRACKING` $\rightarrow$ `ACTIVE: 05 // WRITTEN OFFER`.
-- **Interactive Component**: Tactile stage tabs (*Saved → Applied → Screening → Technical Loop → Executive Offer*). Clicking a stage switches the live dossier view: shows realistic days-in-stage metrics, recruiter coordination logs, and interview prep checklists.
+  - As the user scrolls into `#s-pipe`, GSAP ScrollTrigger drives progress across `.track-fill` and active indicator dots:
+    $$\text{scaleX: } 0.15 \rightarrow 1.00$$
+  - Active stage dots (`.p-dot`) transition in sync with stage detail cards (`.s-card`), highlighting Saved, Applied, Screening, Interview, Offer, and Rejected.
+  - Telemetry counters and stage duration metrics advance continuously.
 
-### Chapter 2: The STAR Evidence Assembly Deck (`#chapter-evidence` / `#star-matrix`)
-- **Visual Concept**: Bounded desktop pinned evidence story with separate STAR paper fragments traveling across a spacious physical stage, locking into an aligned interview dossier plate with dynamic drawn SVG links, coherent 3D depth, and active scroll-stage citation previews.
+### Scene 2: The STAR Evidence Assembly Deck (`#s-star`)
+- **Visual Concept**: Pinned 3D paper fragment choreography where Situation, Task, Action, and Result fragments fly into an aligned dossier plate over an SVG link connector.
 - **Scroll Transform Choreography**:
-  - Desktop Track: `#star-scroll-track` operates as a `220vh` pinned track with `.star-sticky-viewport` pinned at top 74px on $\ge 992\text{px}$ viewports. On mobile ($< 992\text{px}$), natural flow is preserved with zero sticky scroll traps.
-  - The four separate STAR fragment cards (`#star-frag-situation`, `#star-frag-task`, `#star-frag-action`, `#star-frag-result`) travel with continuous translation and rotation curves:
-    $$\text{dist} = 110 \times (1 - p)$$
-    $$\text{fragS: translate}(-0.9\text{dist}, 0.35\text{dist}) \text{ rotate}(-(1-p)\times 7^\circ)$$
-    $$\text{fragT: translate}(0.9\text{dist}, -0.35\text{dist}) \text{ rotate}((1-p)\times 6^\circ)$$
-    $$\text{fragA: translate}(-0.85\text{dist}, -0.3\text{dist}) \text{ rotate}((1-p)\times 5^\circ)$$
-    $$\text{fragR: translate}(0.85\text{dist}, 0.4\text{dist}) \text{ rotate}(-(1-p)\times 6^\circ)$$
-    Measured delta on `#star-frag-situation`:
-    $\text{transform} = \text{matrix}(0.9925, -0.1218, 0.1218, 0.9925, -85, 35), \text{opacity} = 0.50 \rightarrow \text{matrix}(0.9970, -0.0767, 0.0767, 0.9970, -54, 22), \text{opacity} = 0.68$.
-  - Dynamic SVG drawn connector lines (`.star-drawn-svg path`) transition stroke dash offset synchronously across scroll:
-    $$\text{strokeDashoffset} = \text{totalLength} \times (1 - p)$$
-  - Synchronized citation telemetry: `#citation-stage-pill` dynamically cycles through stages (`STAGE 1/4 // SITUATION` $\rightarrow$ `STAGE 4/4 // MEASURED OUTCOMES`) while `#citation-link-text` updates the live linked talking point.
-  - Central brass verification seal (`#star-assembly-seal`) stamps down into reserved nonintersecting space ($\text{scale } 0.28 \rightarrow 0.55$, $\text{opacity } 0.00 \rightarrow 0.21 \rightarrow 0.89$ on full lock).
-- **Interactive Component**: Skill domain filter tabs (*Distributed Systems, Performance Tuning, Security & Ephemeral IAM, Client State Persistence*). Selecting a filter dynamically populates all four STAR fragments, tags, and summary briefing with production achievements, supported by an interactive *"Attach Citation to Briefing"* button with animated tactile feedback.
+  - The four STAR fragment cards (`.card.p-sit`, `.card.p-tsk`, `.card.p-act`, `.card.p-res`) assemble across scroll:
+    - Situation: $\text{translate}(-32\text{px}, 18\text{px}) \text{ rotate}(-3^\circ) \rightarrow \text{translate}(0, 0) \text{ rotate}(0^\circ)$
+    - Task: $\text{translate}(28\text{px}, -16\text{px}) \text{ rotate}(2.5^\circ) \rightarrow \text{translate}(0, 0) \text{ rotate}(0^\circ)$
+    - Action: $\text{translate}(-24\text{px}, -12\text{px}) \text{ rotate}(-2^\circ) \rightarrow \text{translate}(0, 0) \text{ rotate}(0^\circ)$
+    - Result: $\text{translate}(30\text{px}, 20\text{px}) \text{ rotate}(3^\circ) \rightarrow \text{translate}(0, 0) \text{ rotate}(0^\circ)$
+  - Dynamic connector SVG path (`#linkSvg path`) animates stroke-dashoffset synchronously.
+  - Interactive skill tabs dynamically update evidence talking points with zero layout shift.
 
-### Chapter 3: Sovereign Dossier Folding & Sealing (`#chapter-vault` / `#privacy-vault`)
-- **Visual Concept**: Dimensional local-backup folder sequence where 3 collectible archival documents glide into an archival packet base, the 3D flap folds shut, and the wax seal stamps down, replacing static JSON walls with a physical custody story.
+### Scene 3: Sovereign Vault Folding & Stamping (`#s-vault`)
+- **Visual Concept**: Three collectible local backup sheets glide into an archival packet, followed by 3D flap closure and wax seal stamping.
 - **Scroll Transform Choreography**:
-  - Three dimensional document sheets (`#vault-doc-pipeline`, `#vault-doc-evidence`, `#vault-doc-notes`) glide from elevated stack into the archival pocket base during $p_3 \le 0.45$:
-    $$\text{doc1: translateY}(-(1 - p_{\text{collect}}) \times 50\text{px}) \text{ rotate}(-(1 - p_{\text{collect}}) \times 3^\circ)$$
-    $$\text{doc2: translateY}(-(1 - p_{\text{collect}}) \times 75\text{px}) \text{ rotate}((1 - p_{\text{collect}}) \times 2^\circ)$$
-    $$\text{doc3: translateY}(-(1 - p_{\text{collect}}) \times 100\text{px}) \text{ rotate}(-(1 - p_{\text{collect}}) \times 1.5^\circ)$$
-  - The 3D envelope flap (`#vault-envelope-flap`) folds shut along its top hinge during $p_3 \in [0.25, 0.75]$:
-    $$\text{flapAngle} = -105 + p_{\text{fold}} \times 95 \quad (\text{deg}), \quad \text{flapOpacity} = 0.70 + p_{\text{fold}} \times 0.30$$
-    Measured delta: $\text{rotateX} = -74.0^\circ (\text{opacity } 0.70) \rightarrow -35.0^\circ (\text{opacity } 0.86)$.
-  - The hot red-brass wax seal (`#vault-wax-seal`) presses down from above during $p_3 \in [0.45, 0.90]$:
-    $$\text{sealY} = -45 \times (1 - p_{\text{seal}}) \quad (\text{px}), \quad \text{sealScale} = 0.60 + p_{\text{seal}} \times 0.40$$
-    Measured delta: $\text{translateY} = -45\text{px} \rightarrow -21\text{px}, \text{scale} = 0.60 \rightarrow 0.81, \text{opacity} = 0.00 \rightarrow 0.54$.
-  - Three-stage status stepper bar (`.vault-stepper-bar` with `.stepper-step`) illuminates step 01 (Collect), 02 (Fold), 03 (Seal & Export) in sync with packet progress.
-- **Interactive Component**: Collapsible `<details class="schema-inspector-details">` raw Schema v1 JSON export inspector. Provides an accessible, transparent view of genuine client-side `shared_preferences` export fields (`schemaVersion`, `exportedAt`, `opportunities`, `evidence`) and an instant client-side `"Download Sample Backup (JSON)"` file generator without fake encryption or cloud verification claims.
+  - Archival flap (`.sp-flap`): 3D folds shut along top perspective axis:
+    $$\text{rotateX: } -105^\circ \rightarrow 0^\circ$$
+  - Red-brass wax seal (`.sp-seal`): Stamps down into packet closure:
+    $$\text{translateY: } -40\text{px} \rightarrow 0\text{px}, \quad \text{scale: } 0.5 \rightarrow 1.0, \quad \text{opacity: } 0.0 \rightarrow 1.0$$
+  - Raw JSON drawer (`.sp-drawer` / `.sp-code`): Accessible client-side schema inspection.
 
-### Chapter 5: Closing Sovereign Command Scene (`#closing-cta`)
-- **Visual Concept**: Monumental closing composition pairing scroll-lit editorial typography with physical 3D dossier carrier leaves and an architectural launch deck.
+### Scene 4: App Tour Gallery (`#s-tour`)
+- **Visual Concept**: Dual platform showcase presenting Desktop Web Dashboard (`#win`) and Mobile Android (`#phone`).
 - **Scroll Transform Choreography**:
-  - Monumental scroll-lit typography: `.lit-word` spans in the headline (*"Your Loop. Your Evidence. Sealed On Your Terms."*) illuminate word-by-word with high-contrast Alpine verdigris and ink highlights as the viewport centers on the closing scene.
-  - Physical 3D dossier spread: Left and right archival carrier leaves (`#closing-leaf-left`, `#closing-leaf-right`) settle from an angled perspective ($12^\circ \rightarrow 0^\circ$) onto the central launch deck plane with coherent depth.
-  - Action launchpad elevates with ambient breathing verdigris glow and provides clear, immediate entry points: Web App launch at `/app/`, signed Android APK release download, and strategy documentation.
+  - Interactive platform tabs (`.plat-tab`) toggle active elevation.
+  - Smooth parallax depth offsets and perspective elevation.
+
+### Scene 5: Closing Sovereign Command (`#s-launch`)
+- **Visual Concept**: Monumental closing statement pairing high-contrast typography reveals with physical dossier presentation.
+- **Scroll Transform Choreography**:
+  - Editorial headline reveals with staggered line unmasking.
+  - High-contrast dual launch CTAs (`/app/` web launch and GitHub release APK download) with live proof metrics.
 
 ---
 

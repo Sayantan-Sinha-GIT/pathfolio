@@ -40,9 +40,27 @@
 
 ---
 
-## Part 3: QA Hardening & Truth Verification Addendum
+## Part 4: Faithful Owner-Supplied Design Implementation & Side-by-Side Review
 
-Following independent QA audit, critical truth and ergonomics hardening items were verified:
+Following the owner's explicit directive, the marketing homepage visual design was completely superseded by the owner-supplied design (`my-design/home.html`, 43,390 bytes, Claude-authored reference). The authored markup, CSS styles, canvas background, and GSAP/ScrollTrigger/Lenis motion engine were faithfully integrated into production:
+
+1. **Untouched Reference Preservation**:
+   - `my-design/home.html` kept 100% byte-for-byte untouched (43,390 bytes) and git-ignored.
+   - Original kit PROMPT D preserved in `START_HERE.txt` and `originals/CLAUDE_HOME_PROMPT.txt`.
+2. **Side-by-Side Matched Phase Verification**:
+   - Automated side-by-side comparison engine captures the exact reference and target implementation side-by-side across:
+     - Desktop 1440 × 900 (Dark & Light themes) at 6 matched scene phases: Hero Settled, Pipeline Mid, Pipeline After, STAR Evidence Mid, Sovereign Vault Sealed, and Tour Platform Toggle.
+     - Mobile 390 × 844 (Dark & Light themes) at 6 matched scene phases.
+     - All 24 composite images saved in `screenshots/side_by_side/` for visual audit.
+3. **Ergonomics & Progressive Enhancement Hardening**:
+   - Sticky Header Scroll Clearance: Added `section[id] { scroll-margin-top: 5rem; }`, ensuring anchor jumps never obscure section headings.
+   - Horizontal Overflow Guard: Added `overflow-x: clip; contain: paint;` on `.mq`, `.hero`, `.run`, `.pin`, `.sp`, `.cin`, and `footer`.
+   - Reduced Motion: Added `.rm .scene .win, .rm .scene .phone { opacity: 1 !important; scale: 1 !important; }` ensuring 0 opacity traps or de-emphasized tabs when motion is reduced.
+   - No-JS Mode: Pure progressive enhancement styles ensure 100% readable text and content when scripts are disabled.
+4. **Universal Route Alignment**:
+   - `site/guide.html` and `site/privacy.html` completely adapted to the new typography (`Fraunces`, `Plus Jakarta Sans`, `JetBrains Mono`), color palette, background canvas, and header/footer components.
+   - Real product screenshots embedded: `dashboard-desktop-1440.png`, `evidence-desktop-1440.png`, `app-mobile-390.png`.
+   - Cloudflare Pages Direct Upload deployment live and verified at `https://pathfolio.pages.dev`.
 1. **True Mobile Viewport & Menu Drawer Containment**:
    - Eliminated horizontal scroll blowout on 390px and 320px (`scrollWidth === innerWidth === 390px` and `320px`).
    - Resolved CSS containing-block trap where `.site-header`'s `backdrop-filter: blur(12px)` clipped `.mobile-nav-drawer` to 64.8px. Moved `#mobile-nav` to body root with full viewport height (`780px` visible space beneath header).
