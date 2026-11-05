@@ -150,6 +150,48 @@ The automated browser gate (`test-scroll-gate.js`) was executed across both loca
 
 ---
 
+### Round 8 — Comprehensive Foreground Motion Upgrade & Full Composition Choreography (Owner Motion Upgrade)
+
+- **Objective**: Execute the owner's request for motion-studio / advertisement craft level foreground animation density (benchmarked against CodeSense, Grepless, and Haan) across the entire composition, verifying real computed transforms, opacities, and interactive states on both local and live remote Cloudflare Pages deployments.
+- **Observed Metrics & Evidence**:
+  - **Hero Headline Masked Reveals & Staged Entrance**:
+    - Line 1 (`.hero-line-inner.line-1`): Unmasks from `translateY(115%) rotate(2.5deg)` with 6px blur to `translateY(0) rotate(0deg)` blur(0). Opacity advances $0.88 \rightarrow 1.00$.
+    - Line 2 (`.hero-line-inner.line-2`): Unmasks with italic display contrast ($0.28\text{s}$ stagger). Opacity advances $0.59 \rightarrow 1.00$.
+    - Coordinated Entrance: Status badge (`#hero-status-badge`), briefing lead (`#hero-lead`), action buttons (`#hero-actions`), and proof ledger (`#hero-proof-ledger`) stagger smoothly into resting plane with zero jitter.
+    - Dossier Milestone Rail Fill: Expands $237.1\text{px} \rightarrow 256.7\text{px}$ over 1.1s.
+  - **Scroll-Led 3D Layered Dossier Spread**:
+    - As the user scrolls down 350px, underlay sheets fan out in physical depth:
+      - Underlay 1 (`#hero-underlay-1`): Fans out leftward, transform shifts from $\text{rotate}(-1.5^\circ)$ to `matrix3d(0.9978, -0.0668, 0, 0, 0.0668, 0.9978, 0, 0, 0, 0, 1, 0, -15.5, 8.1, -25, 1)`.
+      - Underlay 2 (`#hero-underlay-2`): Fans out rightward, transform shifts from $\text{rotate}(+3^\circ)$ to `matrix3d(0.9962, 0.0866, 0, 0, -0.0866, 0.9962, 0, 0, 0, 0, 1, 0, 12.2, 10.1, -50, 1)`.
+      - Folder tab (`#hero-dossier-tab`) shifts vertically in 3D perspective.
+  - **Section Headers & Eyebrows Unmasking**:
+    - All section headers across all chapters (`.motion-header-group`) unmask eyebrows, display titles (`.motion-title-inner`), and lead paragraphs with blur-to-sharp transitions upon viewport intersection.
+  - **Chapter 1: Pipeline Runway Cards Stagger & Active Station**:
+    - Runway cards (`.pipeline-runway-card`) stagger into view with active station transitions (`.active` highlight and glowing border) synchronized with carriage advance ($257\text{px} \rightarrow 855\text{px}$).
+  - **Chapter 2: STAR Assembly & Tactile Citation Feedback**:
+    - STAR fragments assemble ($0.58 \rightarrow 0.96$ opacity, alignment matrix).
+    - Verification seal stamps into reserved space ($0.00 \rightarrow 0.89$ opacity).
+    - Clicking `#btn-cite-simulation` produces immediate tactile feedback: button scale dips to 0.96, and `#citation-feedback` displays confirmation with smooth rise.
+    - Geometric seal clearance verified $> 90\text{px}$ across 8 scroll states on 390px and 320px viewports (zero intersection with text or controls).
+  - **Chapter 3: Sovereign Vault Folding & Comparison Grid**:
+    - Flap folds shut via 3D `rotateX` matrix; hot wax seal stamps down ($\text{opacity } 0.02 \rightarrow 0.69$).
+    - Architectural vs Centralized comparison boxes (`.motion-compare-box`) stagger into view with `.is-revealed`.
+  - **Chapter 4: App Tour Gallery 3D Perspective Parallax**:
+    - Gallery cards (`.motion-gallery-card.desktop-card`, `.mobile-card`) elevate into view; scrolling 250px produces verified `matrix3d` parallax displacement.
+  - **Closing CTA & Footer Columns Stagger**:
+    - Closing CTA card (`.motion-cta-card`) reveals with deep elevation and breathing ambient illumination.
+    - All four footer navigation columns (`.motion-footer-col`) stagger into view upon reaching document footer.
+  - **Reverse Scroll & Midpage Reload Integrity**:
+    - Scrolling from page bottom back to top ($y = 0$) verifies hero elements remain fully visible (`opacity: 1`) with zero stuck hidden states.
+    - Direct reload / hash jump to `#privacy-vault` immediately reveals in-viewport content via IntersectionObserver without requiring manual scroll.
+  - **No-JS Full Readability**:
+    - Verified with `javaScriptEnabled: false`: all 21+ foreground groups render with `opacity >= 0.95`, `transform: none`, and positive dimensions. Zero content loss.
+  - **Live Remote Production Gate**:
+    - Remote gate on `https://pathfolio.pages.dev/` PASSED all assertions with 0 errors.
+- **Status**: PASSED.
+
+---
+
 ## Concrete Differentiation Analysis: Pathfolio Dark Dossier vs. CodeSense (1440×900 Equal-Width Comparison)
 
 | Design Dimension | CodeSense (`https://pr-reviewer-omega-liard.vercel.app`) | Pathfolio Deep-Forest Dossier (`https://pathfolio.pages.dev`) | Concrete Distinction Proof |

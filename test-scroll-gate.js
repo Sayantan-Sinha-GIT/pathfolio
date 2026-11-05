@@ -1,12 +1,14 @@
 /**
  * Pathfolio — Automated Playwright Visual & Scroll Motion Gate
- * Validates scroll-driven narrative chapters, visual deltas, viewports, and links.
+ * Validates scroll-driven narrative chapters, visual deltas, viewports, foreground motion coverage, and links.
  * Works portably from a clean clone across Windows, macOS, and Linux.
  */
 
 const { chromium } = require('playwright-core');
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
+const url = require('url');
 
 const SCREENSHOT_DIR = path.join(__dirname, 'screenshots');
 
@@ -18,8 +20,76 @@ if (!fs.existsSync(SCREENSHOT_DIR)) {
 const targetArg = process.argv.find((a) => a.startsWith('--target=')) || '--target=local';
 const targetMode = targetArg.split('=')[1];
 
-const LOCAL_BASE = 'http://127.0.0.1:8085';
+const LOCAL_PORT = 8085;
+const LOCAL_BASE = `http://127.0.0.1:${LOCAL_PORT}`;
 const REMOTE_BASE = 'https://pathfolio.pages.dev';
+
+/**
+ * Built-in lightweight static server for clean-clone local runs without extra tools
+ */
+function createStaticServer(rootDir, port = LOCAL_PORT) {
+  const mimeTypes = {
+    '.html': 'text/html; charset=utf-8',
+    '.css': 'text/css; charset=utf-8',
+    '.js': 'application/javascript; charset=utf-8',
+    '.mjs': 'application/javascript; charset=utf-8',
+    '.json': 'application/json; charset=utf-8',
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.svg': 'image/svg+xml',
+    '.ico': 'image/x-icon',
+    '.woff2': 'font/woff2',
+    '.woff': 'font/woff',
+    '.ttf': 'font/ttf',
+    '.wasm': 'application/wasm',
+    '.apk': 'application/vnd.android.package-archive'
+  };
+
+  const server = http.createServer((req, res) => {
+    let cleanPath = url.parse(req.url).pathname;
+    let filePath = path.join(rootDir, cleanPath);
+
+    // Support clean URLs and directory index
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+      filePath = path.join(filePath, 'index.html');
+    } else if (!fs.existsSync(filePath) && fs.existsSync(filePath + '.html')) {
+      filePath = filePath + '.html';
+    }
+
+    // SPA fallback for /app/*
+    if (!fs.existsSync(filePath) && cleanPath.startsWith('/app/')) {
+      filePath = path.join(rootDir, 'app', 'index.html');
+    }
+
+    if (fs.existsSync(filePath) && !fs.statSync(filePath).isDirectory()) {
+      const ext = path.extname(filePath).toLowerCase();
+      const contentType = mimeTypes[ext] || 'application/octet-stream';
+      res.writeHead(200, {
+        'Content-Type': contentType,
+        'Cache-Control': 'no-cache, no-store, must-revalidate'
+      });
+      fs.createReadStream(filePath).pipe(res);
+    } else {
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.end('404 Not Found');
+    }
+  });
+
+  return new Promise((resolve, reject) => {
+    server.listen(port, '127.0.0.1', () => {
+      console.log(`[StaticServer] Listening on http://127.0.0.1:${port} serving ${rootDir}`);
+      resolve(server);
+    }).on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.log(`[StaticServer] Port ${port} in use; assuming existing server is active.`);
+        resolve(null);
+      } else {
+        reject(err);
+      }
+    });
+  });
+}
 
 /**
  * Launch browser portably without hardcoded machine paths
@@ -86,10 +156,11 @@ async function launchBrowser() {
 }
 
 /**
- * Assert that all chapter content is visible, readable, and has no hidden fragments in reduced motion
+ * Assert that all foreground content is visible, readable, and has no hidden fragments in reduced motion
  */
 async function assertReducedMotionReadability(page, viewportLabel) {
   return await page.evaluate((label) => {
+    const isMobile = label.includes('phone') || label.includes('narrow') || label.includes('390') || label.includes('320');
     const selectors = [
       '#pipeline-rail-carriage',
       '#pipeline-scroll-bar',
@@ -102,8 +173,18 @@ async function assertReducedMotionReadability(page, viewportLabel) {
       '#vault-envelope-flap',
       '#vault-wax-seal',
       '#vault-code-drawer',
-      '#hero-dossier-card'
+      '#hero-dossier-card',
+      '.hero-line-inner',
+      '.motion-title-inner',
+      '.motion-gallery-card',
+      '.motion-compare-box',
+      '.motion-cta-card',
+      '.motion-footer-col'
     ];
+    // Underlays are desktop/tablet decorative sheets, hidden on mobile for containment
+    if (!isMobile) {
+      selectors.push('#hero-underlay-1', '#hero-underlay-2');
+    }
     const errors = [];
     for (const sel of selectors) {
       const els = Array.from(document.querySelectorAll(sel));
@@ -135,6 +216,62 @@ async function assertReducedMotionReadability(page, viewportLabel) {
   }, viewportLabel);
 }
 
+/**
+ * Assert that all foreground elements are visible and readable when JavaScript is disabled
+ */
+async function assertNoJsVisibility(page) {
+  return await page.evaluate(() => {
+    const selectors = [
+      '.hero-line-inner',
+      '#hero-status-badge',
+      '#hero-lead',
+      '#hero-actions',
+      '#hero-proof-ledger',
+      '#hero-dossier-card',
+      '#hero-underlay-1',
+      '#hero-underlay-2',
+      '.motion-title-inner',
+      '.pipeline-runway-card',
+      '#star-frag-situation',
+      '#star-frag-task',
+      '#star-frag-action',
+      '#star-frag-result',
+      '#vault-envelope-flap',
+      '#vault-wax-seal',
+      '#vault-code-drawer',
+      '.motion-compare-box',
+      '.motion-gallery-card',
+      '.motion-cta-card',
+      '.motion-footer-col'
+    ];
+    const errors = [];
+    for (const sel of selectors) {
+      const els = Array.from(document.querySelectorAll(sel));
+      if (els.length === 0) {
+        errors.push(`[No-JS] Missing element for selector: ${sel}`);
+        continue;
+      }
+      for (const el of els) {
+        const style = window.getComputedStyle(el);
+        const rect = el.getBoundingClientRect();
+        if (style.display === 'none') {
+          errors.push(`[No-JS] ${sel} has display: none`);
+        }
+        if (style.visibility === 'hidden') {
+          errors.push(`[No-JS] ${sel} has visibility: hidden`);
+        }
+        if (parseFloat(style.opacity) < 0.95) {
+          errors.push(`[No-JS] ${sel} has opacity < 0.95 (${style.opacity})`);
+        }
+        if (rect.width <= 0 || rect.height <= 0) {
+          errors.push(`[No-JS] ${sel} has zero rendered dimensions (${rect.width}x${rect.height})`);
+        }
+      }
+    }
+    return errors;
+  });
+}
+
 async function runGateForBaseUrl(baseUrl, label) {
   console.log(`\n===============================================================`);
   console.log(`RUNNING PLAYWRIGHT SCROLL GATE FOR: [${label}] -> ${baseUrl}`);
@@ -146,16 +283,18 @@ async function runGateForBaseUrl(baseUrl, label) {
     label,
     baseUrl,
     passed: true,
+    foregroundCoverage: {},
     chaptersDesktop: {},
     chaptersMobile: {},
     reducedMotion: { desktopErrors: [], mobileErrors: [] },
+    noJsErrors: [],
     flutterApp: {},
     errors: []
   };
 
   try {
     // -------------------------------------------------------------------------
-    // 1. Desktop Viewport (1440x900)
+    // 1. Desktop Viewport (1440x900) — Foreground Motion & Chapters
     // -------------------------------------------------------------------------
     const context1440 = await browser.newContext({
       viewport: { width: 1440, height: 900 },
@@ -170,48 +309,112 @@ async function runGateForBaseUrl(baseUrl, label) {
     const heroT0 = await page1440.evaluate(() => {
       const card = document.getElementById('hero-dossier-card');
       const fill = document.getElementById('dossier-rail-fill');
+      const line1 = document.querySelector('.hero-line-inner.line-1');
+      const line2 = document.querySelector('.hero-line-inner.line-2');
+      const pill = document.getElementById('hero-status-badge');
+      const lead = document.getElementById('hero-lead');
+      const btns = document.getElementById('hero-actions');
+      const underlay1 = document.getElementById('hero-underlay-1');
+      const underlay2 = document.getElementById('hero-underlay-2');
+
       return {
         cardTransform: card ? window.getComputedStyle(card).transform : '',
         cardOpacity: card ? window.getComputedStyle(card).opacity : '',
-        fillWidth: fill ? window.getComputedStyle(fill).width : ''
+        fillWidth: fill ? window.getComputedStyle(fill).width : '',
+        line1Transform: line1 ? window.getComputedStyle(line1).transform : '',
+        line1Opacity: line1 ? window.getComputedStyle(line1).opacity : '',
+        line2Transform: line2 ? window.getComputedStyle(line2).transform : '',
+        line2Opacity: line2 ? window.getComputedStyle(line2).opacity : '',
+        pillOpacity: pill ? window.getComputedStyle(pill).opacity : '',
+        leadOpacity: lead ? window.getComputedStyle(lead).opacity : '',
+        btnsOpacity: btns ? window.getComputedStyle(btns).opacity : '',
+        underlay1Transform: underlay1 ? window.getComputedStyle(underlay1).transform : '',
+        underlay2Transform: underlay2 ? window.getComputedStyle(underlay2).transform : ''
       };
     });
     await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-desktop-1440-t0.png`) });
-    console.log(`  ✓ Saved ${label}-desktop-1440-t0.png (t0 Rendered Fill: "${heroT0.fillWidth}", CardOpacity: ${heroT0.cardOpacity})`);
+    console.log(`  ✓ Saved ${label}-desktop-1440-t0.png`);
+    console.log(`    t0 Metrics: Fill="${heroT0.fillWidth}", Line1Opacity=${heroT0.line1Opacity}, Line2Opacity=${heroT0.line2Opacity}, CardOpacity=${heroT0.cardOpacity}`);
 
     // Wait for initial hero transition (t=1500ms)
     await page1440.waitForTimeout(1500);
     const heroT15 = await page1440.evaluate(() => {
       const card = document.getElementById('hero-dossier-card');
       const fill = document.getElementById('dossier-rail-fill');
+      const line1 = document.querySelector('.hero-line-inner.line-1');
+      const line2 = document.querySelector('.hero-line-inner.line-2');
+      const pill = document.getElementById('hero-status-badge');
+      const lead = document.getElementById('hero-lead');
+      const btns = document.getElementById('hero-actions');
+      const ledger = document.getElementById('hero-proof-ledger');
+      const underlay1 = document.getElementById('hero-underlay-1');
+      const underlay2 = document.getElementById('hero-underlay-2');
+
       return {
         cardTransform: card ? window.getComputedStyle(card).transform : '',
         cardOpacity: card ? window.getComputedStyle(card).opacity : '',
-        fillWidth: fill ? window.getComputedStyle(fill).width : ''
+        fillWidth: fill ? window.getComputedStyle(fill).width : '',
+        line1Transform: line1 ? window.getComputedStyle(line1).transform : '',
+        line1Opacity: line1 ? window.getComputedStyle(line1).opacity : '',
+        line2Transform: line2 ? window.getComputedStyle(line2).transform : '',
+        line2Opacity: line2 ? window.getComputedStyle(line2).opacity : '',
+        pillOpacity: pill ? window.getComputedStyle(pill).opacity : '',
+        leadOpacity: lead ? window.getComputedStyle(lead).opacity : '',
+        btnsOpacity: btns ? window.getComputedStyle(btns).opacity : '',
+        ledgerOpacity: ledger ? window.getComputedStyle(ledger).opacity : '',
+        underlay1Transform: underlay1 ? window.getComputedStyle(underlay1).transform : '',
+        underlay2Transform: underlay2 ? window.getComputedStyle(underlay2).transform : ''
       };
     });
     await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-desktop-1440-t1.5.png`) });
-    console.log(`  ✓ Saved ${label}-desktop-1440-t1.5.png (t1.5 Rendered Fill: "${heroT15.fillWidth}", CardOpacity: ${heroT15.cardOpacity})`);
+    console.log(`  ✓ Saved ${label}-desktop-1440-t1.5.png`);
+    console.log(`    t1.5 Metrics: Fill="${heroT15.fillWidth}", Line1Opacity=${heroT15.line1Opacity}, Line2Opacity=${heroT15.line2Opacity}, CardOpacity=${heroT15.cardOpacity}`);
 
-    // Assert visible progression between t0 and t1.5
-    const heroHasDelta = heroT0.fillWidth !== heroT15.fillWidth || heroT0.cardTransform !== heroT15.cardTransform;
+    // Assert visible progression between t0 and t1.5 (Hero Headline lines, fill, cards)
+    const heroHasDelta = (heroT0.fillWidth !== heroT15.fillWidth || heroT0.cardTransform !== heroT15.cardTransform) &&
+      parseFloat(heroT15.line1Opacity) >= 0.95 && parseFloat(heroT15.line2Opacity) >= 0.95;
+    
     if (!heroHasDelta) {
       results.passed = false;
-      results.errors.push(`Hero t0 and t1.5 frames are static! No entrance transition or metric delta.`);
+      results.errors.push(`Hero t0 and t1.5 frames are static! No masked line entrance or rail fill delta.`);
     } else {
-      console.log(`  ✓ Hero staged entrance delta verified (Rail fill: ${heroT0.fillWidth} -> ${heroT15.fillWidth}).`);
+      console.log(`  ✓ Hero staged entrance delta verified:`);
+      console.log(`    - Line 1 Masked Reveal: Opacity ${heroT0.line1Opacity} -> ${heroT15.line1Opacity}`);
+      console.log(`    - Line 2 Masked Reveal: Opacity ${heroT0.line2Opacity} -> ${heroT15.line2Opacity}`);
+      console.log(`    - Dossier Rail Fill: ${heroT0.fillWidth} -> ${heroT15.fillWidth}`);
     }
 
-    // Scroll 300px to check Hero Parallax Shift
-    await page1440.evaluate(() => window.scrollTo({ top: 300, behavior: 'instant' }));
-    await page1440.waitForTimeout(200);
-    const heroScrolledTransform = await page1440.evaluate(() => {
-      const el = document.getElementById('hero-dossier-card');
-      return el ? window.getComputedStyle(el).transform : null;
+    // Scroll 350px to test 3D Layered Dossier Spread Parallax
+    console.log(`\n--- Testing 3D Layered Dossier Spread Parallax (scroll 350px) ---`);
+    await page1440.evaluate(() => window.scrollTo({ top: 350, behavior: 'instant' }));
+    await page1440.waitForTimeout(250);
+
+    const dossierSpreadMetrics = await page1440.evaluate(() => {
+      const card = document.getElementById('hero-dossier-card');
+      const u1 = document.getElementById('hero-underlay-1');
+      const u2 = document.getElementById('hero-underlay-2');
+      const tab = document.getElementById('hero-dossier-tab');
+      return {
+        cardTransform: card ? window.getComputedStyle(card).transform : '',
+        u1Transform: u1 ? window.getComputedStyle(u1).transform : '',
+        u2Transform: u2 ? window.getComputedStyle(u2).transform : '',
+        tabTransform: tab ? window.getComputedStyle(tab).transform : ''
+      };
     });
 
-    console.log(`  Hero Dossier Transform initial:  ${heroT15.cardTransform}`);
-    console.log(`  Hero Dossier Transform scrolled: ${heroScrolledTransform}`);
+    console.log(`  Dossier Card Transform @350px:     ${dossierSpreadMetrics.cardTransform}`);
+    console.log(`  Dossier Underlay 1 Transform @350: ${dossierSpreadMetrics.u1Transform}`);
+    console.log(`  Dossier Underlay 2 Transform @350: ${dossierSpreadMetrics.u2Transform}`);
+
+    const hasSpreadDelta = dossierSpreadMetrics.u1Transform !== heroT15.underlay1Transform &&
+      dossierSpreadMetrics.u2Transform !== heroT15.underlay2Transform;
+
+    if (!hasSpreadDelta) {
+      results.passed = false;
+      results.errors.push(`3D Dossier underlays did not spread upon scroll!`);
+    } else {
+      console.log(`  ✓ 3D Layered Dossier Spread PASSED: Underlay 1 & 2 rotated/translated distinctly across scroll.`);
+    }
 
     // -------------------------------------------------------------------------
     // Desktop Chapter 1: The Six-Stage Career Pipeline Runway (#milestones)
@@ -230,10 +433,19 @@ async function runGateForBaseUrl(baseUrl, label) {
       const carriage = document.getElementById('pipeline-rail-carriage');
       const bar = document.getElementById('pipeline-scroll-bar');
       const text = document.getElementById('pipeline-telemetry-text')?.textContent || '';
+      const header = document.querySelector('#milestones .motion-header-group');
+      const titleInner = document.querySelector('#milestones .motion-title-inner');
+      const cards = Array.from(document.querySelectorAll('.pipeline-runway-card')).map((c) => ({
+        isRevealed: c.classList.contains('is-revealed'),
+        isActive: c.classList.contains('is-active') || c.classList.contains('active')
+      }));
       return {
         carriageTransform: carriage ? window.getComputedStyle(carriage).transform : '',
         barTransform: bar ? window.getComputedStyle(bar).transform : '',
-        text
+        text,
+        headerRevealed: header ? header.classList.contains('is-revealed') : false,
+        titleInnerOpacity: titleInner ? window.getComputedStyle(titleInner).opacity : '',
+        cards
       };
     });
     await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter1-before.png`) });
@@ -246,10 +458,19 @@ async function runGateForBaseUrl(baseUrl, label) {
       const carriage = document.getElementById('pipeline-rail-carriage');
       const bar = document.getElementById('pipeline-scroll-bar');
       const text = document.getElementById('pipeline-telemetry-text')?.textContent || '';
+      const header = document.querySelector('#milestones .motion-header-group');
+      const titleInner = document.querySelector('#milestones .motion-title-inner');
+      const cards = Array.from(document.querySelectorAll('.pipeline-runway-card')).map((c) => ({
+        isRevealed: c.classList.contains('is-revealed'),
+        isActive: c.classList.contains('is-active') || c.classList.contains('active')
+      }));
       return {
         carriageTransform: carriage ? window.getComputedStyle(carriage).transform : '',
         barTransform: bar ? window.getComputedStyle(bar).transform : '',
-        text
+        text,
+        headerRevealed: header ? header.classList.contains('is-revealed') : false,
+        titleInnerOpacity: titleInner ? window.getComputedStyle(titleInner).opacity : '',
+        cards
       };
     });
     await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter1-after.png`) });
@@ -257,14 +478,21 @@ async function runGateForBaseUrl(baseUrl, label) {
     console.log(`  Desktop C1 Carriage: ${c1Before.carriageTransform} -> ${c1After.carriageTransform}`);
     console.log(`  Desktop C1 Bar:      ${c1Before.barTransform} -> ${c1After.barTransform}`);
     console.log(`  Desktop C1 Text:     ${c1Before.text} -> ${c1After.text}`);
+    console.log(`  Desktop C1 Header:   isRevealed=${c1After.headerRevealed}, TitleOpacity=${c1After.titleInnerOpacity}`);
 
     const c1Delta = c1Before.carriageTransform !== c1After.carriageTransform;
+    const c1CardsRevealed = c1After.cards.some((c) => c.isRevealed);
+    const c1HasActiveCard = c1After.cards.some((c) => c.isActive);
+
     results.chaptersDesktop.chapter1 = { before: c1Before, after: c1After, delta: c1Delta };
     if (!c1Delta) {
       results.passed = false;
       results.errors.push(`Desktop Chapter 1 failed: No computed transform delta on carriage!`);
+    } else if (!c1CardsRevealed || !c1HasActiveCard) {
+      results.passed = false;
+      results.errors.push(`Desktop Chapter 1 cards did not reveal or activate during transit!`);
     } else {
-      console.log(`  ✓ Desktop Chapter 1 PASSED: Measurable carriage transform delta confirmed.`);
+      console.log(`  ✓ Desktop Chapter 1 PASSED: Measurable carriage delta and runway cards stagger confirmed.`);
     }
 
     // -------------------------------------------------------------------------
@@ -283,11 +511,15 @@ async function runGateForBaseUrl(baseUrl, label) {
     const c2Before = await page1440.evaluate(() => {
       const fragS = document.getElementById('star-frag-situation');
       const seal = document.getElementById('star-assembly-seal');
+      const header = document.querySelector('#star-matrix .motion-header-group');
+      const filters = document.getElementById('matrix-filter-group');
       return {
         fragSTransform: fragS ? window.getComputedStyle(fragS).transform : '',
         fragSOpacity: fragS ? window.getComputedStyle(fragS).opacity : '',
         sealTransform: seal ? window.getComputedStyle(seal).transform : '',
-        sealOpacity: seal ? window.getComputedStyle(seal).opacity : ''
+        sealOpacity: seal ? window.getComputedStyle(seal).opacity : '',
+        headerRevealed: header ? header.classList.contains('is-revealed') : false,
+        filtersRevealed: filters ? filters.classList.contains('is-revealed') : false
       };
     });
     await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter2-before.png`) });
@@ -299,11 +531,15 @@ async function runGateForBaseUrl(baseUrl, label) {
     const c2After = await page1440.evaluate(() => {
       const fragS = document.getElementById('star-frag-situation');
       const seal = document.getElementById('star-assembly-seal');
+      const header = document.querySelector('#star-matrix .motion-header-group');
+      const filters = document.getElementById('matrix-filter-group');
       return {
         fragSTransform: fragS ? window.getComputedStyle(fragS).transform : '',
         fragSOpacity: fragS ? window.getComputedStyle(fragS).opacity : '',
         sealTransform: seal ? window.getComputedStyle(seal).transform : '',
-        sealOpacity: seal ? window.getComputedStyle(seal).opacity : ''
+        sealOpacity: seal ? window.getComputedStyle(seal).opacity : '',
+        headerRevealed: header ? header.classList.contains('is-revealed') : false,
+        filtersRevealed: filters ? filters.classList.contains('is-revealed') : false
       };
     });
     await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter2-after.png`) });
@@ -311,13 +547,32 @@ async function runGateForBaseUrl(baseUrl, label) {
     console.log(`  Desktop C2 FragS: transform=${c2Before.fragSTransform} -> ${c2After.fragSTransform}, opacity=${c2Before.fragSOpacity} -> ${c2After.fragSOpacity}`);
     console.log(`  Desktop C2 Seal:  transform=${c2Before.sealTransform} -> ${c2After.sealTransform}, opacity=${c2Before.sealOpacity} -> ${c2After.sealOpacity}`);
 
+    // Test tactile citation button interaction
+    console.log(`  Testing tactile STAR citation button click feedback...`);
+    await page1440.click('#btn-cite-simulation');
+    await page1440.waitForTimeout(250);
+
+    const citationFeedback = await page1440.evaluate(() => {
+      const fb = document.getElementById('citation-feedback');
+      return {
+        hasFeedback: !!fb,
+        feedbackText: fb ? fb.textContent.trim() : '',
+        feedbackDisplay: fb ? window.getComputedStyle(fb).display : 'none',
+        feedbackOpacity: fb ? window.getComputedStyle(fb).opacity : '0'
+      };
+    });
+    console.log(`  Citation feedback: hasFeedback=${citationFeedback.hasFeedback}, text="${citationFeedback.feedbackText}", display=${citationFeedback.feedbackDisplay}`);
+
     const c2Delta = c2Before.fragSTransform !== c2After.fragSTransform && c2Before.fragSOpacity !== c2After.fragSOpacity;
     results.chaptersDesktop.chapter2 = { before: c2Before, after: c2After, delta: c2Delta };
     if (!c2Delta) {
       results.passed = false;
       results.errors.push(`Desktop Chapter 2 failed: No computed transform/opacity delta on STAR fragments!`);
+    } else if (!citationFeedback.hasFeedback || citationFeedback.feedbackDisplay === 'none') {
+      results.passed = false;
+      results.errors.push(`Desktop Chapter 2 citation simulation button failed to produce feedback display!`);
     } else {
-      console.log(`  ✓ Desktop Chapter 2 PASSED: Measurable fragment assembly delta confirmed.`);
+      console.log(`  ✓ Desktop Chapter 2 PASSED: Fragment assembly & citation feedback verified.`);
     }
 
     // -------------------------------------------------------------------------
@@ -337,12 +592,14 @@ async function runGateForBaseUrl(baseUrl, label) {
       const flap = document.getElementById('vault-envelope-flap');
       const waxSeal = document.getElementById('vault-wax-seal');
       const drawer = document.getElementById('vault-code-drawer');
+      const compareBoxes = Array.from(document.querySelectorAll('.motion-compare-box')).map((b) => b.classList.contains('is-revealed'));
       return {
         flapTransform: flap ? window.getComputedStyle(flap).transform : '',
         flapOpacity: flap ? window.getComputedStyle(flap).opacity : '',
         sealTransform: waxSeal ? window.getComputedStyle(waxSeal).transform : '',
         sealOpacity: waxSeal ? window.getComputedStyle(waxSeal).opacity : '',
-        drawerTransform: drawer ? window.getComputedStyle(drawer).transform : ''
+        drawerTransform: drawer ? window.getComputedStyle(drawer).transform : '',
+        compareBoxesRevealed: compareBoxes
       };
     });
     await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter3-before.png`) });
@@ -355,18 +612,21 @@ async function runGateForBaseUrl(baseUrl, label) {
       const flap = document.getElementById('vault-envelope-flap');
       const waxSeal = document.getElementById('vault-wax-seal');
       const drawer = document.getElementById('vault-code-drawer');
+      const compareBoxes = Array.from(document.querySelectorAll('.motion-compare-box')).map((b) => b.classList.contains('is-revealed'));
       return {
         flapTransform: flap ? window.getComputedStyle(flap).transform : '',
         flapOpacity: flap ? window.getComputedStyle(flap).opacity : '',
         sealTransform: waxSeal ? window.getComputedStyle(waxSeal).transform : '',
         sealOpacity: waxSeal ? window.getComputedStyle(waxSeal).opacity : '',
-        drawerTransform: drawer ? window.getComputedStyle(drawer).transform : ''
+        drawerTransform: drawer ? window.getComputedStyle(drawer).transform : '',
+        compareBoxesRevealed: compareBoxes
       };
     });
     await page1440.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-chapter3-after.png`) });
 
     console.log(`  Desktop C3 Flap: transform=${c3Before.flapTransform} -> ${c3After.flapTransform}, opacity=${c3Before.flapOpacity} -> ${c3After.flapOpacity}`);
     console.log(`  Desktop C3 Seal: transform=${c3Before.sealTransform} -> ${c3After.sealTransform}, opacity=${c3Before.sealOpacity} -> ${c3After.sealOpacity}`);
+    console.log(`  Desktop C3 Compare Boxes Revealed: ${c3After.compareBoxesRevealed.join(', ')}`);
 
     const c3Delta = c3Before.flapTransform !== c3After.flapTransform && c3Before.sealOpacity !== c3After.sealOpacity;
     results.chaptersDesktop.chapter3 = { before: c3Before, after: c3After, delta: c3Delta };
@@ -375,6 +635,143 @@ async function runGateForBaseUrl(baseUrl, label) {
       results.errors.push(`Desktop Chapter 3 failed: No computed transform/opacity delta on vault envelope/seal!`);
     } else {
       console.log(`  ✓ Desktop Chapter 3 PASSED: Measurable envelope fold and wax seal delta confirmed.`);
+    }
+
+    // -------------------------------------------------------------------------
+    // Desktop Chapter 4: App Tour Gallery Parallax & Closing CTA (#app-tour & #closing-cta)
+    // -------------------------------------------------------------------------
+    console.log(`\n--- Testing Chapter 4 App Tour Gallery 3D Perspective & Closing CTA ---`);
+    const c4Pos = await page1440.evaluate(() => {
+      const el = document.getElementById('app-tour');
+      return el ? el.getBoundingClientRect().top + window.scrollY : 0;
+    });
+
+    await page1440.evaluate((top) => window.scrollTo({ top: top - 250, behavior: 'instant' }), c4Pos);
+    await page1440.waitForTimeout(300);
+
+    const c4MetricsBefore = await page1440.evaluate(() => {
+      const deskCard = document.querySelector('.motion-gallery-card.desktop-card');
+      const mobCard = document.querySelector('.motion-gallery-card.mobile-card');
+      return {
+        deskTransform: deskCard ? window.getComputedStyle(deskCard).transform : '',
+        deskRevealed: deskCard ? deskCard.classList.contains('is-revealed') : false,
+        mobRevealed: mobCard ? mobCard.classList.contains('is-revealed') : false
+      };
+    });
+
+    await page1440.evaluate((top) => window.scrollTo({ top: top + 350, behavior: 'instant' }), c4Pos);
+    await page1440.waitForTimeout(300);
+
+    const c4MetricsAfter = await page1440.evaluate(() => {
+      const deskCard = document.querySelector('.motion-gallery-card.desktop-card');
+      return {
+        deskTransform: deskCard ? window.getComputedStyle(deskCard).transform : '',
+        deskRevealed: deskCard ? deskCard.classList.contains('is-revealed') : false
+      };
+    });
+
+    console.log(`  App Gallery Desktop Card Transform: ${c4MetricsBefore.deskTransform} -> ${c4MetricsAfter.deskTransform}`);
+    const galleryHasParallax = c4MetricsBefore.deskTransform !== c4MetricsAfter.deskTransform;
+    if (!galleryHasParallax || !c4MetricsAfter.deskRevealed) {
+      results.passed = false;
+      results.errors.push(`Chapter 4 App Tour gallery cards failed to reveal or show parallax shift!`);
+    } else {
+      console.log(`  ✓ Chapter 4 App Tour Gallery PASSED: 3D parallax and card reveal confirmed.`);
+    }
+
+    // Scroll to Closing CTA & Footer
+    console.log(`\n--- Testing Closing CTA Section & Footer Stagger ---`);
+    const ctaPos = await page1440.evaluate(() => {
+      const el = document.getElementById('closing-cta');
+      return el ? el.getBoundingClientRect().top + window.scrollY : 0;
+    });
+
+    await page1440.evaluate((top) => window.scrollTo({ top: top - 200, behavior: 'instant' }), ctaPos);
+    await page1440.waitForTimeout(300);
+
+    const ctaMetrics = await page1440.evaluate(() => {
+      const ctaCard = document.querySelector('.motion-cta-card');
+      const footerCols = Array.from(document.querySelectorAll('.motion-footer-col')).map((c) => ({
+        revealed: c.classList.contains('is-revealed'),
+        opacity: window.getComputedStyle(c).opacity
+      }));
+      return {
+        ctaRevealed: ctaCard ? ctaCard.classList.contains('is-revealed') : false,
+        footerCols
+      };
+    });
+
+    // Scroll directly to footer to verify columns
+    await page1440.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
+    await page1440.waitForTimeout(300);
+
+    const footerMetricsAfter = await page1440.evaluate(() => {
+      return Array.from(document.querySelectorAll('.motion-footer-col')).map((c) => ({
+        revealed: c.classList.contains('is-revealed'),
+        opacity: window.getComputedStyle(c).opacity
+      }));
+    });
+
+    console.log(`  Closing CTA Revealed: ${ctaMetrics.ctaRevealed}`);
+    console.log(`  Footer Columns Revealed: ${footerMetricsAfter.every((c) => c.revealed)}`);
+
+    if (!ctaMetrics.ctaRevealed || !footerMetricsAfter.every((c) => c.revealed)) {
+      results.passed = false;
+      results.errors.push(`Closing CTA or Footer columns failed to reveal upon scroll!`);
+    } else {
+      console.log(`  ✓ Closing CTA & Footer PASSED: Full page narrative completion confirmed.`);
+    }
+
+    // -------------------------------------------------------------------------
+    // Reverse Scroll Test: Scroll to top and verify all elements visible without stuck states
+    // -------------------------------------------------------------------------
+    console.log(`\n--- Testing Reverse Scroll Integrity (bottom -> top) ---`);
+    await page1440.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+    await page1440.waitForTimeout(350);
+
+    const reverseScrollCheck = await page1440.evaluate(() => {
+      const line1 = document.querySelector('.hero-line-inner.line-1');
+      const card = document.getElementById('hero-dossier-card');
+      const pill = document.getElementById('hero-status-badge');
+      return {
+        line1Opacity: line1 ? window.getComputedStyle(line1).opacity : '',
+        cardOpacity: card ? window.getComputedStyle(card).opacity : '',
+        pillOpacity: pill ? window.getComputedStyle(pill).opacity : ''
+      };
+    });
+
+    console.log(`  Reverse Scroll Hero Check: Line1Opacity=${reverseScrollCheck.line1Opacity}, CardOpacity=${reverseScrollCheck.cardOpacity}`);
+    if (parseFloat(reverseScrollCheck.line1Opacity) < 0.95 || parseFloat(reverseScrollCheck.cardOpacity) < 0.95) {
+      results.passed = false;
+      results.errors.push(`Reverse scroll failed: Hero elements stuck in hidden/intermediate state!`);
+    } else {
+      console.log(`  ✓ Reverse Scroll Integrity PASSED: Hero elements remain visible and interactive.`);
+    }
+
+    // -------------------------------------------------------------------------
+    // Midpage Reload Test: Direct navigation to hash anchor (#privacy-vault)
+    // -------------------------------------------------------------------------
+    console.log(`\n--- Testing Midpage Reload / Direct Navigation (#privacy-vault) ---`);
+    await page1440.goto(`${baseUrl}/#privacy-vault`, { waitUntil: 'networkidle' });
+    await page1440.waitForTimeout(400);
+
+    const midpageCheck = await page1440.evaluate(() => {
+      const header = document.querySelector('#privacy-vault .motion-header-group');
+      const flap = document.getElementById('vault-envelope-flap');
+      const titleInner = document.querySelector('#privacy-vault .motion-title-inner');
+      return {
+        headerRevealed: header ? header.classList.contains('is-revealed') : false,
+        flapOpacity: flap ? window.getComputedStyle(flap).opacity : '',
+        titleOpacity: titleInner ? window.getComputedStyle(titleInner).opacity : ''
+      };
+    });
+
+    console.log(`  Midpage Reload Check: HeaderRevealed=${midpageCheck.headerRevealed}, TitleOpacity=${midpageCheck.titleOpacity}`);
+    if (!midpageCheck.headerRevealed || parseFloat(midpageCheck.titleOpacity) < 0.95) {
+      results.passed = false;
+      results.errors.push(`Midpage direct reload failed: In-viewport elements not immediately revealed!`);
+    } else {
+      console.log(`  ✓ Midpage Direct Reload PASSED: IntersectionObserver immediately triggered reveal.`);
     }
 
     // Capture 25%, 50%, 75% Scroll States
@@ -396,7 +793,7 @@ async function runGateForBaseUrl(baseUrl, label) {
 
     // Sticky Heading Clearance
     console.log(`\n--- Checking Sticky Heading Clearance for all anchor links ---`);
-    const anchors = ['#hero', '#milestones', '#star-matrix', '#privacy-vault', '#app-tour'];
+    const anchors = ['#hero', '#milestones', '#star-matrix', '#privacy-vault', '#app-tour', '#closing-cta'];
     for (const anchor of anchors) {
       await page1440.goto(`${baseUrl}/${anchor}`, { waitUntil: 'networkidle' });
       await page1440.waitForTimeout(250);
@@ -412,7 +809,7 @@ async function runGateForBaseUrl(baseUrl, label) {
       });
 
       console.log(`  Anchor ${anchor} target rect.top: ${targetRect ? targetRect.top.toFixed(1) : 'null'}px (Header is ${headerHeight}px)`);
-      if (targetRect && targetRect.top < headerHeight - 5) {
+      if (targetRect && targetRect.top < headerHeight - 15) {
         console.warn(`  Warning: Target top is ${targetRect.top}px`);
       }
     }
@@ -780,7 +1177,32 @@ async function runGateForBaseUrl(baseUrl, label) {
     }
 
     // -------------------------------------------------------------------------
-    // 4. Linked Pages (/guide.html, /privacy.html, /app/) & Flutter App Integrity
+    // 4. No-JS Full Readability & Foreground Visibility Verification
+    // -------------------------------------------------------------------------
+    console.log(`\n--- Testing No-JS Accessibility & Foreground Visibility ---`);
+    const noJsContext = await browser.newContext({
+      javaScriptEnabled: false,
+      viewport: { width: 1440, height: 900 }
+    });
+    const noJsPage = await noJsContext.newPage();
+    await noJsPage.goto(`${baseUrl}/`, { waitUntil: 'load' });
+    await noJsPage.waitForTimeout(200);
+
+    const noJsErrors = await assertNoJsVisibility(noJsPage);
+    results.noJsErrors = noJsErrors;
+    await noJsPage.screenshot({ path: path.join(SCREENSHOT_DIR, `${label}-nojs-preview.png`) });
+
+    if (noJsErrors.length > 0) {
+      results.passed = false;
+      results.errors.push(...noJsErrors);
+      console.error(`  ✗ No-JS Mode FAILED with ${noJsErrors.length} errors:`, noJsErrors);
+    } else {
+      console.log(`  ✓ No-JS Mode PASSED: All 21+ foreground groups fully visible and readable without JavaScript.`);
+    }
+    await noJsContext.close();
+
+    // -------------------------------------------------------------------------
+    // 5. Linked Pages (/guide.html, /privacy.html, /app/) & Flutter App Integrity
     // -------------------------------------------------------------------------
     console.log(`\n--- Testing Linked Pages (/guide.html, /privacy.html, /app/) ---`);
     const auxContext = await browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -941,15 +1363,26 @@ async function runGateForBaseUrl(baseUrl, label) {
 }
 
 (async () => {
+  let localServer = null;
+  if (targetMode === 'local' || targetMode === 'both') {
+    localServer = await createStaticServer(path.join(__dirname, 'dist'), LOCAL_PORT);
+  }
+
   let localResult = null;
   let remoteResult = null;
 
-  if (targetMode === 'local' || targetMode === 'both') {
-    localResult = await runGateForBaseUrl(LOCAL_BASE, 'local');
-  }
+  try {
+    if (targetMode === 'local' || targetMode === 'both') {
+      localResult = await runGateForBaseUrl(LOCAL_BASE, 'local');
+    }
 
-  if (targetMode === 'remote' || targetMode === 'both') {
-    remoteResult = await runGateForBaseUrl(REMOTE_BASE, 'remote');
+    if (targetMode === 'remote' || targetMode === 'both') {
+      remoteResult = await runGateForBaseUrl(REMOTE_BASE, 'remote');
+    }
+  } finally {
+    if (localServer) {
+      localServer.close();
+    }
   }
 
   const allPassed = (localResult ? localResult.passed : true) && (remoteResult ? remoteResult.passed : true);

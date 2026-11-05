@@ -61,6 +61,38 @@
 
 ---
 
+## 3A. Foreground Motion Coverage Inventory (Motion-Studio Elevation)
+
+In response to the owner's request matching the foreground motion density of CodeSense, Grepless, and Haan, every visible foreground group is choreographically animated. The table below documents the full inventory of animated foreground selectors, their choreography families, and their verified rendered effects:
+
+| Foreground Selector / Group | Motion Family | Choreography & Real Effect | Verified Rendered Delta |
+| :--- | :--- | :--- | :--- |
+| `.hero-line-inner.line-1` | Masked Line Reveal | Editorial masked line entrance unmasking from `translateY(115%) rotate(2.5deg)` with 6px blur to `translateY(0) rotate(0deg)` blur(0). | Opacity $0.88 \rightarrow 1.00$, $\text{translateY settled}$. |
+| `.hero-line-inner.line-2` | Masked Line Reveal | Staggered second line unmasking ($0.28\text{s}$ delay) with italic display contrast and signature brass-verdigris baseline. | Opacity $0.59 \rightarrow 1.00$, $\text{translateY settled}$. |
+| `#hero-status-badge` | Blur-to-Sharp Stagger | Ambient elevation with pulsing green-verdigris ledger pip, floating into place ($0.05\text{s}$ delay). | Opacity $0 \rightarrow 1.00$, blur $3\text{px} \rightarrow 0$. |
+| `#hero-lead` | Blur-to-Sharp Stagger | Coordinated briefing paragraph rise with gentle blur clear ($0.42\text{s}$ delay). | Opacity $0 \rightarrow 1.00$, blur $4\text{px} \rightarrow 0$. |
+| `#hero-actions` | Staged Translation | Primary/secondary action button cluster elevation with tactile hover transitions ($0.58\text{s}$ delay). | Opacity $0 \rightarrow 1.00$, $\Delta y = 22\text{px}$. |
+| `#hero-proof-ledger` | Staged Translation | Three-pillar privacy proof ledger items revealing with tabular spacing ($0.72\text{s}$ delay). | Opacity $0 \rightarrow 1.00$, $\Delta y = 18\text{px}$. |
+| `#hero-dossier-card` | 3D Perspective Tilt | Asymmetric 3D card perspective settling from slight elevation into resting plane; continuous scroll tilt $\text{rotateY}(-6^\circ \rightarrow +5^\circ)$. | Initial settling: fill $237\text{px} \rightarrow 256.7\text{px}$. |
+| `#hero-underlay-1` | 3D Layered Spread | First architectural underlay sheet fanning out to the left across scroll: $\text{rotate}(-1.5^\circ \rightarrow -6.0^\circ)$, $\Delta x = -30\text{px}, \Delta y = +14\text{px}$. | Scroll delta @350px: $\text{matrix3d}(\dots) \neq \text{matrix3d}(\text{t0})$. |
+| `#hero-underlay-2` | 3D Layered Spread | Second underlay sheet fanning out to the right: $\text{rotate}(+3^\circ \rightarrow +6.8^\circ)$, $\Delta x = +26\text{px}, \Delta y = +18\text{px}, z = -50\text{px}$. | Scroll delta @350px: $\text{matrix3d}(\dots) \neq \text{matrix3d}(\text{t0})$. |
+| `#hero-dossier-tab` | Physical Z-Shift | Architectural tab index tag shifting vertically and forward in 3D: $\text{translate3d}(0, -8\text{px}, 15\text{px})$. | Verified non-zero displacement. |
+| `.motion-header-group` | Masked Header Reveal | Section headers across all chapters unmasking eyebrow, display title, and lead with blur clearing upon viewport intersection. | Intersection triggers `.is-revealed`; eyebrow, title, lead opacity $1.00$. |
+| `.pipeline-runway-card` | Runway Card Stagger | Six career stage cards stagger-revealed with sequential active station highlight (`.active`) driven by carriage transit. | Cards receive `.is-revealed`; active station border & glow update. |
+| `#matrix-filter-group` | Control Reveal | Four skill domain filter buttons with active brass pill indicator and smooth tab transitions. | Received `.is-revealed` on scroll. |
+| `.star-fragment` | Physics Assembly | Situation, Task, Action, and Result fragments fly from exploded perimeter into aligned proof deck. | FragS transform & opacity delta ($0.58 \rightarrow 0.96$). |
+| `#star-assembly-seal` | Dynamic Stamp | Brass verification seal stamps down in reserved nonintersecting space ($\text{scale } 0.38 \rightarrow 0.95$, $\text{opacity } 0 \rightarrow 0.89$). | Verified $> 90\text{px}$ geometric clearance on phone & narrow. |
+| `#btn-cite-simulation` | Tactile Feedback | Interview citation button with scale dip ($0.96$) and immediate animated confirmation badge (`#citation-feedback`). | Feedback badge rendered and confirmed visible. |
+| `#vault-envelope-flap` | 3D Dimensional Fold | Archival envelope flap 3D folds downward: $\text{rotateX}(-100^\circ \rightarrow -15^\circ)$, $\text{opacity } 0.71 \rightarrow 0.91$. | Measured delta: $\text{matrix3d}$ rotation shift. |
+| `#vault-wax-seal` | Physical Stamp | Hot red-brass wax seal stamps down into packet closure: $\text{translateY}(-50\text{px} \rightarrow -14\text{px})$, $\text{scale } 0.5 \rightarrow 0.88$, $\text{opacity } 0.02 \rightarrow 0.69$. | Measured delta: $\Delta y = 30\text{px}$, opacity $0.02 \rightarrow 0.69$. |
+| `#vault-code-drawer` | Drawer Translation | Schema v1 JSON inspector drawer slides out from beneath packet with monospaced code formatting. | Measured delta: $\text{translateY } 44\text{px} \rightarrow 14\text{px}$. |
+| `.motion-compare-box` | Comparison Stagger | Side-by-side Architectural vs Centralized comparison cards revealing with elevated borders and itemized check rows. | Verified `.is-revealed` on scroll. |
+| `.motion-gallery-card` | 3D Parallax Perspective | Desktop & mobile app tour cards elevating with dual perspective tilt and scroll-linked parallax displacement. | Card transform delta verified: $\text{matrix3d}(\text{scroll}_1) \neq \text{matrix3d}(\text{scroll}_2)$. |
+| `#closing-cta` | Elevation & Ambient Glow | Full-width porcelain command card with radial breathing glow, headline reveal, action buttons, and proof ledger. | Card receives `.is-revealed` and full visibility. |
+| `.motion-footer-col` | Staggered Columns | Four footer navigation columns staggered in sequence upon scroll completion. | All 4 columns receive `.is-revealed`. |
+
+---
+
 ## 4. Scroll Narrative: Three Large Physical Chapters
 
 Pathfolio features THREE large, distinct scroll-driven narrative chapters using actual scroll position, measured computed style transforms, and verified before/after deltas:

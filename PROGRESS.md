@@ -65,6 +65,15 @@
     - Storage truth alignment: confirmed `shared_preferences` storage, removed all unverified claims of Keystore, IndexedDB guarantees, or hardware encryption. [COMPLETE]
     - Stage lifecycle alignment: aligned interactive demo and copy to `JobStage.rejected`. [COMPLETE]
     - Typography parity: bundled SIL Open Font License Plus Jakarta Sans and Fraunces in Flutter app, replaced Segoe UI. [COMPLETE]
+11. **Comprehensive Foreground Motion Upgrade (Motion-Studio Elevation)**:
+    - Executed full foreground motion upgrade to motion-studio / advertisement craft level across all visible content groups (referencing CodeSense, Grepless, and Haan).
+    - Implemented staggered masked line typography reveals for the editorial headline (`.hero-line-inner.line-1`, `.line-2`), coordinated entrance for status badge, lead briefing, action buttons, proof ledger, and 3D perspective dossier settling.
+    - Implemented scroll-led 3D layered dossier spread fanning underlay sheets (`#hero-underlay-1`, `#hero-underlay-2`) and folder tab (`#hero-dossier-tab`) with verified `matrix3d` depth.
+    - Implemented independent blur-to-sharp unmasking for all section headers and eyebrows across all chapters (`.motion-header-group`, `.motion-title-inner`, `.motion-lead`).
+    - Implemented runway cards stagger with active station highlighting (`.pipeline-runway-card.active`), tactile citation simulation button feedback (`#btn-cite-simulation` -> `#citation-feedback`), 3D envelope fold, wax seal press, and comparison grid stagger (`.motion-compare-box`).
+    - Implemented Chapter 4 App Tour Gallery 3D perspective and parallax card reveal, Closing CTA ambient card elevation (`#closing-cta`), and staggered footer navigation columns (`.motion-footer-col`).
+    - Embedded built-in lightweight HTTP static server in `test-scroll-gate.js` with full MIME support and SPA routing fallback for deterministic, clean-clone execution without external tools.
+    - Verified automated Playwright gate on local (`http://127.0.0.1:8085`) and remote production (`https://pathfolio.pages.dev/`): 100% PASSED across Desktop (1440), Mobile (390), Narrow (320), Tablet (1024), Reduced Motion, No-JS mode (21+ selectors verified >= 0.95 opacity), Reverse Scroll (bottom -> top), Midpage Direct Reload, Anchor Jump Clearances, and Flutter App Canvas (211,546 bytes rendered data). [COMPLETE]
 
 ## Feature Ledger (PRD Must Behaviors)
 

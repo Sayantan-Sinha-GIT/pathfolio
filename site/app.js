@@ -554,9 +554,19 @@
 
     if (btnSimulate && feedbackEl) {
       btnSimulate.addEventListener('click', () => {
+        btnSimulate.style.transform = 'scale(0.96)';
+        setTimeout(() => {
+          btnSimulate.style.transform = 'scale(1)';
+        }, 120);
         feedbackEl.style.display = 'block';
         feedbackEl.textContent = '✓ Citation attached to active candidate briefing!';
-        feedbackEl.style.opacity = '1';
+        feedbackEl.style.opacity = '0';
+        feedbackEl.style.transform = 'translateY(6px)';
+        feedbackEl.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+        requestAnimationFrame(() => {
+          feedbackEl.style.opacity = '1';
+          feedbackEl.style.transform = 'translateY(0)';
+        });
       });
     }
   }
@@ -625,6 +635,10 @@
       const flap = document.getElementById('vault-envelope-flap');
       const waxSeal = document.getElementById('vault-wax-seal');
       const drawer = document.getElementById('vault-code-drawer');
+      const heroDossier = document.getElementById('hero-dossier-card');
+      const u1 = document.getElementById('hero-underlay-1');
+      const u2 = document.getElementById('hero-underlay-2');
+      const tab = document.getElementById('hero-dossier-tab');
 
       if (scrollBar) scrollBar.style.transform = 'scaleX(1)';
       if (carriage) carriage.style.transform = 'translateX(0px)';
@@ -632,15 +646,28 @@
       if (flap) { flap.style.transform = 'none'; flap.style.opacity = '1'; }
       if (waxSeal) { waxSeal.style.transform = 'none'; waxSeal.style.opacity = '1'; }
       if (drawer) { drawer.style.transform = 'none'; drawer.style.opacity = '1'; }
+      if (heroDossier) heroDossier.style.transform = 'none';
+      if (u1) u1.style.transform = 'none';
+      if (u2) u2.style.transform = 'none';
+      if (tab) tab.style.transform = 'none';
 
       document.querySelectorAll('.star-fragment').forEach((el) => {
         el.style.transform = 'none';
         el.style.opacity = '1';
       });
+
+      document.querySelectorAll('.app-tour-card').forEach((el) => {
+        el.style.transform = 'none';
+        el.style.opacity = '1';
+      });
+
       return;
     }
 
     const heroDossier = document.getElementById('hero-dossier-card');
+    const heroUnderlay1 = document.getElementById('hero-underlay-1');
+    const heroUnderlay2 = document.getElementById('hero-underlay-2');
+    const heroFolderTab = document.getElementById('hero-dossier-tab');
     const draftingOverlay = document.getElementById('drafting-overlay');
 
     // Chapter 1 Elements
@@ -665,6 +692,11 @@
     const waxSeal = document.getElementById('vault-wax-seal');
     const codeDrawer = document.getElementById('vault-code-drawer');
 
+    // Chapter 4 Elements
+    const chapter4 = document.getElementById('app-tour');
+    const desktopGalleryCard = document.querySelector('.app-tour-card.desktop-card');
+    const mobileGalleryCard = document.querySelector('.app-tour-card.mobile-card');
+
     const stageNames = [
       '01 // SAVED DISCOVERY',
       '02 // APPLIED TRACKING',
@@ -680,7 +712,6 @@
       if (!el) return 0;
       const rect = el.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-      // Start progressing as the top of element approaches center of screen
       const start = windowHeight * 0.85;
       const total = rect.height + windowHeight * 0.5;
       const current = start - rect.top;
@@ -690,21 +721,47 @@
     function updateScrollAnimations() {
       const scrollY = window.scrollY;
 
-      // 1. Hero 3D Perspective Parallax
+      // 1. Hero 3D Perspective Parallax & Layered Dossier Spread
       if (heroDossier) {
-        if (scrollY < window.innerHeight) {
-          const heroProgress = scrollY / window.innerHeight;
-          const rotY = -7 + heroProgress * 12;
-          const rotX = 3 - heroProgress * 6;
+        if (scrollY < window.innerHeight * 1.25) {
+          const heroProgress = Math.min(1, Math.max(0, scrollY / (window.innerHeight * 0.75)));
+          const rotY = -6 + heroProgress * 11;
+          const rotX = 4 - heroProgress * 7;
           const transY = scrollY * 0.12;
           const scale = Math.max(0.92, 1 - heroProgress * 0.08);
           heroDossier.style.transform = `perspective(1200px) rotateY(${rotY.toFixed(2)}deg) rotateX(${rotX.toFixed(2)}deg) translateY(${transY.toFixed(1)}px) scale(${scale.toFixed(3)})`;
+
+          if (heroUnderlay1) {
+            const u1Rot = (-1.5 - heroProgress * 4.5).toFixed(2);
+            const u1X = Math.round(-heroProgress * 30);
+            const u1Y = Math.round(heroProgress * 14);
+            heroUnderlay1.style.transform = `rotate(${u1Rot}deg) translate3d(${u1X}px, ${u1Y}px, -25px)`;
+          }
+
+          if (heroUnderlay2) {
+            const u2Rot = (3 + heroProgress * 3.8).toFixed(2);
+            const u2X = Math.round(heroProgress * 26);
+            const u2Y = Math.round(heroProgress * 18);
+            heroUnderlay2.style.transform = `rotate(${u2Rot}deg) translate3d(${u2X}px, ${u2Y}px, -50px)`;
+          }
+
+          if (heroFolderTab) {
+            const tabY = Math.round(-heroProgress * 8);
+            heroFolderTab.style.transform = `translate3d(0, ${tabY}px, 15px)`;
+          }
         }
       }
 
       // Parallax Drafting Grid Overlay
       if (draftingOverlay) {
         draftingOverlay.style.transform = `translateY(${(scrollY * 0.1).toFixed(1)}px)`;
+      }
+
+      // Ensure Closing CTA and Footer columns reveal when scrolling near bottom of page
+      if (scrollY + window.innerHeight >= document.documentElement.scrollHeight - 250) {
+        document.querySelectorAll('.motion-cta-card, .motion-footer-col, .motion-footer-grid').forEach((el) => {
+          el.classList.add('is-revealed');
+        });
       }
 
       // 2. Chapter 1: The Six-Stage Career Pipeline Runway
@@ -740,41 +797,41 @@
         const invertFactor = 1 - assembleFactor;
 
         // Situation Fragment
-        const sX = Math.round(-50 * invertFactor);
-        const sY = Math.round(25 * invertFactor);
-        const sRot = (-5 * invertFactor).toFixed(1);
+        const sX = Math.round(-55 * invertFactor);
+        const sY = Math.round(28 * invertFactor);
+        const sRot = (-6 * invertFactor).toFixed(1);
         const sOp = (0.55 + 0.45 * assembleFactor).toFixed(2);
         fragS.style.transform = `translate3d(${sX}px, ${sY}px, 0) rotate(${sRot}deg)`;
         fragS.style.opacity = sOp;
 
         // Task Fragment
-        const tX = Math.round(45 * invertFactor);
-        const tY = Math.round(20 * invertFactor);
-        const tRot = (4 * invertFactor).toFixed(1);
+        const tX = Math.round(50 * invertFactor);
+        const tY = Math.round(22 * invertFactor);
+        const tRot = (5 * invertFactor).toFixed(1);
         const tOp = (0.55 + 0.45 * assembleFactor).toFixed(2);
         fragT.style.transform = `translate3d(${tX}px, ${tY}px, 0) rotate(${tRot}deg)`;
         fragT.style.opacity = tOp;
 
         // Action Fragment
-        const aX = Math.round(-35 * invertFactor);
-        const aY = Math.round(-20 * invertFactor);
-        const aRot = (3 * invertFactor).toFixed(1);
+        const aX = Math.round(-40 * invertFactor);
+        const aY = Math.round(-22 * invertFactor);
+        const aRot = (4 * invertFactor).toFixed(1);
         const aOp = (0.55 + 0.45 * assembleFactor).toFixed(2);
         fragA.style.transform = `translate3d(${aX}px, ${aY}px, 0) rotate(${aRot}deg)`;
         fragA.style.opacity = aOp;
 
         // Result Fragment
-        const rX = Math.round(40 * invertFactor);
-        const rY = Math.round(-30 * invertFactor);
-        const rRot = (-4 * invertFactor).toFixed(1);
+        const rX = Math.round(45 * invertFactor);
+        const rY = Math.round(-32 * invertFactor);
+        const rRot = (-5 * invertFactor).toFixed(1);
         const rOp = (0.55 + 0.45 * assembleFactor).toFixed(2);
         fragR.style.transform = `translate3d(${rX}px, ${rY}px, 0) rotate(${rRot}deg)`;
         fragR.style.opacity = rOp;
 
         // Verification Seal Stamp
-        const sealScale = (0.4 + 0.6 * assembleFactor).toFixed(2);
+        const sealScale = (0.38 + 0.62 * assembleFactor).toFixed(2);
         const sealRot = Math.round(-30 * invertFactor);
-        const sealOp = Math.max(0, (assembleFactor - 0.25) / 0.75).toFixed(2);
+        const sealOp = Math.max(0, (assembleFactor - 0.22) / 0.78).toFixed(2);
         assemblySeal.style.transform = `scale(${sealScale}) rotate(${sealRot}deg)`;
         assemblySeal.style.opacity = sealOp;
       }
@@ -804,6 +861,20 @@
         codeDrawer.style.opacity = drawerOp;
       }
 
+      // 5. Chapter 4: Product Craft & App Tour Gallery (Parallax + Perspective)
+      if (chapter4 && desktopGalleryCard && mobileGalleryCard && window.innerWidth >= 768) {
+        const p4 = getSectionProgress(chapter4);
+        const deskY = Math.round((p4 - 0.5) * -40);
+        const deskRotY = (-4 + (p4 - 0.5) * 8).toFixed(2);
+        const deskRotX = (2 - (p4 - 0.5) * 4).toFixed(2);
+        desktopGalleryCard.style.transform = `perspective(1200px) rotateY(${deskRotY}deg) rotateX(${deskRotX}deg) translateY(${deskY}px)`;
+
+        const mobY = Math.round((p4 - 0.5) * -75);
+        const mobRotY = (4 - (p4 - 0.5) * 8).toFixed(2);
+        const mobRotX = (2 + (p4 - 0.5) * 4).toFixed(2);
+        mobileGalleryCard.style.transform = `perspective(1200px) rotateY(${mobRotY}deg) rotateX(${mobRotX}deg) translateY(${mobY}px)`;
+      }
+
       ticking = false;
     }
 
@@ -820,7 +891,73 @@
   }
 
   // ---------------------------------------------------------------------------
-  // 8. Active Nav Link Intersection Observer
+  // 8. Universal Motion Reveal Observer (Section Headers, Cards & Footers)
+  // ---------------------------------------------------------------------------
+  function initMotionRevealObserver() {
+    const revealTargets = document.querySelectorAll(
+      '.motion-header-group, .pipeline-runway-grid, .pipeline-runway-card, .matrix-filter-nav.motion-filter-group, ' +
+      '.star-citation-panel.motion-citation-panel, .comparison-box.motion-compare-box, ' +
+      '.app-tour-card.motion-gallery-card, .cta-card.motion-cta-card, .footer-grid.motion-footer-grid, ' +
+      '.motion-footer-col, .motion-reading-section, .motion-reading-card'
+    );
+
+    if (!revealTargets.length) return;
+
+    if (isReducedMotion) {
+      revealTargets.forEach((el) => el.classList.add('is-revealed'));
+      return;
+    }
+
+    // Immediately reveal elements already inside or above the viewport on initial load or midpage reload
+    const windowH = window.innerHeight;
+    revealTargets.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < windowH * 0.98) {
+        el.classList.add('is-revealed');
+        el.querySelectorAll('.pipeline-runway-card, .motion-footer-col').forEach((child) => {
+          child.classList.add('is-revealed');
+        });
+      }
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            entry.target.querySelectorAll('.pipeline-runway-card, .motion-footer-col').forEach((child) => {
+              child.classList.add('is-revealed');
+            });
+          }
+        });
+      },
+      {
+        rootMargin: '50px 0px 50px 0px',
+        threshold: 0.05
+      }
+    );
+
+    revealTargets.forEach((el) => observer.observe(el));
+
+    // Handle hash jumps so jumping to anchors immediately reveals target section
+    function checkHashTarget() {
+      if (window.location.hash) {
+        const target = document.querySelector(window.location.hash);
+        if (target) {
+          const headers = target.querySelectorAll('.motion-header-group, .is-revealed');
+          headers.forEach((h) => h.classList.add('is-revealed'));
+          target.querySelectorAll('.motion-card, .motion-compare-box, .motion-gallery-card').forEach((c) => {
+            c.classList.add('is-revealed');
+          });
+        }
+      }
+    }
+
+    window.addEventListener('hashchange', checkHashTarget, { passive: true });
+  }
+
+  // ---------------------------------------------------------------------------
+  // 9. Active Nav Link Intersection Observer
   // ---------------------------------------------------------------------------
   function initNavObserver() {
     const sections = document.querySelectorAll('section[id]');
@@ -849,16 +986,23 @@
   }
 
   // ---------------------------------------------------------------------------
-  // 9. Initialization Lifecycle
+  // 10. Initialization Lifecycle
   // ---------------------------------------------------------------------------
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initMobileMenu();
     initDossierCanvas();
+
+    // Activate progressive enhancement motion classes if reduced motion is not requested
+    if (!isReducedMotion) {
+      document.documentElement.classList.add('js-motion-active');
+    }
+
     initHeroDossier();
     initStarMatrix();
     initJsonDownload();
     initScrollNarrativeChapters();
+    initMotionRevealObserver();
     initNavObserver();
   });
 })();

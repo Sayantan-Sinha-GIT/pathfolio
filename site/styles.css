@@ -566,6 +566,57 @@ code, pre {
   font-weight: 700;
 }
 
+/* Staggered Masked Line Reveals */
+.hero-line-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+@keyframes heroLineEntrance {
+  0% {
+    transform: translateY(115%) rotate(2.5deg);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes heroFadeSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.hero-line-inner {
+  display: inline-block;
+  opacity: 1;
+  transform: none;
+  filter: none;
+  will-change: transform, opacity, filter;
+}
+
+html.js-motion-active .hero-line-inner.line-1 {
+  animation: heroLineEntrance 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+}
+
+html.js-motion-active .hero-line-inner.line-2 {
+  animation: heroLineEntrance 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
+}
+
 .hero-headline-italic {
   font-family: var(--font-display);
   font-style: italic;
@@ -585,6 +636,33 @@ code, pre {
   background: linear-gradient(90deg, var(--accent) 0%, var(--accent-brass) 100%);
   opacity: 0.35;
   border-radius: 2px;
+}
+
+/* Hero Staged Elements Entrance */
+.hero-anim-badge,
+.hero-anim-lead,
+.hero-anim-actions,
+.hero-anim-ledger {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  will-change: transform, opacity, filter;
+}
+
+html.js-motion-active .hero-anim-badge {
+  animation: heroFadeSlide 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+}
+
+html.js-motion-active .hero-anim-lead {
+  animation: heroFadeSlide 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
+}
+
+html.js-motion-active .hero-anim-actions {
+  animation: heroFadeSlide 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.58s both;
+}
+
+html.js-motion-active .hero-anim-ledger {
+  animation: heroFadeSlide 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.72s both;
 }
 
 .hero-lead {
@@ -633,12 +711,14 @@ code, pre {
    -------------------------------------------------------------------------- */
 .hero-dossier-col {
   position: relative;
-  perspective: 1200px;
+  perspective: 1400px;
 }
 
 .dossier-stack-container {
   position: relative;
   width: 100%;
+  transform-style: preserve-3d;
+  perspective: 1400px;
 }
 
 .dossier-folder-tab {
@@ -660,6 +740,8 @@ code, pre {
   left: 20px;
   z-index: 4;
   box-shadow: 0 -2px 6px rgba(20, 24, 22, 0.03);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 .dossier-folder-tab::before {
@@ -680,6 +762,9 @@ code, pre {
   transform: rotate(3deg) translateZ(-40px);
   z-index: 1;
   opacity: 0.75;
+  transform-origin: center center;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 .dossier-underlay-sheet-1 {
@@ -691,6 +776,9 @@ code, pre {
   transform: rotate(-1.5deg) translateZ(-20px);
   z-index: 2;
   opacity: 0.85;
+  transform-origin: center center;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 .dossier-card {
@@ -701,24 +789,25 @@ code, pre {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   overflow: hidden;
-  transform: rotateY(-6deg) rotateX(4deg) translateZ(0);
+  transform: perspective(1200px) rotateY(-6deg) rotateX(4deg) translateZ(0);
+  transform-origin: center center;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color var(--transition-fast), box-shadow var(--transition-fast);
   will-change: transform, opacity;
 }
 
-/* Staged entrance states */
+/* Staged 3D entrance sequence */
 .hero-dossier-col.animating .dossier-card {
-  animation: dossier-entrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: dossier-entrance-3d 1.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes dossier-entrance {
+@keyframes dossier-entrance-3d {
   0% {
-    transform: perspective(1000px) rotateX(12deg) rotateY(-10deg) translateY(36px);
-    opacity: 0.2;
+    transform: perspective(1400px) rotateX(16deg) rotateY(-18deg) translateY(60px) translateZ(-80px);
+    opacity: 0.15;
     box-shadow: 0 4px 12px rgba(20, 24, 22, 0.02);
   }
   100% {
-    transform: perspective(1000px) rotateX(4deg) rotateY(-6deg) translateY(0);
+    transform: perspective(1200px) rotateX(4deg) rotateY(-6deg) translateY(0) translateZ(0);
     opacity: 1;
     box-shadow: var(--shadow-card);
   }
@@ -1053,6 +1142,71 @@ code, pre {
   line-height: 1.65;
 }
 
+/* Motion Reveal System for Section Headers */
+.motion-header-group .motion-eyebrow {
+  display: inline-block;
+  opacity: 1;
+  transform: none;
+  filter: none;
+  will-change: transform, opacity, filter;
+  transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), filter 0.65s ease;
+}
+
+.motion-header-group .motion-title-inner {
+  display: inline-block;
+  opacity: 1;
+  transform: none;
+  filter: none;
+  will-change: transform, opacity, filter;
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
+}
+
+.motion-header-group .motion-lead {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  will-change: transform, opacity, filter;
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
+}
+
+html.js-motion-active .motion-header-group:not(.is-revealed) .motion-eyebrow {
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(3px);
+}
+
+html.js-motion-active .motion-header-group:not(.is-revealed) .motion-title-inner {
+  opacity: 0;
+  transform: translateY(22px);
+  filter: blur(5px);
+}
+
+html.js-motion-active .motion-header-group:not(.is-revealed) .motion-lead {
+  opacity: 0;
+  transform: translateY(18px);
+  filter: blur(3px);
+}
+
+html.js-motion-active .motion-header-group.is-revealed .motion-eyebrow {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+html.js-motion-active .motion-header-group.is-revealed .motion-title-inner {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  transition-delay: 0.12s;
+}
+
+html.js-motion-active .motion-header-group.is-revealed .motion-lead {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  transition-delay: 0.24s;
+}
+
 /* --------------------------------------------------------------------------
    10. Chapter 1: The Six-Stage Career Pipeline Runway (#chapter-pipeline)
    -------------------------------------------------------------------------- */
@@ -1156,16 +1310,28 @@ code, pre {
   padding: 1.25rem 1rem;
   display: flex;
   flex-direction: column;
-  transition: transform 0.25s var(--transition-smooth), border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.75s ease, border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
   position: relative;
-  will-change: transform;
+  will-change: transform, opacity;
 }
 
+html.js-motion-active .pipeline-runway-grid:not(.is-revealed) .pipeline-runway-card.motion-card {
+  opacity: 0;
+  transform: perspective(1000px) rotateX(12deg) translateY(28px);
+}
+
+html.js-motion-active .pipeline-runway-grid.is-revealed .pipeline-runway-card.motion-card:nth-child(1) { opacity: 1; transform: perspective(1000px) rotateX(0deg) translateY(0); transition-delay: 0.05s; }
+html.js-motion-active .pipeline-runway-grid.is-revealed .pipeline-runway-card.motion-card:nth-child(2) { opacity: 1; transform: perspective(1000px) rotateX(0deg) translateY(0); transition-delay: 0.15s; }
+html.js-motion-active .pipeline-runway-grid.is-revealed .pipeline-runway-card.motion-card:nth-child(3) { opacity: 1; transform: perspective(1000px) rotateX(0deg) translateY(0); transition-delay: 0.25s; }
+html.js-motion-active .pipeline-runway-grid.is-revealed .pipeline-runway-card.motion-card:nth-child(4) { opacity: 1; transform: perspective(1000px) rotateX(0deg) translateY(0); transition-delay: 0.35s; }
+html.js-motion-active .pipeline-runway-grid.is-revealed .pipeline-runway-card.motion-card:nth-child(5) { opacity: 1; transform: perspective(1000px) rotateX(0deg) translateY(0); transition-delay: 0.45s; }
+html.js-motion-active .pipeline-runway-grid.is-revealed .pipeline-runway-card.motion-card:nth-child(6) { opacity: 1; transform: perspective(1000px) rotateX(0deg) translateY(0); transition-delay: 0.55s; }
+
 .pipeline-runway-card.active {
-  background-color: var(--surface);
-  border-color: var(--accent);
-  box-shadow: 0 8px 24px var(--accent-light);
-  transform: translateY(-10px) scale(1.04);
+  background-color: var(--surface) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px var(--accent), 0 12px 28px rgba(15, 77, 63, 0.18) !important;
+  transform: translateY(-8px) scale(1.03) !important;
 }
 
 .pipeline-runway-card.completed {
@@ -1407,6 +1573,18 @@ code, pre {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  will-change: transform, opacity;
+  transition: opacity 0.85s ease, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+html.js-motion-active .star-citation-panel.motion-citation-panel:not(.is-revealed) {
+  opacity: 0;
+  transform: perspective(1200px) rotateY(-8deg) translateX(32px);
+}
+
+html.js-motion-active .star-citation-panel.motion-citation-panel.is-revealed {
+  opacity: 1;
+  transform: perspective(1200px) rotateY(0deg) translateX(0);
 }
 
 .citation-domain-pill {
@@ -1502,6 +1680,18 @@ code, pre {
   border-radius: var(--radius-md);
   padding: 2rem;
   border: 1px solid var(--surface-border);
+  will-change: transform, opacity;
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+html.js-motion-active .comparison-box.motion-compare-box:not(.is-revealed) {
+  opacity: 0;
+  transform: perspective(1000px) rotateX(6deg) translateY(26px);
+}
+
+html.js-motion-active .comparison-box.motion-compare-box.is-revealed {
+  opacity: 1;
+  transform: perspective(1000px) rotateX(0deg) translateY(0);
 }
 
 .comparison-box.commercial {
@@ -1539,6 +1729,22 @@ code, pre {
   flex-shrink: 0;
   margin-top: 3px;
 }
+
+.comparison-item {
+  transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), filter 0.55s ease;
+  will-change: transform, opacity, filter;
+}
+
+html.js-motion-active .motion-compare-box:not(.is-revealed) .comparison-item {
+  opacity: 0;
+  transform: translateX(-16px);
+  filter: blur(2px);
+}
+
+html.js-motion-active .motion-compare-box.is-revealed .comparison-item:nth-child(1) { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.1s; }
+html.js-motion-active .motion-compare-box.is-revealed .comparison-item:nth-child(2) { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.22s; }
+html.js-motion-active .motion-compare-box.is-revealed .comparison-item:nth-child(3) { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.34s; }
+html.js-motion-active .motion-compare-box.is-revealed .comparison-item:nth-child(4) { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.46s; }
 
 /* Schema v1 JSON Inspector */
 .schema-inspector-card {
@@ -1586,6 +1792,27 @@ code, pre {
   border-radius: var(--radius-lg);
   padding: 1.25rem;
   box-shadow: var(--shadow-card);
+  will-change: transform, opacity;
+  transition: opacity 0.85s ease, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), box-shadow var(--transition-fast);
+  perspective: 1200px;
+}
+
+html.js-motion-active .app-tour-card.motion-gallery-card:not(.is-revealed) {
+  opacity: 0;
+  transform: perspective(1200px) rotateX(7deg) translateY(34px);
+}
+
+html.js-motion-active .app-tour-card.motion-gallery-card.is-revealed {
+  opacity: 1;
+  transform: perspective(1200px) rotateX(0deg) translateY(0);
+}
+
+html.js-motion-active .app-tour-card.motion-gallery-card.desktop-card.is-revealed {
+  transition-delay: 0.05s;
+}
+
+html.js-motion-active .app-tour-card.motion-gallery-card.mobile-card.is-revealed {
+  transition-delay: 0.22s;
 }
 
 .app-tour-card img {
@@ -1594,6 +1821,12 @@ code, pre {
   border-radius: var(--radius-md);
   border: 1px solid var(--surface-border);
   display: block;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+  will-change: transform;
+}
+
+.app-tour-card:hover img {
+  transform: scale(1.025);
 }
 
 .app-tour-caption {
@@ -1605,7 +1838,68 @@ code, pre {
 }
 
 /* --------------------------------------------------------------------------
-   14. Reading Page Layouts (Guide & Privacy)
+   14. Closing Sovereign Command CTA Section (#closing-cta)
+   -------------------------------------------------------------------------- */
+.cta-section {
+  position: relative;
+  z-index: 1;
+  padding: 5rem 0 3rem;
+  border-top: 1px solid var(--surface-border);
+}
+
+.cta-card.motion-cta-card {
+  position: relative;
+  background-color: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-xl);
+  padding: 4rem 2.5rem;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  will-change: transform, opacity;
+  transition: opacity 0.85s ease, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), box-shadow var(--transition-fast);
+}
+
+html.js-motion-active .cta-card.motion-cta-card:not(.is-revealed) {
+  opacity: 0;
+  transform: perspective(1200px) rotateX(6deg) translateY(36px);
+}
+
+html.js-motion-active .cta-card.motion-cta-card.is-revealed {
+  opacity: 1;
+  transform: perspective(1200px) rotateX(0deg) translateY(0);
+}
+
+.cta-ambient-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 25%, rgba(15, 77, 63, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+[data-theme="dark"] .cta-ambient-glow {
+  background: radial-gradient(circle at 50% 25%, rgba(45, 212, 191, 0.08) 0%, transparent 70%);
+}
+
+.motion-cta-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.motion-cta-ledger {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  flex-wrap: wrap;
+}
+
+/* --------------------------------------------------------------------------
+   15. Reading Page Layouts (Guide & Privacy)
    -------------------------------------------------------------------------- */
 .reading-page-main {
   position: relative;
@@ -1647,6 +1941,28 @@ code, pre {
   line-height: 1.65;
 }
 
+.motion-reading-hero .reading-eyebrow,
+.motion-reading-hero .motion-title-inner,
+.motion-reading-hero .reading-lead {
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+html.js-motion-active .motion-reading-hero .reading-eyebrow {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+html.js-motion-active .motion-reading-hero .motion-title-inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+html.js-motion-active .motion-reading-hero .reading-lead {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .reading-section {
   margin-bottom: 3.5rem;
 }
@@ -1682,6 +1998,21 @@ code, pre {
   margin-bottom: 0.5rem;
 }
 
+.motion-reading-section {
+  transition: opacity 0.75s ease, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+html.js-motion-active .motion-reading-section:not(.is-revealed) {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+html.js-motion-active .motion-reading-section.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .callout-box {
   background-color: var(--bg-subdued);
   border: 1px solid var(--surface-border);
@@ -1701,8 +2032,33 @@ code, pre {
   margin-bottom: 0;
 }
 
+.motion-callout {
+  transition: transform var(--transition-fast), border-left-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.motion-callout:hover {
+  transform: translateX(4px);
+  border-left-color: var(--brass);
+  box-shadow: var(--shadow-sm);
+}
+
+.motion-reading-card {
+  transition: opacity 0.75s ease, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+html.js-motion-active .motion-reading-card:not(.is-revealed) {
+  opacity: 0;
+  transform: translateY(22px);
+}
+
+html.js-motion-active .motion-reading-card.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* --------------------------------------------------------------------------
-   15. Universal Site Footer
+   16. Universal Site Footer
    -------------------------------------------------------------------------- */
 .site-footer {
   position: relative;
@@ -1766,8 +2122,23 @@ code, pre {
   gap: 1rem;
 }
 
+.footer-grid.motion-footer-grid .motion-footer-col {
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+html.js-motion-active .footer-grid.motion-footer-grid:not(.is-revealed) .motion-footer-col {
+  opacity: 0;
+  transform: translateY(22px);
+}
+
+html.js-motion-active .footer-grid.motion-footer-grid.is-revealed .motion-footer-col:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.05s; }
+html.js-motion-active .footer-grid.motion-footer-grid.is-revealed .motion-footer-col:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.16s; }
+html.js-motion-active .footer-grid.motion-footer-grid.is-revealed .motion-footer-col:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.27s; }
+html.js-motion-active .footer-grid.motion-footer-grid.is-revealed .motion-footer-col:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.38s; }
+
 /* --------------------------------------------------------------------------
-   16. Mobile Navigation Drawer
+   17. Mobile Navigation Drawer
    -------------------------------------------------------------------------- */
 .mobile-nav-drawer {
   display: none;
@@ -1810,7 +2181,7 @@ code, pre {
 }
 
 /* --------------------------------------------------------------------------
-   17. Responsive Media Queries
+   18. Responsive Media Queries
    -------------------------------------------------------------------------- */
 @media (max-width: 1100px) {
   .pipeline-runway-grid {
@@ -2007,7 +2378,7 @@ code, pre {
 }
 
 /* --------------------------------------------------------------------------
-   18. Accessibility & Reduced Motion
+   19. Accessibility & Reduced Motion
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -2021,6 +2392,37 @@ code, pre {
   }
   .dossier-canvas {
     opacity: 0.4;
+  }
+  .hero-line-inner,
+  .hero-anim-badge,
+  .hero-anim-lead,
+  .hero-anim-actions,
+  .hero-anim-ledger,
+  .dossier-underlay-sheet-1,
+  .dossier-underlay-sheet-2,
+  .dossier-folder-tab,
+  .dossier-card,
+  .motion-header-group .motion-eyebrow,
+  .motion-header-group .motion-title-inner,
+  .motion-header-group .motion-lead,
+  .pipeline-runway-card.motion-card,
+  .matrix-filter-nav.motion-filter-group,
+  .star-citation-panel.motion-citation-panel,
+  .comparison-box.motion-compare-box,
+  .comparison-item,
+  .app-tour-card.motion-gallery-card,
+  .cta-card.motion-cta-card,
+  .footer-grid.motion-footer-grid .motion-footer-col,
+  .motion-reading-hero .reading-eyebrow,
+  .motion-reading-hero .motion-title-inner,
+  .motion-reading-hero .reading-lead,
+  .motion-reading-section,
+  .motion-reading-card {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+    animation: none !important;
   }
   .pipeline-scroll-bar {
     transform: scaleX(1) !important;
@@ -2052,7 +2454,44 @@ code, pre {
     transform: none !important;
     opacity: 1 !important;
   }
-  .dossier-card {
-    transform: none !important;
-  }
+}
+
+/* --------------------------------------------------------------------------
+   Progressive Enhancement: Full Readability Fallback when JavaScript is Inactive
+   -------------------------------------------------------------------------- */
+html:not(.js-motion-active) #hero-dossier-card,
+html:not(.js-motion-active) #hero-underlay-1,
+html:not(.js-motion-active) #hero-underlay-2,
+html:not(.js-motion-active) #hero-dossier-tab,
+html:not(.js-motion-active) .hero-line-inner,
+html:not(.js-motion-active) .hero-anim-badge,
+html:not(.js-motion-active) .hero-anim-lead,
+html:not(.js-motion-active) .hero-anim-actions,
+html:not(.js-motion-active) .hero-anim-ledger,
+html:not(.js-motion-active) .motion-eyebrow,
+html:not(.js-motion-active) .motion-title-inner,
+html:not(.js-motion-active) .motion-lead,
+html:not(.js-motion-active) .pipeline-runway-card,
+html:not(.js-motion-active) .star-fragment,
+html:not(.js-motion-active) #star-frag-situation,
+html:not(.js-motion-active) #star-frag-task,
+html:not(.js-motion-active) #star-frag-action,
+html:not(.js-motion-active) #star-frag-result,
+html:not(.js-motion-active) #star-assembly-seal,
+html:not(.js-motion-active) #vault-envelope-flap,
+html:not(.js-motion-active) #vault-wax-seal,
+html:not(.js-motion-active) #vault-code-drawer,
+html:not(.js-motion-active) .motion-compare-box,
+html:not(.js-motion-active) .comparison-item,
+html:not(.js-motion-active) .motion-gallery-card,
+html:not(.js-motion-active) .motion-cta-card,
+html:not(.js-motion-active) .motion-footer-col,
+html:not(.js-motion-active) .motion-reading-section,
+html:not(.js-motion-active) .motion-reading-card {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  visibility: visible !important;
+  transition: none !important;
+  animation: none !important;
 }

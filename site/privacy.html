@@ -125,28 +125,28 @@
 
     <main class="reading-page-main" id="main-content">
       <div class="container reading-container">
-        <div class="reading-hero">
-          <span class="reading-eyebrow">Architecture & Guarantees</span>
-          <h1 class="reading-title">Privacy & Storage Architecture</h1>
-          <p class="reading-lead">
+        <div class="reading-hero motion-reading-hero">
+          <span class="reading-eyebrow motion-eyebrow">Architecture &amp; Guarantees</span>
+          <h1 class="reading-title motion-title"><span class="motion-title-inner">Privacy &amp; Storage Architecture</span></h1>
+          <p class="reading-lead motion-lead">
             Pathfolio is built on a simple premise: your job search, compensation targets, and interview notes should never live on someone else's server.
           </p>
         </div>
 
-        <section class="reading-section">
-          <h2>1. Zero Remote Storage & Zero Telemetry</h2>
+        <section class="reading-section motion-reading-section">
+          <h2>1. Zero Remote Storage &amp; Zero Telemetry</h2>
           <p>
             Pathfolio does not operate a user database, auth server, or analytics backend. When you use the web application or install the Android APK, all data is written directly to your device's local application storage:
           </p>
           <ul>
             <li><strong>Web:</strong> Records are saved locally in browser storage via <code>shared_preferences</code> (backed by browser <code>localStorage</code>), scoped solely to your current browser profile.</li>
             <li><strong>Android:</strong> Records are saved locally in sandboxed application storage via <code>shared_preferences</code>.</li>
-            <li><strong>Network Requests & Same-Origin Asset Delivery:</strong> Loading the website or web application performs standard same-origin HTTP requests solely to fetch application assets (HTML documents, JavaScript bundles, CSS stylesheets, and self-hosted fonts) from the hosting origin. Pathfolio never transmits user records, analytics events, telemetry payloads, or tracking beacons over the network. The only third-party outbound network requests occur when you explicitly click an external link to visit a company's job posting or GitHub repository.</li>
+            <li><strong>Network Requests &amp; Same-Origin Asset Delivery:</strong> Loading the website or web application performs standard same-origin HTTP requests solely to fetch application assets (HTML documents, JavaScript bundles, CSS stylesheets, and self-hosted fonts) from the hosting origin. Pathfolio never transmits user records, analytics events, telemetry payloads, or tracking beacons over the network. The only third-party outbound network requests occur when you explicitly click an external link to visit a company's job posting or GitHub repository.</li>
           </ul>
         </section>
 
-        <section class="reading-section">
-          <h2>2. Browser Storage Limitations & Best Practices</h2>
+        <section class="reading-section motion-reading-section">
+          <h2>2. Browser Storage Limitations &amp; Best Practices</h2>
           <p>
             Because your browser manages local site storage, certain user actions or browser maintenance tasks can impact your data:
           </p>
@@ -155,7 +155,7 @@
             <li>Incognito or Private Browsing mode will discard records once the private window is closed.</li>
             <li>Browsers on different devices or across different user profiles cannot automatically synchronize data without a server.</li>
           </ul>
-          <div class="callout-box">
+          <div class="callout-box motion-callout">
             <h4>Recommended Backup Practice</h4>
             <p>
               Use the built-in <em>Export JSON Backup</em> feature in Settings regularly. Saving this file to your personal computer or private cloud drive ensures your records can be restored instantly anywhere.
@@ -163,8 +163,8 @@
           </div>
         </section>
 
-        <section class="reading-section">
-          <h2>3. Data Export, Import & Erase Guarantees</h2>
+        <section class="reading-section motion-reading-section">
+          <h2>3. Data Export, Import &amp; Erase Guarantees</h2>
           <p>
             You retain full sovereignty over your information:
           </p>
@@ -175,7 +175,7 @@
           </ul>
         </section>
 
-        <div style="background-color: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius-md); padding: 2rem; box-shadow: var(--shadow-sm); margin-top: 3rem; text-align: center;">
+        <div class="motion-reading-card" style="background-color: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius-md); padding: 2rem; box-shadow: var(--shadow-sm); margin-top: 3rem; text-align: center;">
           <h3 style="margin-bottom: 0.5rem;">Experience Sovereign Career Tracking</h3>
           <p style="color: var(--ink-secondary); margin-bottom: 1.5rem;">Launch Pathfolio now without creating an account or providing an email address.</p>
           <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
@@ -189,8 +189,8 @@
     <!-- Universal Site Footer -->
     <footer class="site-footer">
       <div class="container">
-        <div class="footer-grid">
-          <div class="footer-brand-col">
+        <div class="footer-grid motion-footer-grid">
+          <div class="footer-brand-col motion-footer-col">
             <a href="/" class="brand-link">
               <div class="brand-seal" aria-hidden="true">P</div>
               <span class="brand-title">Pathfolio</span>
@@ -200,7 +200,7 @@
             </p>
           </div>
 
-          <div>
+          <div class="motion-footer-col">
             <div class="footer-col-title">Navigation</div>
             <ul class="footer-links">
               <li><a href="/">Candidate Dossier</a></li>
@@ -210,22 +210,22 @@
             </ul>
           </div>
 
-          <div>
+          <div class="motion-footer-col">
             <div class="footer-col-title">Documentation</div>
             <ul class="footer-links">
-              <li><a href="guide.html">Strategy & Workflow Guide</a></li>
-              <li><a href="privacy.html">Privacy Policy & Storage</a></li>
+              <li><a href="guide.html">Strategy &amp; Workflow Guide</a></li>
+              <li><a href="privacy.html">Privacy Policy &amp; Storage</a></li>
               <li><a href="/app/">Launch Web Application</a></li>
               <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/download/app-release.apk">Download Android APK</a></li>
             </ul>
           </div>
 
-          <div>
+          <div class="motion-footer-col">
             <div class="footer-col-title">Architecture</div>
             <ul class="footer-links">
               <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio" target="_blank" rel="noopener">GitHub Repository</a></li>
               <li><a href="https://github.com/Sayantan-Sinha-GIT/pathfolio/blob/main/LICENSE" target="_blank" rel="noopener">MIT Open Source License</a></li>
-              <li><span>Flutter 3.47.7 & Dart 3.13</span></li>
+              <li><span>Flutter 3.47.7 &amp; Dart 3.13</span></li>
               <li><span>Schema Version 1 JSON</span></li>
             </ul>
           </div>
