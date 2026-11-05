@@ -21,8 +21,50 @@ for (const d of [SCREENSHOT_DIR, SIDE_BY_SIDE_DIR]) {
   if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
 }
 
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`
+Pathfolio Visual & Motion Playwright Gate
+Usage: node test-scroll-gate.js [options]
+
+Options:
+  --target=<local|remote|both>   Target environment to test (default: local)
+  --ref-path=<path>              Custom path to reference HTML (default: my-design/home.html)
+  --skip-reference, --no-ref     Skip reference side-by-side comparison (clean public clone mode)
+  --require-reference            Require reference comparison to execute; fails if missing
+  --help, -h                     Show this help message
+`);
+  process.exit(0);
+}
+
 const targetArg = process.argv.find((a) => a.startsWith('--target=')) || '--target=local';
 const targetMode = targetArg.split('=')[1];
+
+const refPathArg = process.argv.find((a) => a.startsWith('--ref-path='));
+const customRefPath = refPathArg ? refPathArg.split('=')[1] : null;
+
+const skipRefFlag = process.argv.includes('--skip-reference') || process.argv.includes('--no-ref');
+const requireRefFlag = process.argv.includes('--require-reference');
+
+const defaultRefRelative = path.join('my-design', 'home.html');
+const targetRefPath = customRefPath ? path.resolve(customRefPath) : path.join(ROOT_DIR, defaultRefRelative);
+const targetRefRelative = path.relative(ROOT_DIR, targetRefPath);
+
+const refFileExists = fs.existsSync(targetRefPath) && !fs.statSync(targetRefPath).isDirectory();
+let shouldRunReference = true;
+let referenceSkipReason = null;
+
+if (skipRefFlag) {
+  shouldRunReference = false;
+  referenceSkipReason = 'Reference comparison explicitly skipped via CLI flag (--skip-reference)';
+} else if (!refFileExists) {
+  shouldRunReference = false;
+  referenceSkipReason = `'${targetRefRelative}' not found (clean public clone mode)`;
+}
+
+if (requireRefFlag && !shouldRunReference) {
+  console.error(`\nFATAL: --require-reference flag was passed, but reference is unavailable: ${referenceSkipReason}\n`);
+  process.exit(1);
+}
 
 const LOCAL_PORT = 8085;
 const LOCAL_BASE = `http://127.0.0.1:${LOCAL_PORT}`;
@@ -54,8 +96,12 @@ function createStaticServer(distDir, port = LOCAL_PORT) {
     let cleanPath = url.parse(req.url).pathname;
     let filePath = path.join(distDir, cleanPath);
 
-    // Direct access to /my-design/
-    if (cleanPath.startsWith('/my-design/')) {
+    // Direct access to reference design or /my-design/
+    if (cleanPath === '/my-design/home.html' || cleanPath === '/reference-design.html') {
+      if (refFileExists) {
+        filePath = targetRefPath;
+      }
+    } else if (cleanPath.startsWith('/my-design/')) {
       const myDesignPath = path.join(ROOT_DIR, cleanPath);
       if (fs.existsSync(myDesignPath) && !fs.statSync(myDesignPath).isDirectory()) {
         filePath = myDesignPath;
@@ -476,10 +522,11 @@ async function assertMobileNavigationInteraction(page, viewportLabel) {
     errors.push(`[${viewportLabel}] Mobile menu failed to dismiss on Escape key press`);
   }
 
-  // Test Backdrop click dismissal
+  // Test Backdrop click dismissal (tap exposed backdrop area below menu drawer)
   await toggle.click();
   await page.waitForTimeout(300);
-  await page.locator('#mob-backdrop').click({ force: true });
+  const vp = page.viewportSize();
+  await page.mouse.click(100, (vp ? vp.height : 600) - 15);
   await page.waitForTimeout(300);
 
   const backdropState = await page.evaluate(() => {
@@ -587,6 +634,11 @@ async function runGateForBaseUrl(baseUrl, label) {
     passed: true,
     viewports: {},
     scenes: {},
+    referenceComparison: {
+      status: shouldRunReference ? 'PENDING' : 'SKIPPED',
+      reason: referenceSkipReason,
+      count: 0
+    },
     sideBySideComparisons: [],
     stickyClearance: {},
     themeToggle: {},
@@ -600,13 +652,24 @@ async function runGateForBaseUrl(baseUrl, label) {
     // -------------------------------------------------------------------------
     // 1. Matched Side-by-Side Comparisons (1440 Desktop & 390 Phone, Dark & Light)
     // -------------------------------------------------------------------------
-    console.log(`\n--- Running Matched Side-by-Side Comparisons with Reference (my-design/home.html) ---`);
-    const refUrl = `${LOCAL_BASE}/my-design/home.html`;
+    if (!shouldRunReference) {
+      console.log(`\n--- Matched Side-by-Side Comparisons with Reference ---`);
+      console.log(`  [SKIPPED] Reference comparison skipped: ${referenceSkipReason}`);
+      console.log(`  Clean public checkouts do not include private reference files.`);
+      console.log(`  All core functional, motion, font, counter, responsive, and navigation assertions remain active and fully validated.`);
+      results.referenceComparison = {
+        status: 'SKIPPED',
+        reason: referenceSkipReason,
+        count: 0
+      };
+    } else {
+      console.log(`\n--- Running Matched Side-by-Side Comparisons with Reference (${targetRefRelative}) ---`);
+      const refUrl = `${LOCAL_BASE}/my-design/home.html`;
 
-    const comparisonConfigs = [
-      { width: 1440, height: 900, deviceLabel: 'desktop-1440' },
-      { width: 390, height: 844, deviceLabel: 'phone-390' }
-    ];
+      const comparisonConfigs = [
+        { width: 1440, height: 900, deviceLabel: 'desktop-1440' },
+        { width: 390, height: 844, deviceLabel: 'phone-390' }
+      ];
 
     for (const cfg of comparisonConfigs) {
       for (const theme of ['dark', 'light']) {
@@ -806,12 +869,27 @@ async function runGateForBaseUrl(baseUrl, label) {
       }
     }
 
+      results.referenceComparison = {
+        status: 'COMPLETED',
+        reason: null,
+        count: results.sideBySideComparisons.length
+      };
+    }
+
     // -------------------------------------------------------------------------
     // 2. Real Motion Amplitude & State Transitions Verification (1440 Desktop)
     // -------------------------------------------------------------------------
     console.log(`\n--- Testing Real Motion Amplitude & State Transitions (Desktop 1440) ---`);
     const ctxMotion = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const pageMotion = await ctxMotion.newPage();
+
+    // Baseline JS error listener for homepage
+    const homeErrors = [];
+    pageMotion.on('pageerror', (err) => homeErrors.push(err.message));
+    pageMotion.on('console', (msg) => {
+      if (msg.type() === 'error') homeErrors.push(msg.text());
+    });
+
     await pageMotion.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
 
     // Hero entrance and 3D fanning
@@ -1065,6 +1143,11 @@ async function runGateForBaseUrl(baseUrl, label) {
       console.error(`  ✗ Desktop Counter Errors:`, desktopCounterRes.errors);
     } else {
       console.log(`  ✓ Settled Rolling Counters PASSED (Desktop 1440): Exact visible glyphs [6, 2, 0, 0] confirmed with >90% bounding overlap.`);
+    }
+
+    if (homeErrors.length > 0) {
+      results.passed = false;
+      results.errors.push(`JS Errors on homepage (Desktop 1440): ${homeErrors.join('; ')}`);
     }
 
     await ctxMotion.close();
@@ -1376,7 +1459,18 @@ async function runGateForBaseUrl(baseUrl, label) {
 
   console.log(`\n---------------------------------------------------------------`);
   console.log(`GATE EXECUTION COMPLETED FOR: [${label}]`);
-  console.log(`RESULT: ${results.passed ? 'PASSED (100% OK)' : 'FAILED'}`);
+  if (results.referenceComparison && results.referenceComparison.status === 'SKIPPED') {
+    console.log(`REFERENCE COMPARISON: SKIPPED (${results.referenceComparison.reason})`);
+  } else if (results.referenceComparison && results.referenceComparison.status === 'COMPLETED') {
+    console.log(`REFERENCE COMPARISON: COMPLETED (${results.sideBySideComparisons.length} side-by-side scenes verified)`);
+  }
+  console.log(`CORE ASSERTIONS:      ${results.passed ? 'PASSED (100% OK)' : 'FAILED'}`);
+  const finalStatus = results.passed
+    ? (results.referenceComparison && results.referenceComparison.status === 'SKIPPED'
+        ? 'PASSED (Core assertions 100% OK; reference comparison SKIPPED)'
+        : 'PASSED (100% OK)')
+    : 'FAILED';
+  console.log(`RESULT:               ${finalStatus}`);
   if (results.errors.length > 0) {
     console.log(`ERRORS ENCOUNTERED (${results.errors.length}):`);
     results.errors.forEach((e, idx) => console.log(`  ${idx + 1}. ${e}`));

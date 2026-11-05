@@ -104,6 +104,11 @@
     - All 9 destinations (5 sections + guide, privacy, app, APK download) accessible on 390px and 320px viewports with tap targets $\ge 44\text{px}$, Escape key dismiss, backdrop click dismiss, link navigation auto-dismiss, and sticky header clearance ($> 15\text{px}$).
     - Updated `test-scroll-gate.js` with strict regressions: verified visible glyphs and bounding overlap $> 90\%$ via `document.elementFromPoint`, and verified complete mobile drawer interactions.
     - Clarified documentation across `PRD.md`, `PROGRESS.md`, `UI_REVIEW.md`, `MOTION_REVIEW.md`, and `MOTION_SPEC.md` establishing the owner HTML as the intended visual specification and marking historical benchmark comparisons as superseded. [COMPLETE]
+15. **Gate Portability & Clean-Clone Resilience (Configurable Reference Comparison)**:
+    - Updated `test-scroll-gate.js` to ensure the automated visual and motion gate is 100% portable on clean public checkouts that lack the ignored private owner reference (`my-design/home.html`).
+    - Added automatic detection of reference file existence, alongside explicit CLI options: `--skip-reference` (or `--no-ref`), `--ref-path=<path>`, and `--require-reference`.
+    - When reference is absent or skipped, Section 1 logs a clear `[SKIPPED]` reason, never reports the reference comparison as `PASS`, and continues executing 100% of the core functional, motion, font, counter, responsive, and navigation assertions.
+    - Non-destructive verification completed: verified `--skip-reference` and `--ref-path=nonexistent-file.html` both pass core suites and exit code 0; verified default run with reference present executes all 28 side-by-side scenes cleanly. [COMPLETE]
 
 ## Feature Ledger (PRD Must Behaviors)
 

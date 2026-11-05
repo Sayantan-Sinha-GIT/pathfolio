@@ -83,3 +83,7 @@ Following the owner's explicit directive, the marketing homepage visual design w
    - Replaced `sovereign privacy` claims with `private, local-first career management`.
    - Created root `package.json` declaring `playwright-core` dependency; implemented cross-platform browser discovery in `test-scroll-gate.js` (`channel: 'chrome'` / `channel: 'msedge'` / path resolution, zero hardcoded machine paths).
    - Made 1024px/320px overflow and linked-route loading failures strictly fail the test suite with non-zero exit codes.
+7. **Gate Portability & Clean-Clone Public Resilience**:
+   - The automated test gate (`test-scroll-gate.js`) supports clean public checkouts that lack the owner's private git-ignored reference (`my-design/home.html`).
+   - When the reference file is absent (or skipped via `--skip-reference` / `--no-ref`), the gate skips Section 1 with an explicit notice, never reports the reference comparison as PASS, and executes all core functional, motion, font, counter, responsive, and navigation assertions.
+   - Custom reference paths can be supplied via `--ref-path=<path>`, or reference execution can be enforced via `--require-reference`.

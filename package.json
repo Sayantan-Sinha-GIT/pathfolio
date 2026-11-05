@@ -6,7 +6,9 @@
   "scripts": {
     "test:gate": "node test-scroll-gate.js",
     "test:gate:local": "node test-scroll-gate.js --target=local",
-    "test:gate:remote": "node test-scroll-gate.js --target=remote"
+    "test:gate:remote": "node test-scroll-gate.js --target=remote",
+    "test:gate:public": "node test-scroll-gate.js --skip-reference",
+    "test:gate:remote:public": "node test-scroll-gate.js --target=remote --skip-reference"
   },
   "devDependencies": {
     "playwright-core": "^1.50.1"

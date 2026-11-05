@@ -118,7 +118,18 @@ npm run test:gate:local
 
 # 3. Run automated visual & scroll motion gate against live production
 npm run test:gate:remote
+
+# 4. Explicitly run in public clean-clone mode (skips private reference comparison)
+npm run test:gate:public
 ```
+
+### Reference Design Portability & Clean-Clone Resiliency
+- The automated gate automatically checks if the owner's private design reference (`my-design/home.html`) is present.
+- **On public clean clones** (where `my-design/` is git-ignored): The gate automatically detects that the reference is absent, skips Section 1 with an informative message (`[SKIPPED] Reference comparison skipped: 'my-design/home.html' not found`), and executes **100% of all core functional, motion, font, rolling counter, responsive, sticky clearance, and navigation assertions**. The gate never reports skipped tests as `PASS`, but reports overall `PASSED` when all core assertions pass.
+- **CLI Options**:
+  - `--skip-reference` (or `--no-ref`): Explicitly skip reference comparisons even if the file exists.
+  - `--ref-path=<path>`: Provide an alternative reference HTML file for side-by-side comparison.
+  - `--require-reference`: Strictly require reference comparison; fails early if missing.
 
 ### Browser Discovery & Environment Options
 - The test runner portably discovers system **Google Chrome** (`channel: 'chrome'`) or **Microsoft Edge** (`channel: 'msedge'`) on Windows, macOS, and Linux without hardcoded machine paths.
