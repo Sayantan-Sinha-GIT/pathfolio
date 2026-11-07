@@ -183,7 +183,7 @@ flutter build web --base-href "/app/" --release
 flutter build apk --release
 ```
 
-The Android release build requires `app/android/key.properties` and the matching private keystore in `app/android/app/`. They are ignored by git. A private backup was saved at `%USERPROFILE%\.codex\secrets\pathfolio`; copy both files to a separate safe place before changing computers. The public `v1.0.1` APK uses this dedicated release key. The earlier `v1.0.0` APK used Flutter's default debug key and cannot be updated in place with the new release key; uninstall it before installing `v1.0.1` if you installed that early version.
+The Android release build requires `app/android/key.properties` and the matching private keystore in `app/android/app/`. They are ignored by git. The owner's desktop folder includes copies and restoration instructions in `RECOVERY/`, which is also ignored by git; another local backup was saved at `%USERPROFILE%\.codex\secrets\pathfolio`. The `v1.0.1` and `v1.0.2` APKs use this dedicated release key. The earlier `v1.0.0` APK used Flutter's default debug key and cannot be updated in place with the release key; export your data and uninstall it before installing a newer version.
 
 The web app registers `app/web/pathfolio-sw.js` to cache the app shell on first load. Once that installation completes, the web app can reopen offline. Local browser records are independent of the cache and remain on that browser profile.
 

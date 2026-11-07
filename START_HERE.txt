@@ -8,20 +8,19 @@ Android: https://github.com/Sayantan-Sinha-GIT/pathfolio/releases/latest/downloa
 Source: https://github.com/Sayantan-Sinha-GIT/pathfolio
 
 YOUR DRIVE BACKUP
-Use the prepared Pathfolio archive in Desktop\FINAL_DRIVE_UPLOAD.
-It contains source, the owner-supplied homepage designs, documentation,
-tests, the signed APK, and the deployable static website/app bundle.
-Node modules, SDKs, temporary captures and build caches are excluded.
-Keep the separate PRIVATE_RECOVERY archive private. It contains the Android
-signing key required to publish updates that retain the app's identity.
+Upload the whole Desktop\pathfolio folder directly to your personal Drive.
+It contains source, your homepage design, documentation, tests, the signed
+APK, the deployable website/app bundle, and Android signing recovery files.
+Dependencies and SDKs are installed separately when rebuilding.
 
 FOLDER MAP
 app/          Flutter Android and web source, fonts and tests
 site/         Animated marketing website, guide and privacy pages
 scripts/      Reproducible build and local preview commands
 my-design/    Your original homepage design (local/private; not on GitHub)
-release/      Signed APK and release checksums (in the Drive archive)
-dist/         Ready-to-deploy website + web app (in the Drive archive)
+release/      Signed APK and release checksums
+dist/         Ready-to-deploy website + web app
+RECOVERY/     Copy of the Android signing key and configuration
 FINAL_VERIFICATION.md  Actual final test results and release notes
 README.md     Architecture, developer setup and deployment details
 
@@ -39,8 +38,8 @@ Open http://127.0.0.1:8086/ (working app at /app/).
 If Flutter is not on PATH, set FLUTTER_BIN to your flutter executable first.
 Windows example: $env:FLUTTER_BIN='C:\path\to\flutter\bin\flutter.bat'
 
-For a signed Android rebuild, first restore the signing files according to
-PRIVATE_RECOVERY/README.txt, then run: npm run build:apk
+For a signed Android rebuild, use the included signing files. If they need
+restoring, follow RECOVERY/README.txt, then run: npm run build:apk
 For a Pages update: npx wrangler pages deploy dist --project-name pathfolio
 This project deliberately uses Cloudflare Pages Direct Upload.
 
@@ -51,4 +50,4 @@ Settings -> Open Backup File validates and previews it before replacement.
 Copy/paste JSON remains available as a fallback. There is no cloud sync.
 The web app needs a complete first online load before offline use; Android
 works offline after installation. Clearing site data removes local records.
-Your personal job-search records are not copied into the source archive.
+Your personal job-search records are not included in this project folder.
