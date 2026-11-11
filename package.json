@@ -4,6 +4,7 @@
   "description": "Private, offline-first career workspace for software engineers",
   "private": true,
   "scripts": {
+    "dev": "node scripts/preview.mjs",
     "build": "node scripts/build.mjs",
     "build:apk": "node scripts/build.mjs --apk",
     "preview": "node scripts/preview.mjs",

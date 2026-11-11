@@ -81,10 +81,10 @@ class _AppScaffoldState extends State<AppScaffold> {
     });
   }
 
-  void _handleNavigate(int index, {JobStage? stage}) {
+  void _handleNavigate(int index, {JobStage? stage, Opportunity? opportunity}) {
     setState(() {
       _currentTabIndex = index;
-      _selectedOpportunityId = null;
+      _selectedOpportunityId = opportunity?.id;
       if (stage != null) {
         widget.appState.setStageFilter(stage);
       }

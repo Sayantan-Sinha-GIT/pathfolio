@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../models/opportunity.dart';
 import '../models/stage.dart';
 import '../models/task_item.dart';
 import '../models/timeline_entry.dart';
@@ -10,7 +11,7 @@ import 'task_form_dialog.dart';
 
 class DashboardView extends StatelessWidget {
   final AppState appState;
-  final Function(int tabIndex, {JobStage? stage}) onNavigate;
+  final Function(int tabIndex, {JobStage? stage, Opportunity? opportunity}) onNavigate;
 
   const DashboardView({
     super.key,
@@ -163,6 +164,7 @@ class DashboardView extends StatelessWidget {
                   child: _ActivityTimelineSection(
                     timeline: recentTimeline,
                     appState: appState,
+                    onNavigate: onNavigate,
                   ),
                 ),
               ],
@@ -178,6 +180,7 @@ class DashboardView extends StatelessWidget {
             _ActivityTimelineSection(
               timeline: recentTimeline,
               appState: appState,
+              onNavigate: onNavigate,
             ),
           ],
         ],
@@ -278,7 +281,7 @@ class _TasksDashboardSection extends StatelessWidget {
   final AppState appState;
   final List<TaskItem> overdue;
   final List<TaskItem> upcoming;
-  final Function(int, {JobStage? stage}) onNavigate;
+  final Function(int, {JobStage? stage, Opportunity? opportunity}) onNavigate;
 
   const _TasksDashboardSection({
     required this.appState,
@@ -360,7 +363,7 @@ class _TasksDashboardSection extends StatelessWidget {
                   style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 0.6, color: AppColors.crimson),
                 ),
                 const SizedBox(height: 8),
-                ...overdue.map((task) => _TaskItemRow(task: task, appState: appState, isOverdue: true, dateFormat: dateFormat)),
+                ...overdue.map((task) => _TaskItemRow(task: task, appState: appState, isOverdue: true, dateFormat: dateFormat, onNavigate: onNavigate)),
                 const SizedBox(height: 16),
               ],
 
@@ -376,7 +379,7 @@ class _TasksDashboardSection extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                ...upcoming.map((task) => _TaskItemRow(task: task, appState: appState, isOverdue: false, dateFormat: dateFormat)),
+                ...upcoming.map((task) => _TaskItemRow(task: task, appState: appState, isOverdue: false, dateFormat: dateFormat, onNavigate: onNavigate)),
               ],
             ],
           ],
@@ -391,12 +394,14 @@ class _TaskItemRow extends StatelessWidget {
   final AppState appState;
   final bool isOverdue;
   final DateFormat dateFormat;
+  final Function(int, {JobStage? stage, Opportunity? opportunity}) onNavigate;
 
   const _TaskItemRow({
     required this.task,
     required this.appState,
     required this.isOverdue,
     required this.dateFormat,
+    required this.onNavigate,
   });
 
   @override
@@ -414,23 +419,30 @@ class _TaskItemRow extends StatelessWidget {
             onChanged: (_) => appState.toggleTaskComplete(task.id),
           ),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  task.title,
-                  style: TextStyle(
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w500,
-                    decoration: task.isCompleted ? TextDecoration.lineThrough : null,
-                  ),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(6),
+              onTap: opp != null ? () => onNavigate(1, opportunity: opp) : null,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      task.title,
+                      style: TextStyle(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w500,
+                        decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+                      ),
+                    ),
+                    if (opp != null)
+                      Text(
+                        '${opp.company} • ${opp.role}',
+                        style: TextStyle(fontSize: 11.5, color: theme.hintColor),
+                      ),
+                  ],
                 ),
-                if (opp != null)
-                  Text(
-                    '${opp.company} • ${opp.role}',
-                    style: TextStyle(fontSize: 11.5, color: theme.hintColor),
-                  ),
-              ],
+              ),
             ),
           ),
           if (task.dueDate != null)
@@ -449,6 +461,16 @@ class _TaskItemRow extends StatelessWidget {
                 ),
               ),
             ),
+          IconButton(
+            icon: const Icon(Icons.edit_outlined, size: 16),
+            tooltip: 'Edit Task',
+            onPressed: () => TaskFormDialog.show(
+              context,
+              appState: appState,
+              initialTask: task,
+              initialOpportunityId: task.opportunityId,
+            ),
+          ),
         ],
       ),
     );
@@ -458,10 +480,12 @@ class _TaskItemRow extends StatelessWidget {
 class _ActivityTimelineSection extends StatelessWidget {
   final List<TimelineEntry> timeline;
   final AppState appState;
+  final Function(int, {JobStage? stage, Opportunity? opportunity}) onNavigate;
 
   const _ActivityTimelineSection({
     required this.timeline,
     required this.appState,
+    required this.onNavigate,
   });
 
   @override
@@ -529,44 +553,51 @@ class _ActivityTimelineSection extends StatelessWidget {
                     iconColor = theme.hintColor;
                   }
 
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: Icon(icon, size: 16, color: iconColor),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              entry.description,
-                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-                            ),
-                            const SizedBox(height: 2),
-                            Row(
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(6),
+                    onTap: opp != null ? () => onNavigate(1, opportunity: opp) : null,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Icon(icon, size: 16, color: iconColor),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (opp != null) ...[
-                                  Text(
-                                    opp.company,
-                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: theme.hintColor),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text('•', style: TextStyle(fontSize: 11, color: theme.hintColor)),
-                                  const SizedBox(width: 6),
-                                ],
                                 Text(
-                                  dateFormat.format(entry.timestamp),
-                                  style: TextStyle(fontSize: 11, color: theme.hintColor),
+                                  entry.description,
+                                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                                ),
+                                const SizedBox(height: 2),
+                                Row(
+                                  children: [
+                                    if (opp != null) ...[
+                                      Text(
+                                        opp.company,
+                                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: theme.hintColor),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text('•', style: TextStyle(fontSize: 11, color: theme.hintColor)),
+                                      const SizedBox(width: 6),
+                                    ],
+                                    Text(
+                                      dateFormat.format(entry.timestamp),
+                                      style: TextStyle(fontSize: 11, color: theme.hintColor),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   );
                 },
               ),

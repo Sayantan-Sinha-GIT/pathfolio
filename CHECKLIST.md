@@ -1,0 +1,24 @@
+# Pathfolio — Step 1 & Step 2 Verification Checklist
+
+## 1. Core Application Requirements (`PRD.md` M01–M10)
+- [x] **M01 — Opportunity Record**: Create, edit, archive, restore, and delete opportunities with company, role, stage, source URL validation, location/work mode, salary note, application date, next action date, and private notes (`app/lib/views/opportunity_form_dialog.dart`, `app/lib/views/opportunity_detail_view.dart`).
+- [x] **M02 — Pipeline & Activity Timeline**: 6 stages (`Saved`, `Applied`, `Screening`, `Interview`, `Offer`, `Rejected`), stage progression from Kanban/list and detail view, dated timeline entries, archived records excluded from active counts (`app/lib/views/pipeline_view.dart`, `app/lib/state/app_state.dart`).
+- [x] **M03 — Follow-up Tasks**: Add, edit, complete, reopen, and delete tasks attached to opportunities; overdue and upcoming task alerts highlighted on Dashboard and editable directly (`app/lib/views/dashboard_view.dart`, `app/lib/views/task_form_dialog.dart`).
+- [x] **M04 — Find & Prioritize**: Real-time search across company/role/notes/location, filter by stage and archived status, sort by recent/next action/company/application date, and one-click clear filters (`app/lib/views/pipeline_view.dart`).
+- [x] **M05 — Dashboard Command Center**: Actual counts by stage with click-through to filtered Pipeline list, overdue/upcoming action items, and chronological activity history with click-through to opportunity details (`app/lib/views/dashboard_view.dart`).
+- [x] **M06 — STAR Evidence Bank**: Reusable career evidence entries with title, skill tags, concise quantifiable result, and optional reference URL; attach/detach on opportunities without file uploads or history corruption (`app/lib/views/evidence_bank_view.dart`).
+- [x] **M07 — Versioned JSON Backup & Restore**: Schema v1 JSON export (file save + clipboard copy) and import (file picker + paste JSON) with size, schema version, and field validation, count preview modal, and confirmed atomic replacement (`app/lib/views/settings_view.dart`, `app/lib/models/backup_data.dart`).
+- [x] **M08 — Privacy Controls & Demo Workspace**: Local-only storage notice, last export timestamp, theme (`System`/`Light`/`Dark`) and reduced-motion preferences, optional labeled Demo Workspace loader/cleaner, and confirmed `ERASE` all data action (`app/lib/views/settings_view.dart`).
+- [x] **M09 — First-Run Onboarding & In-App Guide**: First-run modal explaining local storage and backups with choice to start fresh or load sample demo data, plus accessible User Guide modal (`app/lib/views/onboarding_dialog.dart`, `app/lib/views/guide_dialog.dart`).
+- [x] **M10 — Cross-Platform Responsive UX**: Responsive desktop side-rail (`1440px–1920px`), tablet rail (`1024px`), and mobile bottom navigation (`390px` / `320px`) with zero horizontal overflow.
+
+## 2. Public Marketing Website & Motion Craft (`PRD.md` M11 & Foreground Craft)
+- [x] **Owner-Supplied Visual & Motion Truth (`my-design/home.html`)**: `Fraunces` display, `Plus Jakarta Sans` body, `JetBrains Mono` labels, Dark Forest Slate (`#0A1210`) & Architectural Porcelain (`#F8F7F4`) dual themes, Alpine Verdigris (`#2DD4BF` / `#0F4D3F`) & Architectural Brass (`#E0A06A` / `#8F5524`).
+- [x] **Hero Staged Entrance & Interactive 3D Dossier**: Masked line typography reveal, rolling odometer counters (`6`, `2`, `0`, `0`), 3D perspective Career Dossier with scroll-fanned underlay sheets, interactive stage dots, and interactive task checkbox preview.
+- [x] **Scene 1 — Scroll-Led Pipeline Runway (`#pipeline`)**: Dual-track caliper carriage with scroll scrub AND interactive click/keyboard stage selector across all 6 stages (`Saved` → `Rejected`) updating telemetry and descriptions live.
+- [x] **Scene 2 — STAR Evidence Assembly Deck (`#evidence`)**: 3D paper fragment convergence (`Situation`, `Task`, `Action`, `Result`), SVG stroke draw connector, and interactive skill tag pills (`research`, `prototyping`, `writing`, `facilitation`) filtering live STAR story previews.
+- [x] **Scene 3 — Sovereign Local Vault (`#vault`)**: 3-document archival sequence sliding into envelope pocket, 3D folding flap, hot-wax red-brass seal stamp, interactive 4-step inspection stepper, and collapsible Schema v1 JSON inspector with copy button.
+- [x] **Scene 4 — App Tour Gallery (`#tour`)**: Interactive platform switcher (`Android` vs `Web`), interactive mockup preview cards, and real product screenshots modal/showcase.
+- [x] **Scene 5 — Closing Sovereign Command (`#launch`)**: Scroll-lit typography, unfolding physical dossier leaves, working `/app/` Launch CTA, and GitHub APK release link.
+- [x] **Companion Documentation Pages**: `/guide.html` and `/privacy.html` styled in the unified design system with real workspace screenshots, interactive theme toggle, and mobile navigation drawer.
+

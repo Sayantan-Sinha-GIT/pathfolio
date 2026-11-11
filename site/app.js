@@ -147,7 +147,49 @@ function hs(i) {
   if (hst) hst.textContent = names[i];
   if (htl) htl.textContent = 'Moved to ' + names[i];
 }
-if ($('.hd6')) hs(3);
+if ($('.hd6')) {
+  hs(3);
+  $$('.hd6 i').forEach((dot, idx) => {
+    dot.style.cursor = 'pointer';
+    dot.setAttribute('title', `Preview stage: ${names[idx]}`);
+    dot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      hs(idx);
+    });
+  });
+}
+
+// Interactive Hero Dossier Task Checkbox toggle
+const heroTk = $('.hero .tk');
+if (heroTk) {
+  heroTk.style.cursor = 'pointer';
+  heroTk.setAttribute('role', 'button');
+  heroTk.setAttribute('tabindex', '0');
+  heroTk.setAttribute('aria-label', 'Toggle sample follow-up task completion');
+  let tkDone = false;
+  const toggleHeroTask = () => {
+    tkDone = !tkDone;
+    const chkPath = $('.chk path', heroTk);
+    const labelSpan = $('span', heroTk);
+    if (chkPath && hasG) {
+      gsap.killTweensOf(chkPath);
+      gsap.to(chkPath, { strokeDashoffset: tkDone ? 0 : 1, duration: 0.35, ease: 'power2.out' });
+    } else if (chkPath) {
+      chkPath.style.strokeDashoffset = tkDone ? '0' : '1';
+    }
+    if (labelSpan) {
+      labelSpan.style.textDecoration = tkDone ? 'line-through' : 'none';
+      labelSpan.style.opacity = tkDone ? '0.68' : '1';
+    }
+  };
+  heroTk.addEventListener('click', toggleHeroTask);
+  heroTk.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleHeroTask();
+    }
+  });
+}
 
 // Background Canvas
 const cv = $('#bg');
@@ -224,14 +266,77 @@ if (cv) {
   rm ? draw() : tick();
 }
 
-// App tour platform toggle
+// App tour platform toggle & direct mockup click
+function selectPlatform(p) {
+  $$('.tb button').forEach((x) => x.setAttribute('aria-selected', x.dataset.p === p ? 'true' : 'false'));
+  const sc = $('#scene');
+  if (sc) sc.dataset.p = p;
+}
+
 $$('.tb button').forEach((b) =>
-  b.addEventListener('click', () => {
-    $$('.tb button').forEach((x) => x.setAttribute('aria-selected', x === b));
-    const sc = $('#scene');
-    if (sc) sc.dataset.p = b.dataset.p;
-  })
+  b.addEventListener('click', () => selectPlatform(b.dataset.p))
 );
+
+if ($('#phone')) {
+  $('#phone').style.cursor = 'pointer';
+  $('#phone').addEventListener('click', () => selectPlatform('android'));
+}
+if ($('#win')) {
+  $('#win').style.cursor = 'pointer';
+  $('#win').addEventListener('click', () => selectPlatform('web'));
+}
+
+// Interactive filter chips inside the Web Tour mockup
+const tourChips = $$('#win .chips span');
+const tourRows = $$('#win .rw');
+if (tourChips.length && tourRows.length) {
+  const stageCycle = ['All', 'Interview', 'Screening', 'Applied'];
+  let stageIdx = 0;
+  let sortAsc = false;
+  tourChips.forEach((chip, cIdx) => {
+    chip.style.cursor = 'pointer';
+    chip.setAttribute('role', 'button');
+    chip.setAttribute('tabindex', '0');
+    const triggerChip = (e) => {
+      e.stopPropagation();
+      if (cIdx === 0) {
+        stageIdx = (stageIdx + 1) % stageCycle.length;
+        const currentFilter = stageCycle[stageIdx];
+        chip.textContent = `Stage: ${currentFilter}`;
+        chip.classList.toggle('active', currentFilter !== 'All');
+        tourRows.forEach((rw) => {
+          const badge = $('.od2', rw)?.textContent.trim();
+          const show = currentFilter === 'All' || badge === currentFilter;
+          rw.style.display = show ? 'flex' : 'none';
+        });
+      } else if (cIdx === 1) {
+        const hidden = chip.textContent.includes('Hidden');
+        chip.textContent = hidden ? 'Archived: Shown' : 'Archived: Hidden';
+        chip.classList.toggle('active', hidden);
+      } else if (cIdx === 2) {
+        sortAsc = !sortAsc;
+        chip.textContent = sortAsc ? 'Sort: Company A-Z' : 'Sort: Next action';
+        chip.classList.toggle('active', sortAsc);
+        const parent = tourRows[0]?.parentNode;
+        if (parent) {
+          const sorted = [...tourRows].sort((a, b) => {
+            const ta = a.textContent.trim();
+            const tb = b.textContent.trim();
+            return sortAsc ? ta.localeCompare(tb) : tb.localeCompare(ta);
+          });
+          sorted.forEach((n) => parent.appendChild(n));
+        }
+      }
+    };
+    chip.addEventListener('click', triggerChip);
+    chip.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        triggerChip(e);
+      }
+    });
+  });
+}
 
 // Milestone Pipeline Stage logic
 const st = $$('.stn');
@@ -245,6 +350,7 @@ function setStage(i) {
   st.forEach((s, k) => {
     s.classList.toggle('on', k <= i);
     s.classList.toggle('cur', k === i);
+    s.setAttribute('aria-pressed', k === i ? 'true' : 'false');
   });
   const b = $('b', st[i]).textContent;
   const tel = $('#tele');
@@ -258,9 +364,148 @@ function setStage(i) {
   }
 }
 
-if (st.length) setStage(0);
+function selectStageInteractive(i) {
+  if (!st[i]) return;
+  const progress = i / Math.max(1, st.length - 1);
+  setStage(i);
+  if (bar) {
+    if (hasG && !rm) {
+      gsap.to(bar, { scaleX: progress, duration: 0.45, ease: 'power3.out', overwrite: 'auto' });
+    } else {
+      bar.style.transform = `scaleX(${progress})`;
+    }
+  }
+  if (car) {
+    const targetLeft = (8.333 + progress * 83.333) + '%';
+    if (hasG && !rm) {
+      gsap.to(car, { left: targetLeft, duration: 0.45, ease: 'power3.out', overwrite: 'auto' });
+    } else {
+      car.style.left = targetLeft;
+    }
+  }
+}
+
+if (st.length) {
+  st.forEach((s, idx) => {
+    s.setAttribute('role', 'button');
+    s.setAttribute('tabindex', '0');
+    s.setAttribute('aria-label', `Inspect stage 0${idx + 1}: ${$('b', s)?.textContent || ''}`);
+    s.addEventListener('click', () => selectStageInteractive(idx));
+    s.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectStageInteractive(idx);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        const next = Math.min(st.length - 1, idx + 1);
+        st[next].focus();
+        selectStageInteractive(next);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const prev = Math.max(0, idx - 1);
+        st[prev].focus();
+        selectStageInteractive(prev);
+      }
+    });
+  });
+  setStage(0);
+}
+
+// Chapter 2: Interactive STAR Skill Tag Filter Pills
+const starStories = {
+  research: {
+    label: 'Evidence entry · research',
+    s: 'The onboarding flow lost people before they reached the first task.',
+    t: 'Find out where they stalled and propose a simpler path.',
+    a: 'Interviewed users, mapped the steps, and prototyped two shorter flows.',
+    r: 'Shipped the shorter flow and wrote up what the team learned.',
+    cite: 'Attached to Sample Co. · Product Designer'
+  },
+  prototyping: {
+    label: 'Evidence entry · prototyping',
+    s: 'Mobile checkout conversion lagged desktop across 320px–390px viewports.',
+    t: 'Redesign the multi-step address and payment sheet into a tactile one-thumb flow.',
+    a: 'Built interactive state-machine prototypes and ran 14 moderated usability loops.',
+    r: 'Reduced form completion time by 38% and eliminated horizontal layout overflow.',
+    cite: 'Attached to Demo Studio · UX Engineer'
+  },
+  writing: {
+    label: 'Evidence entry · writing',
+    s: 'Three engineering squads duplicated UI primitives without shared accessibility rules.',
+    t: 'Author a unified component specification and keyboard focus contract.',
+    a: 'Documented 28 token patterns, ARIA state tables, and automated Playwright gates.',
+    r: 'Adopted across 4 web products with zero WCAG contrast or focus-trap regressions.',
+    cite: 'Attached to Example Labs · Design Systems'
+  },
+  facilitation: {
+    label: 'Evidence entry · facilitation',
+    s: 'Product and platform teams disagreed on offline storage boundaries for v1 release.',
+    t: 'Align stakeholders on a zero-cloud, local-first backup architecture.',
+    a: 'Facilitated architecture critique workshops and mapped failure recovery states.',
+    r: 'Shipped deterministic Schema v1 JSON export/import two weeks ahead of schedule.',
+    cite: 'Attached to Sample Co. · Staff Product Designer'
+  }
+};
+
+const tagPills = $$('.tags span');
+if (tagPills.length && $('#deck')) {
+  const deckFrs = $$('#deck .fr p');
+  const deckLb = $('#deck > .lb');
+  const citePill = $('#citation-stage-pill');
+
+  tagPills.forEach((pill, idx) => {
+    pill.setAttribute('role', 'button');
+    pill.setAttribute('tabindex', '0');
+    if (idx === 0) pill.classList.add('active');
+    const activateTag = () => {
+      const key = pill.textContent.trim().toLowerCase();
+      const story = starStories[key];
+      if (!story) return;
+      tagPills.forEach((p) => p.classList.toggle('active', p === pill));
+      if (deckLb) deckLb.textContent = story.label;
+      if (deckFrs[0]) deckFrs[0].textContent = story.s;
+      if (deckFrs[1]) deckFrs[1].textContent = story.t;
+      if (deckFrs[2]) deckFrs[2].textContent = story.a;
+      if (deckFrs[3]) deckFrs[3].textContent = story.r;
+      if (citePill) citePill.textContent = story.cite;
+      if (hasG && !rm) {
+        gsap.fromTo(
+          '#deck .fr, #citation-stage-pill',
+          { y: 8, opacity: 0.35 },
+          { y: 0, opacity: 1, duration: 0.38, stagger: 0.05, ease: 'power2.out', overwrite: 'auto' }
+        );
+      }
+    };
+    pill.addEventListener('click', activateTag);
+    pill.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        activateTag();
+      }
+    });
+  });
+}
 
 const stpLi = $$('#stp li');
+if (stpLi.length) {
+  stpLi.forEach((li, idx) => {
+    li.style.cursor = 'pointer';
+    li.setAttribute('role', 'button');
+    li.setAttribute('tabindex', '0');
+    const activateStep = () => {
+      stpLi.forEach((el, k) => el.classList.toggle('on', k <= idx));
+      const det = $('#vault details');
+      if (idx >= 2 && det && !det.open) det.open = true;
+    };
+    li.addEventListener('click', activateStep);
+    li.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        activateStep();
+      }
+    });
+  });
+}
 
 // Reduced Motion & No-GSAP fallback state
 if (!hasG || rm) {

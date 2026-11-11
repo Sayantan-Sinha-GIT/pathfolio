@@ -442,7 +442,18 @@ class OpportunityDetailView extends StatelessWidget {
                           ),
                         ),
                       IconButton(
+                        icon: const Icon(Icons.edit_outlined, size: 18),
+                        tooltip: 'Edit Task',
+                        onPressed: () => TaskFormDialog.show(
+                          context,
+                          appState: appState,
+                          initialTask: task,
+                          initialOpportunityId: opp.id,
+                        ),
+                      ),
+                      IconButton(
                         icon: const Icon(Icons.delete_outline_rounded, size: 18),
+                        tooltip: 'Delete Task',
                         onPressed: () => appState.deleteTask(task.id),
                       ),
                     ],
